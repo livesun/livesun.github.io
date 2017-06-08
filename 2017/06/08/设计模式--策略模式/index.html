@@ -10,7 +10,7 @@
     
     <title>
         
-            hello world | 
+            插件换肤以及Resources源码分析（一） | 
         
         我的博客
     </title>
@@ -58,7 +58,7 @@
     <!-- The Open Graph protocol -->
     <meta property="og:url" content="http://livesun.github.io">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="hello world | 我的博客">
+    <meta property="og:title" content="插件换肤以及Resources源码分析（一） | 我的博客">
     <meta property="og:description" content="记录生活点滴">
     
 
@@ -247,7 +247,7 @@
     </button>
 
     <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
-        
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#策略模式"><span class="post-toc-number">1.</span> <span class="post-toc-text">策略模式</span></a></li></ol>
 
         <!--
         <li class="mdl-menu__item">
@@ -284,7 +284,7 @@
         
     
             <p class="article-headline-p">
-                hello world
+                插件换肤以及Resources源码分析（一）
             </p>
         </div>
 
@@ -303,7 +303,7 @@
     <!-- Author Name & Date -->
     <div>
         <strong>孙俊卿</strong>
-        <span>5月 19, 2017</span>
+        <span>6月 08, 2017</span>
     </div>
 
     <div class="section-spacer"></div>
@@ -343,7 +343,7 @@
 
     <!-- Share Weibo -->
     
-        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=hello world&url=http://livesun.github.io//2017/05/19/hello-world/index.html&pic=&searchPic=false&style=simple" target="_blank">
+        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=插件换肤以及Resources源码分析（一）&url=http://livesun.github.io//2017/06/08/设计模式--策略模式/index.html&pic=&searchPic=false&style=simple" target="_blank">
             <li class="mdl-menu__item">
                 分享到微博
             </li>
@@ -352,7 +352,7 @@
 
     <!-- Share Twitter -->
     
-        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=hello world&url=http://livesun.github.io//2017/05/19/hello-world/index.html&via=孙俊卿" target="_blank">
+        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=插件换肤以及Resources源码分析（一）&url=http://livesun.github.io//2017/06/08/设计模式--策略模式/index.html&via=孙俊卿" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Twitter
             </li>
@@ -361,7 +361,7 @@
 
     <!-- Share Facebook -->
     
-        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/05/19/hello-world/index.html" target="_blank">
+        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/06/08/设计模式--策略模式/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Facebook
             </li>
@@ -370,7 +370,7 @@
 
     <!-- Share Google+ -->
     
-        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/05/19/hello-world/index.html" target="_blank">
+        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/06/08/设计模式--策略模式/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Google+
             </li>
@@ -382,7 +382,7 @@
 
     <!-- Share QQ -->
     
-        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=hello world&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/05/19/hello-world/index.html" target="_blank">
+        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=插件换肤以及Resources源码分析（一）&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/06/08/设计模式--策略模式/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 QQ
             </li>
@@ -400,7 +400,32 @@
                 <!-- Post Content -->
                 <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
     
-        <p>摘要:<br><a id="more"></a><br>正文:这是第一篇</p>
+        <h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>恰巧这几天京东6.18活动，不少人都会趁着折扣买东西，那买东西要支付啊，我们就以支付来讲讲策略模式的应用</p>
+<p>先上UML类图</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/strategy_pattern.png" alt="image"></p>
+<p>不同的支付模式，其实都是都有一个共性，我们把他抽取出来，写一个接口</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IPay</span> &#123;</div><div class="line"></div><div class="line"><span class="comment">//支付</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">pay</span>(<span class="params"></span>)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>分别写三个实现类</p>
+<ul>
+<li>QQ</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QQPay</span> <span class="keyword">implements</span> <span class="title">IPay</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pay</span><span class="params">()</span> </span>&#123;</div><div class="line">    </div><div class="line">        Log.d(<span class="string">"AAA"</span>,<span class="string">"QQ支付"</span>);</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>微信</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WXPay</span> <span class="keyword">implements</span> <span class="title">IPay</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pay</span><span class="params">()</span> </span>&#123;</div><div class="line">    </div><div class="line">        Log.d(<span class="string">"AAA"</span>,<span class="string">"微信支付"</span>);</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>阿里</li>
+</ul>
+<p>好像京东和阿里有仇，我们拿来凑个数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ALPay</span> <span class="keyword">implements</span> <span class="title">IPay</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pay</span><span class="params">()</span> </span>&#123;</div><div class="line">    </div><div class="line">        Log.d(<span class="string">"AAA"</span>,<span class="string">"阿里支付"</span>);</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这些支付方式有了，还需要一个用到它们地方</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Shopping</span> &#123;</span></div><div class="line"></div><div class="line">    <span class="keyword">private</span> IPay mPay;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Shopping</span><span class="params">(IPay pay)</span></span>&#123;</div><div class="line">    </div><div class="line">        mPay=pay;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span><span class="params">()</span></span>&#123;</div><div class="line">    </div><div class="line">        mPay.pay();</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>好了，我们来调用测试一下</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">public <span class="class"><span class="keyword">class</span> <span class="title">PayActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    </div><div class="line">    <span class="keyword">protected</span> void onCreate(<span class="meta">@Nullable</span> <span class="type">Bundle</span> savedInstanceState) &#123;</div><div class="line">    </div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line"></div><div class="line">        chosePayMode();</div><div class="line">        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void chosePayMode()&#123;</div><div class="line">    </div><div class="line">        <span class="type">Shopping</span> qqShop=<span class="keyword">new</span> <span class="type">Shopping</span>(<span class="keyword">new</span> <span class="type">QQPay</span>());</div><div class="line">        qqShop.buy();</div><div class="line"></div><div class="line">        <span class="type">Shopping</span> wxShop=<span class="keyword">new</span> <span class="type">Shopping</span>(<span class="keyword">new</span> <span class="type">WXPay</span>());</div><div class="line">        wxShop.buy();</div><div class="line"></div><div class="line">        <span class="type">Shopping</span> alShop=<span class="keyword">new</span> <span class="type">Shopping</span>(<span class="keyword">new</span> <span class="type">ALPay</span>());</div><div class="line">        alShop.buy();</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，Shopping类并不知道自己具体调用了哪种实现方式，它只需要负责购买就行，调用者想用什么支付方式，就用什么支付方式。</p>
+<p>这就是策略模式，不但把高内聚低耦合特点表现了出来，同时又符合OCP原则，如果还有什么其他类型的支付，只要继承IPay接口就行了，而不用修改Shopping类，好好体会体会，是不是好处多多。</p>
+<p>github:<a href="https://github.com/livesun" target="_blank" rel="external">https://github.com/livesun</a></p>
 
     
 
@@ -427,19 +452,19 @@
             <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
     <!-- Prev Nav -->
     
-        <a href="/2017/06/06/自定义渐变颜色的textView /" id="post_nav-newer" class="prev-content">
-            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
-                <i class="material-icons">arrow_back</i>
-            </button>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            新篇
-        </a>
-    
 
     <!-- Section Spacer -->
     <div class="section-spacer"></div>
 
     <!-- Next Nav -->
+    
+        <a href="/2017/06/08/设计模式(1)-策略模式/" id="post_nav-older" class="next-content">
+            旧篇
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                <i class="material-icons">arrow_forward</i>
+            </button>
+        </a>
     
 </nav>
 
