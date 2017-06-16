@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+    <!--
+        © Material Theme
+        https://github.com/viosey/hexo-theme-material
+        Version: 1.3.4 -->
+
+    <!-- Title -->
+    
+    <title>
+        
+            官方的沉浸式Translucent | 
+        
+        我的博客
+    </title>
+
+    <!-- Meta & Info -->
+    <meta charset="utf-8">
+
+    <!-- dns prefetch -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    
+    
+    
+    
+    
+    
+
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0097A7">
+    <meta name="author" content="孙俊卿">
+    <meta name="description" content="记录生活点滴">
+    <meta name="keywords" content="android">
+
+    <!-- Favicons -->
+    <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
+    <link rel="icon" sizes="192x192" href="/img/favicon.png">
+    <link rel="apple-touch-icon" href="/img/favicon.png">
+
+    <!--iOS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="Title">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="480">
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="我的博客">
+
+    <!-- The Open Graph protocol -->
+    <meta property="og:url" content="http://livesun.github.io">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="官方的沉浸式Translucent | 我的博客">
+    <meta property="og:description" content="记录生活点滴">
+    
+
+    <!--[if lte IE 9]>
+        <link rel="stylesheet" href="/css/ie-blocker.css">
+
+        
+            <script src="/js/ie-blocker.zhCN.js"></script>
+        
+    <![endif]-->
+
+    <!-- Import CSS & jQuery -->
+    
+        <link rel="stylesheet" href="/css/material.min.css">
+        <link rel="stylesheet" href="/css/style.min.css">
+        <!-- Config CSS -->
+
+
+<!-- Other Styles -->
+<style>
+  body, html {
+    font-family: Roboto, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  }
+
+  a {
+    color: #00838F;
+  }
+
+  .mdl-card__media,
+  #search-label,
+  #search-form-label:after,
+  #scheme-Paradox .hot_tags-count,
+  #scheme-Paradox .sidebar_archives-count,
+  #scheme-Paradox .sidebar-colored .sidebar-header,
+  #scheme-Paradox .sidebar-colored .sidebar-badge{
+    background-color: #0097A7 !important;
+  }
+
+  /* Sidebar User Drop Down Menu Text Color */
+  #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:hover,
+  #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:focus {
+    color: #0097A7 !important;
+  }
+
+  #post_entry-right-info,
+  .sidebar-colored .sidebar-nav li:hover > a,
+  .sidebar-colored .sidebar-nav li:hover > a i,
+  .sidebar-colored .sidebar-nav li > a:hover,
+  .sidebar-colored .sidebar-nav li > a:hover i,
+  .sidebar-colored .sidebar-nav li > a:focus i,
+  .sidebar-colored .sidebar-nav > .open > a,
+  .sidebar-colored .sidebar-nav > .open > a:hover,
+  .sidebar-colored .sidebar-nav > .open > a:focus,
+  #ds-reset #ds-ctx .ds-ctx-entry .ds-ctx-head a {
+    color: #0097A7 !important;
+  }
+
+  .toTop {
+    background: #757575 !important;
+  }
+
+  .material-layout .material-post>.material-nav,
+  .material-layout .material-index>.material-nav,
+  .material-nav a {
+    color: #757575;
+  }
+
+  #scheme-Paradox .MD-burger-layer {
+    background-color: #757575;
+  }
+
+  #scheme-Paradox #post-toc-trigger-btn {
+    color: #757575;
+  }
+
+  .post-toc a:hover {
+    color: #00838F;
+    text-decoration: underline;
+  }
+
+</style>
+
+
+<!-- Theme Background Related-->
+
+    <style>
+      body{
+        background-color: #F5F5F5;
+      }
+
+      /* blog_info bottom background */
+      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
+        background-color: #fff;
+      }
+    </style>
+
+
+
+
+<!-- Fade Effect -->
+
+    <style>
+      .fade {
+        transition: all 800ms linear;
+        -webkit-transform: translate3d(0,0,0);
+        -moz-transform: translate3d(0,0,0);
+        -ms-transform: translate3d(0,0,0);
+        -o-transform: translate3d(0,0,0);
+        transform: translate3d(0,0,0);
+        opacity: 1;
+      }
+
+      .fade.out{
+        opacity: 0;
+      }
+    </style>
+
+
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/queue.js"></script>
+    
+
+    <!-- UC Browser Compatible -->
+    <script>
+        var agent = navigator.userAgent.toLowerCase();
+        if(agent.indexOf('ucbrowser')>0) {
+            document.write("<link rel=\"stylesheet\" href=\"/css/uc.css\">");
+            alert('由于 UC 浏览器使用极旧的内核，而本网站使用了一些新的特性。\n为了您能更好的浏览，推荐使用 Chrome 或 Firefox 浏览器。');
+        }
+    </script>
+
+    
+
+    
+
+
+    <!-- Bing Background -->
+    
+
+    <!-- Custom Head -->
+    
+</head>
+
+
+    
+        <body id="scheme-Paradox" class="lazy">
+            <div class="material-layout  mdl-js-layout has-drawer is-upgraded">
+                
+
+                <!-- Main Container -->
+                <main class="material-layout__content" id="main">
+
+                    <!-- Top Anchor -->
+                    <div id="top"></div>
+
+                    
+                        <!-- Hamburger Button -->
+                        <button class="MD-burger-icon sidebar-toggle">
+                            <span class="MD-burger-layer"></span>
+                        </button>
+                    
+
+                    <!-- Post TOC -->
+
+    
+    <!-- Back Button -->
+    <!--
+    <div class="material-back" id="backhome-div" tabindex="0">
+        <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"
+           href="#" onclick="window.history.back();return false;"
+           target="_self"
+           role="button"
+           data-upgraded=",MaterialButton,MaterialRipple">
+            <i class="material-icons" role="presentation">arrow_back</i>
+            <span class="mdl-button__ripple-container">
+                <span class="mdl-ripple"></span>
+            </span>
+        </a>
+    </div>
+    -->
+
+    <!-- Left aligned menu below button -->
+    <button id="post-toc-trigger-btn"
+        class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">format_list_numbered</i>
+    </button>
+
+    <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#官方的沉浸式Translucent"><span class="post-toc-number">1.</span> <span class="post-toc-text">官方的沉浸式Translucent</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#而我们一般所说的沉浸式是顶部状态栏和标题栏颜色一致，或者为一张图片。"><span class="post-toc-number">2.</span> <span class="post-toc-text">而我们一般所说的沉浸式是顶部状态栏和标题栏颜色一致，或者为一张图片。</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-0-版本的实现方式"><span class="post-toc-number">3.</span> <span class="post-toc-text">5.0+版本的实现方式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#一、状态栏"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">一、状态栏</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#二、底部导航栏"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">二、底部导航栏</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-4-版本"><span class="post-toc-number">4.</span> <span class="post-toc-text">4.4+版本</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#首先，状态栏，我们可以分别在属性样式和代码中进行设置。"><span class="post-toc-number"></span> <span class="post-toc-text">首先，状态栏，我们可以分别在属性样式和代码中进行设置。</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#解决方法一："><span class="post-toc-number">0.1.</span> <span class="post-toc-text">解决方法一：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#解决方法二："><span class="post-toc-number">0.2.</span> <span class="post-toc-text">解决方法二：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#通过反射"><span class="post-toc-number">0.3.</span> <span class="post-toc-text">通过反射</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#通过getResources-getIdentifier"><span class="post-toc-number">0.4.</span> <span class="post-toc-text">通过getResources.getIdentifier()</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#接着，4-4版本的导航条"><span class="post-toc-number"></span> <span class="post-toc-text">接着，4.4版本的导航条</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#反射"><span class="post-toc-number">0.1.</span> <span class="post-toc-text">反射</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#getResources-getIdentifier"><span class="post-toc-number">0.2.</span> <span class="post-toc-text">getResources.getIdentifier()</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#比较凌乱的代码分享"><span class="post-toc-number"></span> <span class="post-toc-text">比较凌乱的代码分享:</span></a>
+
+        <!--
+        <li class="mdl-menu__item">
+            Some Action
+        </li>
+        -->
+    </ul>
+
+
+
+
+<!-- Layouts -->
+
+    <!-- Post Module -->
+    <div class="material-post_container">
+
+        <div class="material-post mdl-grid">
+            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+
+                <!-- Post Header(Thumbnail & Title) -->
+                
+    <!-- Paradox Post Header -->
+    
+        
+            <!-- Random Thumbnail -->
+            <div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
+            <script>
+    var randomNum = Math.floor(Math.random() * 19 + 1);
+
+    $('.post_thumbnail-random').attr('data-original', '/img/random/material-' + randomNum + '.png');
+    $('.post_thumbnail-random').addClass('lazy');
+</script>
+
+        
+    
+            <p class="article-headline-p">
+                官方的沉浸式Translucent
+            </p>
+        </div>
+
+
+
+
+
+                
+                    <!-- Paradox Post Info -->
+                    <div class="mdl-color-text--grey-700 mdl-card__supporting-text meta">
+
+    <!-- Author Avatar -->
+    <div id="author-avatar">
+        <img src="/img/avatar.png" width="44px" height="44px" alt="Author Avatar"/>
+    </div>
+    <!-- Author Name & Date -->
+    <div>
+        <strong>孙俊卿</strong>
+        <span>6月 16, 2017</span>
+    </div>
+
+    <div class="section-spacer"></div>
+
+    <!-- Favorite -->
+    <!--
+        <button id="article-functions-like-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon btn-like">
+            <i class="material-icons" role="presentation">favorite</i>
+            <span class="visuallyhidden">favorites</span>
+        </button>
+    -->
+
+    <!-- Qrcode -->
+    
+
+    <!-- Tags (bookmark) -->
+    
+    <button id="article-functions-viewtags-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+        <i class="material-icons" role="presentation">bookmark</i>
+        <span class="visuallyhidden">bookmark</span>
+    </button>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-functions-viewtags-button">
+        <li class="mdl-menu__item">
+        
+    </ul>
+    
+
+    <!-- Share -->
+    <button id="article-fuctions-share-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+    <i class="material-icons" role="presentation">share</i>
+    <span class="visuallyhidden">share</span>
+</button>
+<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-fuctions-share-button">
+    
+
+    
+
+    <!-- Share Weibo -->
+    
+        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=官方的沉浸式Translucent&url=http://livesun.github.io//2017/06/16/translucent/index.html&pic=&searchPic=false&style=simple" target="_blank">
+            <li class="mdl-menu__item">
+                分享到微博
+            </li>
+        </a>
+    
+
+    <!-- Share Twitter -->
+    
+        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=官方的沉浸式Translucent&url=http://livesun.github.io//2017/06/16/translucent/index.html&via=孙俊卿" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Twitter
+            </li>
+        </a>
+    
+
+    <!-- Share Facebook -->
+    
+        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/06/16/translucent/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Facebook
+            </li>
+        </a>
+    
+
+    <!-- Share Google+ -->
+    
+        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/06/16/translucent/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Google+
+            </li>
+        </a>
+    
+
+    <!-- Share LinkedIn -->
+    
+
+    <!-- Share QQ -->
+    
+        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=官方的沉浸式Translucent&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/06/16/translucent/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 QQ
+            </li>
+        </a>
+    
+
+    <!-- Share Telegram -->
+    
+</ul>
+
+</div>
+
+                
+
+                <!-- Post Content -->
+                <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
+    
+        <ul>
+<li></li>
+</ul>
+<h3 id="官方的沉浸式Translucent"><a href="#官方的沉浸式Translucent" class="headerlink" title="官方的沉浸式Translucent"></a>官方的沉浸式Translucent</h3><p>APP沉浸(充斥了整个屏幕)在屏幕里面，没有显示状态栏，甚至没有显示底部导航栏。</p>
+<p>如：</p>
+<ul>
+<li>全屏状态下的视频播放器</li>
+<li>全屏状态下的阅读器</li>
+</ul>
+<p>类似这样：</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_full_notitle.jpg" alt="image"></p>
+<h3 id="而我们一般所说的沉浸式是顶部状态栏和标题栏颜色一致，或者为一张图片。"><a href="#而我们一般所说的沉浸式是顶部状态栏和标题栏颜色一致，或者为一张图片。" class="headerlink" title="而我们一般所说的沉浸式是顶部状态栏和标题栏颜色一致，或者为一张图片。"></a>而我们一般所说的沉浸式是顶部状态栏和标题栏颜色一致，或者为一张图片。</h3><ul>
+<li>状态栏为图片延伸（4.4版本效果）</li>
+</ul>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_full.png" alt="image"></p>
+<ul>
+<li>状态栏为纯颜色（4.4版本效果）</li>
+</ul>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_one.png" alt="image"></p>
+<ul>
+<li>导航栏和状态栏颜色一致（4.4版本效果）</li>
+</ul>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_one.png" alt="image"><br>支持版本：</p>
+<ul>
+<li>5.0+版本</li>
+<li>4.4以上版本</li>
+</ul>
+<p>4.4以下版本是无法做到沉浸式，除非修改底层。</p>
+<h3 id="5-0-版本的实现方式"><a href="#5-0-版本的实现方式" class="headerlink" title="5.0+版本的实现方式"></a>5.0+版本的实现方式</h3><blockquote>
+<p>5.0+可以自动实现了沉浸式效果，状态栏的颜色跟随你的主题里面的colorPrimaryDark属性，相对来说非常简单，我们这里有三种方法：</p>
+</blockquote>
+<p>在此之前，我们需要把样式设为NoActionBar</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;style <span class="built_in">name</span>=<span class="string">"AppTheme"</span> parent=<span class="string">"Theme.AppCompat.Light.NoActionBar"</span>&gt;</div><div class="line">   </div><div class="line">    &lt;<span class="built_in">item</span> <span class="built_in">name</span>=<span class="string">"colorPrimary"</span>&gt;@color/colorPrimary&lt;/<span class="built_in">item</span>&gt;</div><div class="line">    &lt;<span class="built_in">item</span> <span class="built_in">name</span>=<span class="string">"colorPrimaryDark"</span>&gt;@color/colorPrimaryDark&lt;/<span class="built_in">item</span>&gt;</div><div class="line">    &lt;<span class="built_in">item</span> <span class="built_in">name</span>=<span class="string">"colorAccent"</span>&gt;@color/colorAccent&lt;/<span class="built_in">item</span>&gt;</div><div class="line">&lt;/style&gt;</div></pre></td></tr></table></figure>
+<h4 id="一、状态栏"><a href="#一、状态栏" class="headerlink" title="一、状态栏"></a>一、状态栏</h4><p>1、设置style 文件中 colorPrimary 和 colorPrimaryDark的颜色值一样</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"AppTheme"</span> <span class="attr">parent</span>=<span class="string">"Theme.AppCompat.Light.NoActionBar"</span>&gt;</span><span class="xml"></span></div><div class="line">       <span class="comment">&lt;!-- Customize your theme here. --&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimary"</span>&gt;</span>@color/colorPrimary<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimaryDark"</span>&gt;</span>@color/colorPrimary<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorAccent"</span>&gt;</span>@color/colorAccent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">      </div><div class="line">   <span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>2、设置style 文件中 属性样式 android:statusBarColor 的颜色值</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"AppTheme"</span> <span class="attr">parent</span>=<span class="string">"Theme.AppCompat.Light.NoActionBar"</span>&gt;</span><span class="xml"></span></div><div class="line">        <span class="comment">&lt;!-- Customize your theme here. --&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimary"</span>&gt;</span>@color/colorPrimary<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimaryDark"</span>&gt;</span>@color/colorPrimaryDark<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorAccent"</span>&gt;</span>@color/colorAccent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:statusBarColor"</span>&gt;</span>@color/colorAccent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>3、通过代码设置，在setContentView之 后。getWindow().setStatusBarColor();</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">protected</span> <span class="selector-tag">void</span> <span class="selector-tag">onCreate</span>(Bundle savedInstanceState) &#123;</div><div class="line"></div><div class="line">        <span class="selector-tag">super</span><span class="selector-class">.onCreate</span>(savedInstanceState);</div><div class="line">        <span class="selector-tag">setContentView</span>(R.layout.activity_main);</div><div class="line">        <span class="selector-tag">getWindow</span>()<span class="selector-class">.setNavigationBarColor</span>(Color.GREEN);</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>4、如果像设置图片在状态栏中</p>
+<figure class="highlight cos"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">View</span> decorView = getWindow().getDecorView()<span class="comment">;</span></div><div class="line">int option = <span class="keyword">View</span>.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN| <span class="keyword">View</span>.SYSTEM_UI_FLAG_LAYOUT_STABLE<span class="comment">;</span></div><div class="line">decorView.setSystemUiVisibility(option)<span class="comment">;</span></div><div class="line"></div><div class="line"><span class="comment">//并且，需要动态计算statusbar的高度，设置进去。</span></div><div class="line">这里下面再讲</div></pre></td></tr></table></figure>
+<h4 id="二、底部导航栏"><a href="#二、底部导航栏" class="headerlink" title="二、底部导航栏"></a>二、底部导航栏</h4><p>1、在属性文件中，设置android:navigationBarColor的颜色值。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"AppTheme"</span> <span class="attr">parent</span>=<span class="string">"Theme.AppCompat.Light.NoActionBar"</span>&gt;</span><span class="xml"></span></div><div class="line">        <span class="comment">&lt;!-- Customize your theme here. --&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimary"</span>&gt;</span>@color/colorPrimary<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimaryDark"</span>&gt;</span>@color/colorPrimaryDark<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorAccent"</span>&gt;</span>@color/colorAccent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:navigationBarColor"</span>&gt;</span>@color/colorAccent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>2、通过代码设置，同样是在setContentView之后</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">getWindow</span><span class="params">()</span></span>.setNavigationBarColor(int <span class="attribute">color</span>);</div></pre></td></tr></table></figure>
+<p>5.0以上，都有专门提供的api,所以没什么难度，大家看看就行，选一种自己觉得方便的方法就行，我们着重讲一下，如何兼容4.4版本。</p>
+<h3 id="4-4-版本"><a href="#4-4-版本" class="headerlink" title="4.4+版本"></a>4.4+版本</h3><h2 id="首先，状态栏，我们可以分别在属性样式和代码中进行设置。"><a href="#首先，状态栏，我们可以分别在属性样式和代码中进行设置。" class="headerlink" title="首先，状态栏，我们可以分别在属性样式和代码中进行设置。"></a>首先，状态栏，我们可以分别在属性样式和代码中进行设置。</h2><p>1、在属性样式里（不推荐，需要建values-v19）</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;<span class="built_in">item</span> <span class="built_in">name</span>=<span class="string">"android:windowTranslucentStatus"</span>&gt;<span class="literal">true</span>&lt;/<span class="built_in">item</span>&gt;</div></pre></td></tr></table></figure>
+<p>2、在代码中</p>
+<p>记住在 <strong>setContentView</strong> 之前设置。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">getWindow</span>()<span class="selector-class">.addFlags</span>(<span class="selector-tag">WindowManager</span><span class="selector-class">.LayoutParams</span><span class="selector-class">.FLAG_TRANSLUCENT_STATUS</span>);</div><div class="line"></div><div class="line"><span class="selector-tag">setContentView</span>(<span class="selector-tag">R</span><span class="selector-class">.layout</span><span class="selector-class">.activity_main</span>);</div></pre></td></tr></table></figure>
+<p>然后发现会出现了副作用。</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_title_no.png" alt="image"></p>
+<h4 id="解决方法一："><a href="#解决方法一：" class="headerlink" title="解决方法一："></a>解决方法一：</h4><p>app的内容顶到最上面了，即状态栏遮挡一部分界面。</p>
+<p>这是因为，把状态栏掩藏掉，那部分高度被app顶上去了，如何解决？，我们只需要在布局文件中，这里以toolbar为例，设置android：fitsSystemWindows=”true” 。</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_title_yes.png" alt="image"></p>
+<p>解决。</p>
+<p>fitsSystemWindows这是什么意思呢？，他的意思是说，让view可以根据系统窗口(如statusBar)来调整自己的布局，如果值为true,就会调整view的paingding属性来给systemWindows留出空间。</p>
+<p>我们看看第二个解决办法。</p>
+<h4 id="解决方法二："><a href="#解决方法二：" class="headerlink" title="解决方法二："></a>解决方法二：</h4><p>系统文件的状态栏高度在sdk\platforms\android-23\data\res\values\demins.xml中我们可以找到系统文件中的状态栏高度。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- Height of the status bar --&gt;</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"status_bar_height"</span>&gt;</span>24dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- Height of the bottom navigation / system bar. --&gt;</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"navigation_bar_height"</span>&gt;</span>48dp<span class="tag">&lt;/<span class="name">dimen</span></span></div></pre></td></tr></table></figure></p>
+<p>默认为24dp，当然不同的手机厂商可能高度不一样，我们不能写死，需要动态获取这个值。</p>
+<p>这里有两种思路，一个是反射，一个是通过getResources.getIdentifier()。</p>
+<p>这里都写一遍出来。</p>
+<h4 id="通过反射"><a href="#通过反射" class="headerlink" title="通过反射"></a>通过反射</h4><figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getStatusBarHeight</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">int</span> statusHeight=<span class="number">-1</span>;</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">            Class&lt;?&gt; aClass = Class.forName(<span class="string">"com.android.internal.R$dimen"</span>);</div><div class="line">            Object o = aClass.newInstance();</div><div class="line">            Field status_bar_height = aClass.getField(<span class="string">"status_bar_height"</span>);</div><div class="line">            <span class="keyword">int</span> statusBarHeightId = (<span class="keyword">int</span>) status_bar_height.<span class="keyword">get</span>(o);</div><div class="line"><span class="comment">//          获取的其实是资源id 需要转换成px</span></div><div class="line">            statusHeight = getResources().getDimensionPixelSize(statusBarHeightId);</div><div class="line">           </div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> statusHeight==<span class="number">-1</span>?dp2px(<span class="number">24</span>):statusHeight;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h4 id="通过getResources-getIdentifier"><a href="#通过getResources-getIdentifier" class="headerlink" title="通过getResources.getIdentifier()"></a>通过getResources.getIdentifier()</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getStatusBarHeight</span><span class="params">()</span></span>&#123;</div><div class="line"></div><div class="line">       <span class="keyword">int</span> statusBarId = getResources().getIdentifier(<span class="string">"status_bar_height"</span>, <span class="string">"dimen"</span>, <span class="string">"android"</span>);</div><div class="line">       <span class="keyword">int</span> statusBarHeight=<span class="number">-1</span>;</div><div class="line">       <span class="keyword">if</span>(statusBarId&gt;<span class="number">0</span>)&#123;</div><div class="line">            statusBarHeight = getResources().getDimensionPixelSize(statusBarId);</div><div class="line">       &#125;</div><div class="line">       <span class="comment">//代码默认为24dp</span></div><div class="line">       <span class="keyword">return</span> statusBarHeight==<span class="number">-1</span>?dp2px(<span class="number">24</span>):statusBarHeight;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>获取到状态栏的高度之后，我们是不是可以把Toolbar的高度增加相同的高度，app顶到状态的问题不就可以轻松解决了。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">ViewGroup.LayoutParams params = toolbar.getLayoutParams()<span class="comment">;</span></div><div class="line"> params.height+=getStatusBarHeight()<span class="comment">;</span></div><div class="line"> titleBar.setLayoutParams(params)<span class="comment">;</span></div><div class="line"> titleBar.setPadding(toolbar.getPaddingLeft(),</div><div class="line">                     toolbar.getPaddingRight(),</div><div class="line">                     toolbar.getPaddingTop()+getStatusBarHeight(),</div><div class="line">                     toolbar.getPaddingBottom()</div><div class="line">                   )<span class="comment">;</span></div></pre></td></tr></table></figure>
+<h2 id="接着，4-4版本的导航条"><a href="#接着，4-4版本的导航条" class="headerlink" title="接着，4.4版本的导航条"></a>接着，4.4版本的导航条</h2><p>1、显示导航条，并且自定义颜色。</p>
+<p>因为4.4并没有提供对应的方法，这里的思路是，让它透明，然后再布局中写一个高度一样的view，置底，重合navigationBar的位置。</p>
+<p>首先，计算navigationBar的高度，这个和状态栏statusBar是一样的。</p>
+<h4 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h4><figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getNavigationBarHeight</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">int</span> navigationHeight=<span class="number">-1</span>;</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">            Class&lt;?&gt; aClass = Class.forName(<span class="string">"com.android.internal.R$dimen"</span>);</div><div class="line">            Object o = aClass.newInstance();</div><div class="line">            Field status_bar_height = aClass.getField(<span class="string">"navigation_bar_height"</span>);</div><div class="line">            <span class="keyword">int</span> statusBarHeightId = (<span class="keyword">int</span>) status_bar_height.<span class="keyword">get</span>(o);</div><div class="line"><span class="comment">//          获取的其实是资源id 需要转换成px</span></div><div class="line">            navigationHeight = getResources().getDimensionPixelSize(statusBarHeightId);</div><div class="line">           </div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> navigationHeight==<span class="number">-1</span>?dp2px(<span class="number">24</span>):navigationHeight;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h4 id="getResources-getIdentifier"><a href="#getResources-getIdentifier" class="headerlink" title="getResources.getIdentifier()"></a>getResources.getIdentifier()</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//获取底部的导航条的高度</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getNavigationBarHeight</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">int</span> navigationId = getResources().getIdentifier(<span class="string">"navigation_bar_height"</span>, <span class="string">"dimen"</span>, <span class="string">"android"</span>);</div><div class="line">    <span class="keyword">int</span> navigationBaHeight=<span class="number">-1</span>;</div><div class="line">    <span class="keyword">if</span>(navigationId&gt;<span class="number">0</span>)&#123;</div><div class="line">        navigationBaHeight = getResources().getDimensionPixelSize(navigationId);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//代码默认为48dp</span></div><div class="line">    <span class="keyword">return</span> navigationBaHeight==<span class="number">-1</span>?dp2px(<span class="number">48</span>):navigationBaHeight;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们的xml布局</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;RelativeLayout </div><div class="line">    xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">    xmlns:app=<span class="string">"http://schemas.android.com/apk/res-auto"</span></div><div class="line">    android:id=<span class="string">"@+id/activity_main"</span></div><div class="line">    android:orientation=<span class="string">"vertical"</span></div><div class="line">    android:layout_width=<span class="string">"match_parent"</span></div><div class="line">    android:layout_height=<span class="string">"match_parent"</span></div><div class="line">    &gt;</div><div class="line"></div><div class="line">   &lt;android<span class="selector-class">.support</span><span class="selector-class">.v7</span><span class="selector-class">.widget</span><span class="selector-class">.Toolbar</span></div><div class="line">       android:id=<span class="string">"@+id/toolbar"</span></div><div class="line">       android:fitsSystemWindows=<span class="string">"true"</span></div><div class="line">       android:layout_width=<span class="string">"match_parent"</span></div><div class="line">       android:layout_height=<span class="string">"?actionBarSize"</span></div><div class="line">       app:title=<span class="string">"测试"</span></div><div class="line">       app:titleTextColor=<span class="string">"#fff"</span></div><div class="line">       android:<span class="attribute">background</span>=<span class="string">"@color/colorAccent"</span></div><div class="line">       &gt;&lt;/android<span class="selector-class">.support</span><span class="selector-class">.v7</span><span class="selector-class">.widget</span><span class="selector-class">.Toolbar</span>&gt;</div><div class="line">   </div><div class="line">   &lt;View</div><div class="line">       android:layout_alignParentBottom=<span class="string">"true"</span></div><div class="line">       android:id=<span class="string">"@+id/nivagtion"</span></div><div class="line">       android:layout_width=<span class="string">"match_parent"</span></div><div class="line">       android:layout_height=<span class="string">"0dp"</span>/&gt;</div><div class="line">&lt;/RelativeLayout&gt;</div></pre></td></tr></table></figure>
+<p>View是关键，这里我们把它置底，并且让他的高度尽可能的小，接着我们重设他的高度</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">View</span> nivagtionBar = findViewById(R.id.nivagtion)<span class="comment">;</span></div><div class="line"><span class="symbol">nivagtionBar.getLayoutParams</span>()<span class="comment">;</span></div><div class="line"></div><div class="line">  ViewGroup.LayoutParams <span class="keyword">bootomParams </span>= nivagtionBar.getLayoutParams()<span class="comment">;</span></div><div class="line">  //这里需要 判断是否存在，不存在，<span class="number">4</span>.<span class="number">4</span>设置会报错，同时，设置nivagtionBar的高度为<span class="number">0</span></div><div class="line">        <span class="meta">if</span>(<span class="keyword">isBootomBarShow())&#123;</span></div><div class="line">            <span class="keyword">bootomParams.height+=getNavigationBarHeight();</span></div><div class="line">            <span class="keyword">bootomBar.setBackgroundColor(primaryColor);</span></div><div class="line">            <span class="keyword">bootomBar.setLayoutParams(bootomParams);</span></div><div class="line">        &#125;<span class="meta">else</span>&#123;</div><div class="line">            <span class="keyword">bootomParams.height=0;</span></div><div class="line">            nivagtionBar.setLayoutParams(<span class="keyword">bootomParams);</span></div><div class="line">         &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//判断是否打开底部导航条 5.1以上没有导航栏也可以设置颜色。</span></div><div class="line">   <span class="keyword">public</span>    <span class="keyword">boolean</span> isBootomBarShow()&#123;</div><div class="line">       Display <span class="built_in">display</span> = getWindowManager().getDefaultDisplay();</div><div class="line">       DisplayMetrics outMetrics=<span class="keyword">new</span> DisplayMetrics();</div><div class="line">       <span class="comment">//获取整个屏幕的高度</span></div><div class="line">       <span class="built_in">display</span>.getRealMetrics(outMetrics);</div><div class="line">       <span class="keyword">int</span> realHeight = outMetrics.heightPixels;</div><div class="line">       <span class="keyword">int</span> realWidth = outMetrics.widthPixels;</div><div class="line">       <span class="comment">//获取内容展示的高度</span></div><div class="line">       outMetrics=<span class="keyword">new</span> DisplayMetrics();</div><div class="line">       <span class="built_in">display</span>.getMetrics(outMetrics);</div><div class="line">       <span class="keyword">int</span> contentHeight = outMetrics.heightPixels;</div><div class="line">       <span class="keyword">int</span> contentWidth = outMetrics.widthPixels;</div><div class="line"></div><div class="line">       <span class="keyword">int</span> h = realHeight - contentHeight;</div><div class="line">       <span class="keyword">int</span> w = realWidth - contentWidth;</div><div class="line"></div><div class="line">       <span class="built_in">return</span> h&gt;<span class="number">0</span>||w&gt;<span class="number">0</span>;<span class="comment">//竖屏情况和横屏情况。</span></div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>上效果图：</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_navigation.png" alt="image"></p>
+<p>2、不显示导航条。</p>
+<p>这个比较简单，直接上代码，这是一个可以藏显示导航条的开关方法。</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> void toggleHideyBar() &#123;</div><div class="line"></div><div class="line">       int uiOptions = getWindow().getDecorView().getSystemUiVisibility();</div><div class="line">       int <span class="keyword">new</span><span class="type">UiOptions</span> = uiOptions;</div><div class="line">       boolean isImmersiveModeEnabled =</div><div class="line">               ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);</div><div class="line">       <span class="keyword">if</span> (isImmersiveModeEnabled) &#123;</div><div class="line">           Log.d(TAG,<span class="string">"打开"</span>);</div><div class="line">       &#125; <span class="keyword">else</span> &#123;</div><div class="line">           Log.d(TAG,<span class="string">"关闭"</span>);</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">14</span>) &#123;</div><div class="line">           <span class="keyword">new</span><span class="type">UiOptions</span> ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">16</span>) &#123;</div><div class="line">           <span class="keyword">new</span><span class="type">UiOptions</span> ^= View.SYSTEM_UI_FLAG_FULLSCREEN;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">18</span>) &#123;</div><div class="line">           <span class="keyword">new</span><span class="type">UiOptions</span> ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       getWindow().getDecorView().setSystemUiVisibility(<span class="keyword">new</span><span class="type">UiOptions</span>);</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>效果图：</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_toggel2.gif" alt="image"></p>
+<p>稍后我会把代码封装好的上传到github。</p>
+<p>github地址：</p>
+<h2 id="比较凌乱的代码分享"><a href="#比较凌乱的代码分享" class="headerlink" title="比较凌乱的代码分享:"></a>比较凌乱的代码分享:</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseTranslucentActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line"></div><div class="line">        <span class="comment">//判断当前版本如果大于4.4 并且小于5.0</span></div><div class="line">        <span class="keyword">if</span>(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.KITKAT</div><div class="line">                &amp;&amp;Build.VERSION.SDK_INT&lt;Build.VERSION_CODES.LOLLIPOP</div><div class="line">                )&#123;</div><div class="line">            <span class="comment">//设置状态栏透明</span></div><div class="line">            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);</div><div class="line">            <span class="comment">//设置导航栏透明</span></div><div class="line">            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> titleBar 顶布局</div><div class="line">     * <span class="doctag">@param</span> bootomBar 导航条</div><div class="line">     * <span class="doctag">@param</span> primaryColor 背景颜色</div><div class="line">     * <span class="doctag">@param</span> resId 图片</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOrChangeTranslucentColor</span><span class="params">(View titleBar,@Nullable View bootomBar,<span class="keyword">int</span> primaryColor,<span class="keyword">int</span> resId)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.KITKAT</div><div class="line">                &amp;&amp;Build.VERSION.SDK_INT&lt;Build.VERSION_CODES.LOLLIPOP</div><div class="line">                )&#123;</div><div class="line">            <span class="comment">//顶部</span></div><div class="line">                <span class="keyword">if</span>(titleBar!=<span class="keyword">null</span>)&#123;</div><div class="line">                    ViewGroup.LayoutParams params = titleBar.getLayoutParams();</div><div class="line">                    params.height+=getStatusBarHeight();</div><div class="line">                    titleBar.setLayoutParams(params);</div><div class="line">                    titleBar.setPadding(titleBar.getPaddingLeft(),</div><div class="line">                                        titleBar.getPaddingRight(),</div><div class="line">                                        titleBar.getPaddingTop()+getStatusBarHeight(),</div><div class="line">                                        titleBar.getPaddingBottom()</div><div class="line">                                        );</div><div class="line">                    <span class="keyword">if</span>(primaryColor!=Color.TRANSPARENT)&#123;</div><div class="line">                        titleBar.setBackgroundColor(primaryColor);</div><div class="line">                    &#125;<span class="keyword">else</span>&#123;</div><div class="line">                        titleBar.setBackground(getResources().getDrawable(resId));</div><div class="line">                    &#125;</div><div class="line"></div><div class="line"></div><div class="line">                &#125;</div><div class="line">            <span class="comment">//底部</span></div><div class="line">                <span class="keyword">if</span>(bootomBar!=<span class="keyword">null</span>)&#123;</div><div class="line">                    ViewGroup.LayoutParams bootomParams = bootomBar.getLayoutParams();</div><div class="line">                    <span class="keyword">if</span>(isBootomBarShow())&#123;</div><div class="line">                        bootomParams.height+=getNavigationBarHeight();</div><div class="line">                        bootomBar.setBackgroundColor(primaryColor);</div><div class="line">                        bootomBar.setLayoutParams(bootomParams);</div><div class="line">                    &#125;<span class="keyword">else</span>&#123;</div><div class="line">                        bootomParams.height=<span class="number">0</span>;</div><div class="line">                        bootomBar.setLayoutParams(bootomParams);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            toggleHideyBar();</div><div class="line">            <span class="comment">//5.0</span></div><div class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.LOLLIPOP)&#123;</div><div class="line">            <span class="comment">//如果颜色为透明，则用图片</span></div><div class="line">            <span class="keyword">if</span>(primaryColor== Color.TRANSPARENT)&#123;</div><div class="line">                View decorView = getWindow().getDecorView();</div><div class="line">                <span class="keyword">int</span> option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN</div><div class="line">                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;</div><div class="line">                decorView.setSystemUiVisibility(option);</div><div class="line"></div><div class="line">                ViewGroup.LayoutParams params = titleBar.getLayoutParams();</div><div class="line">                params.height+=getStatusBarHeight();</div><div class="line">                titleBar.setLayoutParams(params);</div><div class="line">                titleBar.setPadding(titleBar.getPaddingLeft(),</div><div class="line">                        titleBar.getPaddingRight(),</div><div class="line">                        titleBar.getPaddingTop()+getStatusBarHeight(),</div><div class="line">                        titleBar.getPaddingBottom()</div><div class="line">                );</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span>(bootomBar!=<span class="keyword">null</span>)&#123;</div><div class="line">                getWindow().setNavigationBarColor(primaryColor);</div><div class="line">            &#125;</div><div class="line">            getWindow().setStatusBarColor(primaryColor);</div><div class="line">            toggleHideyBar();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//获取顶部状态栏的高度</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getStatusBarHeight</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">int</span> statusBarId = getResources().getIdentifier(<span class="string">"status_bar_height"</span>, <span class="string">"dimen"</span>, <span class="string">"android"</span>);</div><div class="line">        <span class="keyword">int</span> statusBarHeight=-<span class="number">1</span>;</div><div class="line">        <span class="keyword">if</span>(statusBarId&gt;<span class="number">0</span>)&#123;</div><div class="line">             statusBarHeight = getResources().getDimensionPixelSize(statusBarId);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//代码默认为24dp</span></div><div class="line">        <span class="keyword">return</span> statusBarHeight==-<span class="number">1</span>?dp2px(<span class="number">24</span>):statusBarHeight;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//获取底部的导航条的高度</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getNavigationBarHeight</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">int</span> navigationId = getResources().getIdentifier(<span class="string">"navigation_bar_height"</span>, <span class="string">"dimen"</span>, <span class="string">"android"</span>);</div><div class="line">        <span class="keyword">int</span> navigationBaHeight=-<span class="number">1</span>;</div><div class="line">        <span class="keyword">if</span>(navigationId&gt;<span class="number">0</span>)&#123;</div><div class="line">            navigationBaHeight = getResources().getDimensionPixelSize(navigationId);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//代码默认为48dp</span></div><div class="line">        <span class="keyword">return</span> navigationBaHeight==-<span class="number">1</span>?dp2px(<span class="number">48</span>):navigationBaHeight;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//判断是否打开底部导航条 5.1以上没有导航栏也可以设置颜色。</span></div><div class="line">    <span class="function"><span class="keyword">public</span>    <span class="keyword">boolean</span> <span class="title">isBootomBarShow</span><span class="params">()</span></span>&#123;</div><div class="line">        Display display = getWindowManager().getDefaultDisplay();</div><div class="line">        DisplayMetrics outMetrics=<span class="keyword">new</span> DisplayMetrics();</div><div class="line">        <span class="comment">//获取整个屏幕的高度</span></div><div class="line">        display.getRealMetrics(outMetrics);</div><div class="line">        <span class="keyword">int</span> realHeight = outMetrics.heightPixels;</div><div class="line">        <span class="keyword">int</span> realWidth = outMetrics.widthPixels;</div><div class="line">        <span class="comment">//获取内容展示的高度</span></div><div class="line">        outMetrics=<span class="keyword">new</span> DisplayMetrics();</div><div class="line">        display.getMetrics(outMetrics);</div><div class="line">        <span class="keyword">int</span> contentHeight = outMetrics.heightPixels;</div><div class="line">        <span class="keyword">int</span> contentWidth = outMetrics.widthPixels;</div><div class="line"></div><div class="line">        <span class="keyword">int</span> h = realHeight - contentHeight;</div><div class="line">        <span class="keyword">int</span> w = realWidth - contentWidth;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> h&gt;<span class="number">0</span>||w&gt;<span class="number">0</span>;<span class="comment">//竖屏情况和横屏情况。</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">dp2px</span><span class="params">(<span class="keyword">int</span> dp)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dp,getResources().getDisplayMetrics());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">toggleHideyBar</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">        <span class="keyword">int</span> uiOptions = getWindow().getDecorView().getSystemUiVisibility();</div><div class="line">        <span class="keyword">int</span> newUiOptions = uiOptions;</div><div class="line">        <span class="keyword">boolean</span> isImmersiveModeEnabled =</div><div class="line">                ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);</div><div class="line">        <span class="keyword">if</span> (isImmersiveModeEnabled) &#123;</div><div class="line"></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">14</span>) &#123;</div><div class="line">            newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">16</span>) &#123;</div><div class="line">            newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">18</span>) &#123;</div><div class="line">            newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        getWindow().getDecorView().setSystemUiVisibility(newUiOptions);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+    
+
+    
+</div>
+
+
+                
+
+                <!-- Post Comments -->
+                
+                    
+
+
+
+
+
+
+
+                
+            </div>
+
+            <!-- Post Prev & Next Nav -->
+            <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+    <!-- Prev Nav -->
+    
+
+    <!-- Section Spacer -->
+    <div class="section-spacer"></div>
+
+    <!-- Next Nav -->
+    
+        <a href="/2017/06/14/clippaading/" id="post_nav-older" class="next-content">
+            旧篇
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                <i class="material-icons">arrow_forward</i>
+            </button>
+        </a>
+    
+</nav>
+
+        </div>
+    </div>
+
+
+
+                    
+                        <!-- Overlay For Active Sidebar -->
+<div class="sidebar-overlay"></div>
+
+<!-- Material sidebar -->
+<aside id="sidebar" class="sidebar sidebar-colored sidebar-fixed-left" role="navigation">
+    <div id="sidebar-main">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header header-cover" style="background-image: url(/img/sidebar_header.png);">
+    <!-- Top bar -->
+    <div class="top-bar"></div>
+
+    <!-- Sidebar toggle button -->
+    <button type="button" class="sidebar-toggle mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" style="display: initial;" data-upgraded=",MaterialButton,MaterialRipple">
+        <i class="material-icons">clear_all</i>
+        <span class="mdl-button__ripple-container">
+            <span class="mdl-ripple">
+            </span>
+        </span>
+    </button>
+
+    <!-- Sidebar Avatar -->
+    <div class="sidebar-image">
+        <img src="/img/avatar.png" alt="孙俊卿's avatar">
+    </div>
+
+    <!-- Sidebar Email -->
+    <a data-toggle="dropdown" class="sidebar-brand" href="#settings-dropdown">
+        290287491@qq.com
+        <b class="caret"></b>
+    </a>
+</div>
+
+
+        <!-- Sidebar Navigation  -->
+        <ul class="nav sidebar-nav">
+    <!-- User dropdown  -->
+    <li class="dropdown">
+        <ul id="settings-dropdown" class="dropdown-menu">
+            
+                <li>
+                    <a href="mailto: 290287491@qq.com" target="_blank" title="Email Me">
+                        
+                            <i class="material-icons sidebar-material-icons sidebar-indent-left1pc-element">email</i>
+                        
+                        Email Me
+                    </a>
+                </li>
+            
+        </ul>
+    </li>
+
+    <!-- Homepage -->
+    
+        <li id="sidebar-first-li">
+            <a href="/" target="_self">
+                
+                    <i class="material-icons sidebar-material-icons">home</i>
+                
+                主页
+            </a>
+        </li>
+        
+    
+
+    <!-- Archives  -->
+    
+        <li class="dropdown">
+            <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+                
+                    <i class="material-icons sidebar-material-icons">inbox</i>
+                
+                    归档
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+            <li>
+                <a class="sidebar_archives-link" href="/archives/2017/06/">六月 2017<span class="sidebar_archives-count">5</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/05/">五月 2017<span class="sidebar_archives-count">1</span></a>
+            </ul>
+        </li>
+        
+    
+
+    <!-- Categories  -->
+    
+        <li class="dropdown">
+            <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+                
+                    <i class="material-icons sidebar-material-icons">chrome_reader_mode</i>
+                
+                分类
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                <a class="sidebar_archives-link" href="/categories/Android架构/">Android架构<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/categories/自定义view/">自定义view<span class="sidebar_archives-count">4</span></a></li><li><a class="sidebar_archives-link" href="/categories/设计模式/">设计模式<span class="sidebar_archives-count">1</span></a>
+            </ul>
+        </li>
+        
+            <li class="divider"></li>
+        
+    
+
+    <!-- Pages  -->
+    
+
+    <!-- Article Number  -->
+    
+</ul>
+
+
+        <!-- Sidebar Footer -->
+        <!--
+I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright, I will thank you so much.
+If you still want to delete the copyrights, could you still retain the first one? Which namely "Theme Material"
+It will not impact the appearance and can give developers a lot of support :)
+
+很高兴您使用并喜欢该主题，开发不易 十分谢谢与希望您可以保留一下版权声明。
+如果您仍然想删除的话 能否只保留第一项呢？即 "Theme Material"
+它不会影响美观并可以给开发者很大的支持和动力。 :)
+-->
+
+<!-- Sidebar Divider -->
+
+    <div class="sidebar-divider"></div>
+
+
+<!-- Theme Material -->
+
+    <a href="https://github.com/viosey/hexo-theme-material"  class="sidebar-footer-text-a" target="_blank">
+        <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+            主题 - Material
+            <span class="sidebar-badge badge-circle">i</span>
+        </div>
+    </a>
+
+
+<!-- Help & Support -->
+<!--
+
+-->
+
+<!-- Feedback -->
+<!--
+
+-->
+
+<!-- About Theme -->
+<!--
+
+-->
+
+    </div>
+
+    <!-- Sidebar Image -->
+    
+
+</aside>
+
+                    
+
+                    
+                        <!-- Footer Top Button -->
+                        <div class="toTop-wrap">
+    <a href="#top" class="toTop">
+        <i class="material-icons footer_top-i">expand_less</i>
+    </a>
+</div>
+
+                    
+
+                    <!--Footer-->
+<footer class="mdl-mini-footer" id="bottom">
+    
+        <!-- Paradox Footer Left Section -->
+        <div class="mdl-mini-footer--left-section sns-list">
+    <!-- Twitter -->
+    
+
+    <!-- Facebook -->
+    
+
+    <!-- Google + -->
+    
+
+    <!-- Weibo -->
+    
+
+    <!-- Instagram -->
+    
+
+    <!-- Tumblr -->
+    
+
+    <!-- Github -->
+    
+
+    <!-- LinkedIn -->
+    
+
+    <!-- Zhihu -->
+    
+
+    <!-- Bilibili -->
+    
+
+    <!-- Telegram -->
+    
+</div>
+
+
+        <!--Copyright-->
+        <div id="copyright">
+            Copyright&nbsp;©&nbsp;
+            <script type="text/javascript">
+                var fd = new Date();
+                document.write(fd.getFullYear());
+            </script>
+            &nbsp;我的博客
+        </div>
+
+        <!-- Paradox Footer Right Section -->
+
+        <!--
+        I am glad you use this theme, the development is no so easy, I hope you can keep the copyright.
+        It will not impact the appearance and can give developers a lot of support :)
+
+        很高兴您使用该主题，开发不易，希望您可以保留一下版权声明。
+        它不会影响美观并可以给开发者很大的支持。 :)
+        -->
+
+        <div class="mdl-mini-footer--right-section">
+            <div>
+                <div class="footer-develop-div">Powered by <a href="https://hexo.io" target="_blank" class="footer-develop-a">Hexo</a></div>
+                <div class="footer-develop-div">Theme - <a href="https://github.com/viosey/hexo-theme-material" target="_blank" class="footer-develop-a">Material</a></div>
+            </div>
+        </div>
+    
+</footer>
+
+
+                    <!-- Import File -->
+
+    <script src="/js/lazyload.min.js"></script>
+    <script src="/js/js.min.js"></script>
+
+
+
+    <script src="/js/nprogress.js"></script>
+
+
+<script type="text/javascript">
+    NProgress.configure({
+        showSpinner: true
+    });
+    NProgress.start();
+    $('#nprogress .bar').css({
+        'background': '#29d'
+    });
+    $('#nprogress .peg').css({
+        'box-shadow': '0 0 10px #29d, 0 0 15px #29d'
+    });
+    $('#nprogress .spinner-icon').css({
+        'border-top-color': '#29d',
+        'border-left-color': '#29d'
+    });
+    setTimeout(function() {
+        NProgress.done();
+        $('.fade').removeClass('out');
+    }, 800);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Window Load-->
+<script>
+    $(window).load(function() {
+        // Post_Toc parent position fixed
+        $('.post-toc-wrap').parent('.mdl-menu__container').css('position', 'fixed');
+    });
+</script>
+
+<!-- MathJax Load-->
+
+<script>
+    <!-- Offer LazyLoad -->
+    queue.offer(function(){
+        $('.lazy').lazyload({
+            effect : 'show'
+        });
+    });
+
+    <!-- Start Queue -->
+    $(document).ready(function(){
+        setInterval(function(){
+            queue.execNext();
+        },200);
+    });
+</script>
+
+                </main>
+            </div>
+        </body>
+    
+</html>
