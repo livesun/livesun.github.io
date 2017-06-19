@@ -10,7 +10,7 @@
     
     <title>
         
-            设计模式(1)--策略模式 | 
+            设计模式(2)--代理模式 | 
         
         我的博客
     </title>
@@ -58,7 +58,7 @@
     <!-- The Open Graph protocol -->
     <meta property="og:url" content="http://livesun.github.io">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="设计模式(1)--策略模式 | 我的博客">
+    <meta property="og:title" content="设计模式(2)--代理模式 | 我的博客">
     <meta property="og:description" content="记录生活点滴">
     
 
@@ -247,7 +247,7 @@
     </button>
 
     <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
-        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#策略模式"><span class="post-toc-number">1.</span> <span class="post-toc-text">策略模式</span></a></li></ol>
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#代理模式"><span class="post-toc-number">1.</span> <span class="post-toc-text">代理模式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#上类图"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">上类图</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#以下是代码："><span class="post-toc-number">1.2.</span> <span class="post-toc-text">以下是代码：</span></a></li></ol></li></ol>
 
         <!--
         <li class="mdl-menu__item">
@@ -284,7 +284,7 @@
         
     
             <p class="article-headline-p">
-                设计模式(1)--策略模式
+                设计模式(2)--代理模式
             </p>
         </div>
 
@@ -303,7 +303,7 @@
     <!-- Author Name & Date -->
     <div>
         <strong>孙俊卿</strong>
-        <span>6月 08, 2017</span>
+        <span>6月 19, 2017</span>
     </div>
 
     <div class="section-spacer"></div>
@@ -343,7 +343,7 @@
 
     <!-- Share Weibo -->
     
-        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=设计模式(1)--策略模式&url=http://livesun.github.io//2017/06/08/pattern_strategy/index.html&pic=&searchPic=false&style=simple" target="_blank">
+        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=设计模式(2)--代理模式&url=http://livesun.github.io//2017/06/19/Proxy_Mode/index.html&pic=&searchPic=false&style=simple" target="_blank">
             <li class="mdl-menu__item">
                 分享到微博
             </li>
@@ -352,7 +352,7 @@
 
     <!-- Share Twitter -->
     
-        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=设计模式(1)--策略模式&url=http://livesun.github.io//2017/06/08/pattern_strategy/index.html&via=孙俊卿" target="_blank">
+        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=设计模式(2)--代理模式&url=http://livesun.github.io//2017/06/19/Proxy_Mode/index.html&via=孙俊卿" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Twitter
             </li>
@@ -361,7 +361,7 @@
 
     <!-- Share Facebook -->
     
-        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/06/08/pattern_strategy/index.html" target="_blank">
+        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/06/19/Proxy_Mode/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Facebook
             </li>
@@ -370,7 +370,7 @@
 
     <!-- Share Google+ -->
     
-        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/06/08/pattern_strategy/index.html" target="_blank">
+        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/06/19/Proxy_Mode/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Google+
             </li>
@@ -382,7 +382,7 @@
 
     <!-- Share QQ -->
     
-        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=设计模式(1)--策略模式&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/06/08/pattern_strategy/index.html" target="_blank">
+        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=设计模式(2)--代理模式&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/06/19/Proxy_Mode/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 QQ
             </li>
@@ -400,32 +400,26 @@
                 <!-- Post Content -->
                 <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
     
-        <h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>恰巧这几天京东6.18活动，不少人都会趁着折扣买东西，那买东西要支付啊，我们就以支付来讲讲策略模式的应用</p>
-<p>先上UML类图</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/strategy_pattern.png" alt="image"></p>
-<p>不同的支付模式，其实都是都有一个共性，我们把他抽取出来，写一个接口</p>
-<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IPay</span> &#123;</div><div class="line"></div><div class="line"><span class="comment">//支付</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">pay</span>(<span class="params"></span>)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>分别写三个实现类</p>
-<ul>
-<li>QQ</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QQPay</span> <span class="keyword">implements</span> <span class="title">IPay</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pay</span><span class="params">()</span> </span>&#123;</div><div class="line">    </div><div class="line">        Log.d(<span class="string">"AAA"</span>,<span class="string">"QQ支付"</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>微信</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WXPay</span> <span class="keyword">implements</span> <span class="title">IPay</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pay</span><span class="params">()</span> </span>&#123;</div><div class="line">    </div><div class="line">        Log.d(<span class="string">"AAA"</span>,<span class="string">"微信支付"</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>阿里</li>
-</ul>
-<p>好像京东和阿里有仇，我们拿来凑个数</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ALPay</span> <span class="keyword">implements</span> <span class="title">IPay</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pay</span><span class="params">()</span> </span>&#123;</div><div class="line">    </div><div class="line">        Log.d(<span class="string">"AAA"</span>,<span class="string">"阿里支付"</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这些支付方式有了，还需要一个用到它们地方</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Shopping</span> &#123;</span></div><div class="line"></div><div class="line">    <span class="keyword">private</span> IPay mPay;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Shopping</span><span class="params">(IPay pay)</span></span>&#123;</div><div class="line">    </div><div class="line">        mPay=pay;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span><span class="params">()</span></span>&#123;</div><div class="line">    </div><div class="line">        mPay.pay();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>好了，我们来调用测试一下</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public <span class="class"><span class="keyword">class</span> <span class="title">PayActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">protected</span> void onCreate(<span class="type">Bundle</span> savedInstanceState) &#123;</div><div class="line">    </div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line"></div><div class="line">        chosePayMode();</div><div class="line">        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void chosePayMode()&#123;</div><div class="line">    </div><div class="line">        <span class="type">Shopping</span> qqShop=<span class="keyword">new</span> <span class="type">Shopping</span>(<span class="keyword">new</span> <span class="type">QQPay</span>());</div><div class="line">        qqShop.buy();</div><div class="line"></div><div class="line">        <span class="type">Shopping</span> wxShop=<span class="keyword">new</span> <span class="type">Shopping</span>(<span class="keyword">new</span> <span class="type">WXPay</span>());</div><div class="line">        wxShop.buy();</div><div class="line"></div><div class="line">        <span class="type">Shopping</span> alShop=<span class="keyword">new</span> <span class="type">Shopping</span>(<span class="keyword">new</span> <span class="type">ALPay</span>());</div><div class="line">        alShop.buy();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以看到，Shopping类并不知道自己具体调用了哪种实现方式，它只需要负责购买就行，调用者想用什么支付方式，就用什么支付方式。</p>
-<p>这就是策略模式，不但把高内聚低耦合特点表现了出来，同时又符合OCP原则，如果还有什么其他类型的支付，只要继承IPay接口就行了，而不用修改Shopping类，好好体会体会，是不是好处多多。</p>
-<p>github:<a href="https://github.com/livesun" target="_blank" rel="external">https://github.com/livesun</a></p>
+        <h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><p>什么是代理模式？</p>
+<p>代理模式就是我懒，有工作我不想做，我找别人帮我做。但是我怎么知道他能帮我做呢？所以我们要彼此了解对方，我们要实现共同的接口。</p>
+<h3 id="上类图"><a href="#上类图" class="headerlink" title="上类图"></a>上类图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/Proxy_Mode.png" alt="image"></p>
+<p>随着科技的发达，机器人越来越先进，终于有一天，机器人做的跟我们一摸一样，然后他们负责替我们做工作，我们吃喝玩乐，来我们就用代码创建两个机器人。</p>
+<h3 id="以下是代码："><a href="#以下是代码：" class="headerlink" title="以下是代码："></a>以下是代码：</h3><p>首先是定义共同的接口，我们能做的事情，机器人也能要能做。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by 29028 on 2017/6/19.</div><div class="line"> *</div><div class="line"> * 自己的接口</div><div class="line"> */</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">ISlef</span> &#123;</div><div class="line"></div><div class="line">    <span class="comment">//我能干什么</span></div><div class="line"></div><div class="line">    <span class="comment">//吃</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span>(<span class="params"></span>)</span>;</div><div class="line"></div><div class="line">    <span class="comment">//工作</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doWork</span>(<span class="params"></span>)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接着定义两个机器人替身。</p>
+<p>替身1号</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by 29028 on 2017/6/19.</div><div class="line"> * 机器人替身1号 我会的他也会</div><div class="line"> */</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyRobot1</span> <span class="keyword">implements</span> <span class="title">ISlef</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</div><div class="line">        Log.d(<span class="string">"AAA"</span>,<span class="string">"机器人替身1号吃电"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doWork</span><span class="params">()</span> </span>&#123;</div><div class="line">        Log.d(<span class="string">"AAA"</span>,<span class="string">"机器人替身1号帮我做工作"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>替身1号</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by 29028 on 2017/6/19.</div><div class="line"> * 机器人替身2号 我会的他也会</div><div class="line"> */</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyRobot2</span> <span class="keyword">implements</span> <span class="title">ISlef</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</div><div class="line">        Log.d(<span class="string">"AAA"</span>,<span class="string">"机器人替身2号吃电"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doWork</span><span class="params">()</span> </span>&#123;</div><div class="line">        Log.d(<span class="string">"AAA"</span>,<span class="string">"机器人替身2号帮我做工作"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>再接着创建我们自己</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by 29028 on 2017/6/19.</div><div class="line"> * 真的自己</div><div class="line"> */</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrueSelf</span> <span class="keyword">implements</span> <span class="title">ISlef</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> ISlef slef;</div><div class="line"></div><div class="line">    <span class="comment">//默认让一号来</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TrueSelf</span><span class="params">()</span></span>&#123;</div><div class="line">        slef =<span class="keyword">new</span> ProxyRobot1();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//设置替身 我想谁几号替我就让几号来</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setProxy</span><span class="params">(ISlef slef)</span></span>&#123;</div><div class="line"></div><div class="line">        <span class="keyword">this</span>.slef = slef;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//吃东西这事还是我们自己来比较好</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</div><div class="line">        Log.d(<span class="string">"AAA"</span>,<span class="string">"我悠哉悠哉的吃肉"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doWork</span><span class="params">()</span> </span>&#123;</div><div class="line">        slef.doWork();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>终于弄好了两个替身，下面我们看看替身的威力吧</p>
+<p>老板去让我做事，我照着做了，老板其实不知道是谁在做。<br><figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="literal">void</span> doThings() &#123;</div><div class="line">       TrueSelf <span class="built_in">self</span>=<span class="literal">new</span> TrueSelf();</div><div class="line">       <span class="built_in">self</span>.doWork();</div><div class="line">       <span class="built_in">self</span>.eat();</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>打印结果<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">机器人替身<span class="number">1</span>号帮我做工作</div><div class="line">我悠哉悠哉的吃肉</div></pre></td></tr></table></figure></p>
+<p>老让1号替身怕他太累了</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="literal">void</span> doThings() &#123;</div><div class="line">       TrueSelf <span class="built_in">self</span>=<span class="literal">new</span> TrueSelf();</div><div class="line">       <span class="built_in">self</span>.setProxy(<span class="literal">new</span> ProxyRobot2());</div><div class="line">       <span class="built_in">self</span>.doWork();</div><div class="line">       <span class="built_in">self</span>.eat();</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>打印结果<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">机器人替身<span class="number">2</span>号帮我做工作</div><div class="line">我悠哉悠哉的吃肉</div></pre></td></tr></table></figure></p>
+<p>是不是美滋滋，我们总结一下，代理模式主要是使用了Java的多态，干活的是被代理类，而作为代理的我们只负责悠哉悠哉的吃肉就行了。</p>
 
     
 
@@ -452,21 +446,13 @@
             <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
     <!-- Prev Nav -->
     
-        <a href="/2017/06/14/clippaading/" id="post_nav-newer" class="prev-content">
-            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
-                <i class="material-icons">arrow_back</i>
-            </button>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            新篇
-        </a>
-    
 
     <!-- Section Spacer -->
     <div class="section-spacer"></div>
 
     <!-- Next Nav -->
     
-        <a href="/2017/06/07/插件换肤及Resoureces源码分析/" id="post_nav-older" class="next-content">
+        <a href="/2017/06/16/translucent/" id="post_nav-older" class="next-content">
             旧篇
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
