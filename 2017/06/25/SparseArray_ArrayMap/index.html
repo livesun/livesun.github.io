@@ -10,7 +10,7 @@
     
     <title>
         
-            自定义渐变颜色的textView --GradienTextView | 
+            Android内存优化---SparseArray和ArrayMap | 
         
         我的博客
     </title>
@@ -58,7 +58,7 @@
     <!-- The Open Graph protocol -->
     <meta property="og:url" content="http://livesun.github.io">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="自定义渐变颜色的textView --GradienTextView | 我的博客">
+    <meta property="og:title" content="Android内存优化---SparseArray和ArrayMap | 我的博客">
     <meta property="og:description" content="记录生活点滴">
     
 
@@ -247,7 +247,7 @@
     </button>
 
     <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
-        <ol class="post-toc"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#上图"><span class="post-toc-number">1.</span> <span class="post-toc-text">上图</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#首先我们分析做出类似这种效果需要什么条件"><span class="post-toc-number">2.</span> <span class="post-toc-text">首先我们分析做出类似这种效果需要什么条件</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#具体代码如下："><span class="post-toc-number">3.</span> <span class="post-toc-text">具体代码如下：</span></a></li></ol>
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#SparseArray"><span class="post-toc-number">1.</span> <span class="post-toc-text">SparseArray</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#添加数据"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">添加数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#获取数据"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">获取数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#删除数据"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">删除数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#特有方法"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">特有方法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#关于SparseArray的使用场景"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">关于SparseArray的使用场景</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ArrayMap"><span class="post-toc-number">2.</span> <span class="post-toc-text">ArrayMap</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#添加数据-1"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">添加数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#获取数据-1"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">获取数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#删除数据-1"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">删除数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#特有方法-1"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">特有方法</span></a></li></ol></li></ol>
 
         <!--
         <li class="mdl-menu__item">
@@ -284,7 +284,7 @@
         
     
             <p class="article-headline-p">
-                自定义渐变颜色的textView --GradienTextView
+                Android内存优化---SparseArray和ArrayMap
             </p>
         </div>
 
@@ -303,7 +303,7 @@
     <!-- Author Name & Date -->
     <div>
         <strong>孙俊卿</strong>
-        <span>6月 06, 2017</span>
+        <span>6月 25, 2017</span>
     </div>
 
     <div class="section-spacer"></div>
@@ -343,7 +343,7 @@
 
     <!-- Share Weibo -->
     
-        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=自定义渐变颜色的textView --GradienTextView&url=http://livesun.github.io//2017/06/06/自定义渐变颜色的textView /index.html&pic=&searchPic=false&style=simple" target="_blank">
+        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=Android内存优化---SparseArray和ArrayMap&url=http://livesun.github.io//2017/06/25/SparseArray_ArrayMap/index.html&pic=&searchPic=false&style=simple" target="_blank">
             <li class="mdl-menu__item">
                 分享到微博
             </li>
@@ -352,7 +352,7 @@
 
     <!-- Share Twitter -->
     
-        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=自定义渐变颜色的textView --GradienTextView&url=http://livesun.github.io//2017/06/06/自定义渐变颜色的textView /index.html&via=孙俊卿" target="_blank">
+        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=Android内存优化---SparseArray和ArrayMap&url=http://livesun.github.io//2017/06/25/SparseArray_ArrayMap/index.html&via=孙俊卿" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Twitter
             </li>
@@ -361,7 +361,7 @@
 
     <!-- Share Facebook -->
     
-        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/06/06/自定义渐变颜色的textView /index.html" target="_blank">
+        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/06/25/SparseArray_ArrayMap/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Facebook
             </li>
@@ -370,7 +370,7 @@
 
     <!-- Share Google+ -->
     
-        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/06/06/自定义渐变颜色的textView /index.html" target="_blank">
+        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/06/25/SparseArray_ArrayMap/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Google+
             </li>
@@ -382,7 +382,7 @@
 
     <!-- Share QQ -->
     
-        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=自定义渐变颜色的textView --GradienTextView&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/06/06/自定义渐变颜色的textView /index.html" target="_blank">
+        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=Android内存优化---SparseArray和ArrayMap&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/06/25/SparseArray_ArrayMap/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 QQ
             </li>
@@ -400,23 +400,34 @@
                 <!-- Post Content -->
                 <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
     
-        <h4 id="上图"><a href="#上图" class="headerlink" title="上图"></a>上图</h4><p> <img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/gradedem.png" alt="image"></p>
-<h4 id="首先我们分析做出类似这种效果需要什么条件"><a href="#首先我们分析做出类似这种效果需要什么条件" class="headerlink" title="首先我们分析做出类似这种效果需要什么条件"></a>首先我们分析做出类似这种效果需要什么条件</h4><ul>
-<li>首先，肯定是两种color originalColor和changeColor</li>
-<li>其次，是两个paint 绘制上下两层文字</li>
+        <h2 id="SparseArray"><a href="#SparseArray" class="headerlink" title="SparseArray"></a>SparseArray</h2><p>SparseArray比HashMap 更省内存。</p>
+<p>在千级以下的数据处理中，比HashMap的性能更好，因为它避免了对key的自动装箱（int转为Integer类型），同时采取了压缩方式来表示稀疏的数组数据。</p>
+<p>SparseArray 的内部采用两个数组来维持key 和 value</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="built_in">int</span>[] mKeys;</div><div class="line"><span class="keyword">private</span> <span class="keyword">Object</span>[] mValues;</div></pre></td></tr></table></figure>
+<p>SparseArray 的key只能为int类型，value 为Object类型。</p>
+<p>在数据存储和查找时，使用的是二分查找。</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">void</span> put(<span class="built_in">int</span> <span class="built_in">key</span>, E value) &#123;</div><div class="line">        <span class="built_in">int</span> i = ContainerHelpers.binarySearch(mKeys, mSize, <span class="built_in">key</span>);</div><div class="line">        ...</div><div class="line">        &#125;</div><div class="line"> <span class="keyword">public</span> E <span class="built_in">get</span>(<span class="built_in">int</span> <span class="built_in">key</span>, E valueIfKeyNotFound) &#123;</div><div class="line">        <span class="built_in">int</span> i = ContainerHelpers.binarySearch(mKeys, mSize, <span class="built_in">key</span>);</div><div class="line">        ...</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>put 数据的时候，通过使用二分查找key的大小，按照大小顺序排列，所以，SparseArray存储的元素都是按元素的key值从小到大排列好的。 </p>
+<p>get 数据的时候，也是通过二分查找，来判断元素的位置，所以在千级的数据量中就远比HashMap通过比遍历Entry[]数组要快的多。</p>
+<h3 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="built_in">put</span>(<span class="keyword">int</span> key, E value)</div></pre></td></tr></table></figure>
+<h3 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h3><figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> E <span class="built_in">get</span>(<span class="built_in">int</span> <span class="built_in">key</span>)</div><div class="line"></div><div class="line"><span class="keyword">public</span> E <span class="built_in">get</span>(<span class="built_in">int</span> <span class="built_in">key</span>, E valueIfKeyNotFound)</div><div class="line"></div><div class="line"><span class="comment">//第二个方法相比与第一个方法，可以设置在key不存在的情况下返回一个默认值</span></div></pre></td></tr></table></figure>
+<h3 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a>删除数据</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="built_in">remove</span>(<span class="keyword">int</span> key)</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="keyword">delete</span>(<span class="keyword">int</span> key)</div><div class="line"></div><div class="line"><span class="comment">// 其实最终调用的是delete方法</span></div></pre></td></tr></table></figure>
+<h3 id="特有方法"><a href="#特有方法" class="headerlink" title="特有方法"></a>特有方法</h3><figure class="highlight axapta"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//通过indx获取key</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">int</span> keyAt(<span class="keyword">int</span> <span class="keyword">index</span>)</div><div class="line"></div><div class="line"><span class="comment">//通过indx获取value</span></div><div class="line"><span class="keyword">public</span> E valueAt(<span class="keyword">int</span> <span class="keyword">index</span>)</div></pre></td></tr></table></figure>
+<h3 id="关于SparseArray的使用场景"><a href="#关于SparseArray的使用场景" class="headerlink" title="关于SparseArray的使用场景"></a>关于SparseArray的使用场景</h3><ul>
+<li>数据量比较小的情况下，千量级别。</li>
+<li>key为int类型。（如果key为Long类型，还有一个LongSparseArray）</li>
+<li>如果数据量很大，SparseArray的性能 最低不低于HashMap的50%，酌情选择。</li>
 </ul>
-<p><strong>那要怎么做才能来实现上面的效果呢？</strong></p>
-<blockquote>
-<p>通过canvas.clipRect方法，即可控制上下两层的不同的切割区域。</p>
-</blockquote>
-<h4 id="具体代码如下："><a href="#具体代码如下：" class="headerlink" title="具体代码如下："></a>具体代码如下：</h4><p>1.在resource中创建attrs.xml文件</p>
-<figure class="highlight sqf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;<span class="built_in">resources</span>&gt;</div><div class="line">    &lt;declare-styleable <span class="built_in">name</span>=<span class="string">"GradienTextView"</span>&gt;</div><div class="line">        &lt;attr <span class="built_in">format</span>=<span class="string">"color"</span> <span class="built_in">name</span>=<span class="string">"original_color"</span>/&gt;</div><div class="line">        &lt;attr <span class="built_in">format</span>=<span class="string">"color"</span> <span class="built_in">name</span>=<span class="string">"change_color"</span>/&gt;</div><div class="line">    &lt;/declare-styleable&gt;</div><div class="line">   </div><div class="line">&lt;/<span class="built_in">resources</span>&gt;</div></pre></td></tr></table></figure>
-<p>2.新建GradienTextView集成TextView,重写onDrow方法</p>
-<figure class="highlight pony"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">public <span class="type">GradienTextView</span>(<span class="type">Context</span> context) &#123;</div><div class="line">        <span class="literal">this</span>(context,null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public <span class="type">GradienTextView</span>(<span class="type">Context</span> context, <span class="type">AttributeSet</span> attrs) &#123;</div><div class="line">        <span class="literal">this</span>(context, attrs,<span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public <span class="type">GradienTextView</span>(<span class="type">Context</span> context, <span class="type">AttributeSet</span> attrs, int defStyleAttr) &#123;</div><div class="line">        super(context, attrs, defStyleAttr);</div><div class="line">        <span class="type">TypedArray</span> td = context.obtainStyledAttributes(attrs, <span class="type">R</span>.styleable.<span class="type">ChangeTextView</span>);</div><div class="line">        mOriginalColor = td.getColor(<span class="type">R</span>.styleable.<span class="type">ChangeTextView_originalCololr</span>, <span class="type">Color</span>.<span class="type">BLACK</span>);</div><div class="line">        mChangeColor = td.getColor(<span class="type">R</span>.styleable.<span class="type">ChangeTextView_changeColor</span>, <span class="type">Color</span>.<span class="type">RED</span>);</div><div class="line">        td.recycle();</div><div class="line">        <span class="comment">//根据颜色获取画笔</span></div><div class="line">        mOriginalPaint = getPaintByColor(mOriginalColor);</div><div class="line">        mChangePaint=getPaintByColor(mChangeColor);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private <span class="type">Paint</span> getPaintByColor(int color)&#123;</div><div class="line">        <span class="type">Paint</span> paint=<span class="function"><span class="keyword">new</span> <span class="title">Paint</span>();</span></div><div class="line">        <span class="title">paint</span>.<span class="title">setColor</span>(color);</div><div class="line">        <span class="title">paint</span>.<span class="title">setAntiAlias</span>(true);</div><div class="line">        <span class="title">paint</span>.<span class="title">setDither</span>(true);<span class="comment">//防抖动</span></div><div class="line">        <span class="title">paint</span>.<span class="title">setTextSize</span>(getTextSize());</div><div class="line">        <span class="title">return</span> <span class="title">paint</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @<span class="title">Override</span></div><div class="line">    <span class="title">protected</span> <span class="title">void</span> <span class="title">onDraw</span>(<span class="type">Canvas</span> canvas) &#123;</div><div class="line">    </div><div class="line">        <span class="comment">//切割区域的大小</span></div><div class="line">        <span class="title">float</span> <span class="title">middle</span> = <span class="title">mCurrentProgress</span> * <span class="title">getWidth</span>();</div><div class="line">        <span class="title">Paint</span>.<span class="title">FontMetricsInt</span> <span class="title">fontMetricsInt</span> = <span class="title">mOriginalPaint</span>.<span class="title">getFontMetricsInt</span>();</div><div class="line">        <span class="comment">//绘制文字的基线</span></div><div class="line">        <span class="title">baseLine</span> = (fontMetricsInt.bottom - fontMetricsInt.top) / 2 - <span class="title">fontMetricsInt</span>.<span class="title">bottom</span> + <span class="title">getHeight</span>()/2</div><div class="line">                +<span class="title">getPaddingTop</span>()/2-<span class="title">getPaddingBottom</span>()/2;</div><div class="line"></div><div class="line">        <span class="comment">//保存画布 如果不保存画布进行操作，会造成画布丢失是不可逆的</span></div><div class="line">        <span class="title">canvas</span>.<span class="title">save</span>();</div><div class="line">        <span class="comment">//从原点开始，切割一半大小的区域</span></div><div class="line">        <span class="title">canvas</span>.<span class="title">clipRect</span>(<span class="number">0</span>,<span class="number">0</span>,middle,getHeight());</div><div class="line">        <span class="title">canvas</span>.<span class="title">drawText</span>(getText().<span class="title">toString</span>(), <span class="title">getPaddingLeft</span>(),<span class="title">baseLine</span>,<span class="title">mOriginalPaint</span>);</div><div class="line">        <span class="title">canvas</span>.<span class="title">restore</span>();</div><div class="line">        <span class="comment">//此时，操作下半部分区域</span></div><div class="line">        <span class="title">canvas</span>.<span class="title">save</span>();</div><div class="line">        <span class="title">canvas</span>.<span class="title">clipRect</span>(middle,<span class="number">0</span>,getWidth(),<span class="title">getHeight</span>());</div><div class="line">        <span class="title">canvas</span>.<span class="title">drawText</span>(getText().<span class="title">toString</span>(), <span class="title">getPaddingLeft</span>(),<span class="title">baseLine</span>,<span class="title">mChangePaint</span>);</div><div class="line">        <span class="title">canvas</span>.<span class="title">restore</span>();</div><div class="line">       </div><div class="line">       &#125;</div></pre></td></tr></table></figure>
-<p>3.设置进度，重绘视图</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">float</span> mCurrentProgress=<span class="number">0f</span>;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCurrentProgress</span><span class="params">(<span class="keyword">float</span> currentProgress)</span></span>&#123;</div><div class="line">       mCurrentProgress=currentProgress;</div><div class="line">       invalidate();</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>githup地址：<a href="https://github.com/livesun/GradientTextView" target="_blank" rel="external">https://github.com/livesun/GradientTextView</a></p>
-
+<p>官方文档</p>
+<p>The implementation is not intended to be appropriate for data structures that<br>may contain large numbers of items. It is generally slower than a traditional<br>HashMap, since lookups require a binary search and adds and removes require<br>inserting and deleting entries in the array. For containers holding up to<br>hundreds of items, the performance difference is not significant, less than50%.</p>
+<h2 id="ArrayMap"><a href="#ArrayMap" class="headerlink" title="ArrayMap"></a>ArrayMap</h2><p>关于ArrayMap,它是是一个<key,value>的键值对数据结构，它的内部和SparesArray一样，维持了两个数组，一个储存key，一个储存value，并且都采用二分法进行大小排序，可以理解成SparseArray是一个特殊的ArrayMap,都是针对手机内存优化的存储api</key,value></p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">Object</span>[] mKeys;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">Object</span>[] mValues;</div></pre></td></tr></table></figure>
+<h3 id="添加数据-1"><a href="#添加数据-1" class="headerlink" title="添加数据"></a>添加数据</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> V <span class="built_in">put</span>(K key, V value)</div></pre></td></tr></table></figure>
+<h3 id="获取数据-1"><a href="#获取数据-1" class="headerlink" title="获取数据"></a>获取数据</h3><figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> V <span class="built_in">get</span>(<span class="keyword">Object</span> <span class="built_in">key</span>)</div></pre></td></tr></table></figure>
+<h3 id="删除数据-1"><a href="#删除数据-1" class="headerlink" title="删除数据"></a>删除数据</h3><figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> V remove(<span class="keyword">Object</span> <span class="built_in">key</span>)</div></pre></td></tr></table></figure>
+<h3 id="特有方法-1"><a href="#特有方法-1" class="headerlink" title="特有方法"></a>特有方法</h3><figure class="highlight axapta"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> K keyAt(<span class="keyword">int</span> <span class="keyword">index</span>)</div><div class="line"><span class="keyword">public</span> V valueAt(<span class="keyword">int</span> <span class="keyword">index</span>)</div></pre></td></tr></table></figure>
+<p>以上都只支持到API19版本，如果想向下兼容，导入V4包即可</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">android</span><span class="selector-class">.support</span><span class="selector-class">.v4</span><span class="selector-class">.util</span><span class="selector-class">.ArrayMap</span>;</div></pre></td></tr></table></figure>
     
 
     
@@ -442,21 +453,13 @@
             <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
     <!-- Prev Nav -->
     
-        <a href="/2017/06/07/插件换肤及Resoureces源码分析/" id="post_nav-newer" class="prev-content">
-            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
-                <i class="material-icons">arrow_back</i>
-            </button>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            新篇
-        </a>
-    
 
     <!-- Section Spacer -->
     <div class="section-spacer"></div>
 
     <!-- Next Nav -->
     
-        <a href="/2017/05/19/hello-world/" id="post_nav-older" class="next-content">
+        <a href="/2017/06/19/Proxy_Mode/" id="post_nav-older" class="next-content">
             旧篇
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
