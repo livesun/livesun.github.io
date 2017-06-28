@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+    <!--
+        © Material Theme
+        https://github.com/viosey/hexo-theme-material
+        Version: 1.3.4 -->
+
+    <!-- Title -->
+    
+    <title>
+        
+            setContentView源码分析（一） | 
+        
+        我的博客
+    </title>
+
+    <!-- Meta & Info -->
+    <meta charset="utf-8">
+
+    <!-- dns prefetch -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    
+    
+    
+    
+    
+    
+
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0097A7">
+    <meta name="author" content="孙俊卿">
+    <meta name="description" content="记录生活点滴">
+    <meta name="keywords" content="android">
+
+    <!-- Favicons -->
+    <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
+    <link rel="icon" sizes="192x192" href="/img/favicon.png">
+    <link rel="apple-touch-icon" href="/img/favicon.png">
+
+    <!--iOS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="Title">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="480">
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="我的博客">
+
+    <!-- The Open Graph protocol -->
+    <meta property="og:url" content="http://livesun.github.io">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="setContentView源码分析（一） | 我的博客">
+    <meta property="og:description" content="记录生活点滴">
+    
+
+    <!--[if lte IE 9]>
+        <link rel="stylesheet" href="/css/ie-blocker.css">
+
+        
+            <script src="/js/ie-blocker.zhCN.js"></script>
+        
+    <![endif]-->
+
+    <!-- Import CSS & jQuery -->
+    
+        <link rel="stylesheet" href="/css/material.min.css">
+        <link rel="stylesheet" href="/css/style.min.css">
+        <!-- Config CSS -->
+
+
+<!-- Other Styles -->
+<style>
+  body, html {
+    font-family: Roboto, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  }
+
+  a {
+    color: #00838F;
+  }
+
+  .mdl-card__media,
+  #search-label,
+  #search-form-label:after,
+  #scheme-Paradox .hot_tags-count,
+  #scheme-Paradox .sidebar_archives-count,
+  #scheme-Paradox .sidebar-colored .sidebar-header,
+  #scheme-Paradox .sidebar-colored .sidebar-badge{
+    background-color: #0097A7 !important;
+  }
+
+  /* Sidebar User Drop Down Menu Text Color */
+  #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:hover,
+  #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:focus {
+    color: #0097A7 !important;
+  }
+
+  #post_entry-right-info,
+  .sidebar-colored .sidebar-nav li:hover > a,
+  .sidebar-colored .sidebar-nav li:hover > a i,
+  .sidebar-colored .sidebar-nav li > a:hover,
+  .sidebar-colored .sidebar-nav li > a:hover i,
+  .sidebar-colored .sidebar-nav li > a:focus i,
+  .sidebar-colored .sidebar-nav > .open > a,
+  .sidebar-colored .sidebar-nav > .open > a:hover,
+  .sidebar-colored .sidebar-nav > .open > a:focus,
+  #ds-reset #ds-ctx .ds-ctx-entry .ds-ctx-head a {
+    color: #0097A7 !important;
+  }
+
+  .toTop {
+    background: #757575 !important;
+  }
+
+  .material-layout .material-post>.material-nav,
+  .material-layout .material-index>.material-nav,
+  .material-nav a {
+    color: #757575;
+  }
+
+  #scheme-Paradox .MD-burger-layer {
+    background-color: #757575;
+  }
+
+  #scheme-Paradox #post-toc-trigger-btn {
+    color: #757575;
+  }
+
+  .post-toc a:hover {
+    color: #00838F;
+    text-decoration: underline;
+  }
+
+</style>
+
+
+<!-- Theme Background Related-->
+
+    <style>
+      body{
+        background-color: #F5F5F5;
+      }
+
+      /* blog_info bottom background */
+      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
+        background-color: #fff;
+      }
+    </style>
+
+
+
+
+<!-- Fade Effect -->
+
+    <style>
+      .fade {
+        transition: all 800ms linear;
+        -webkit-transform: translate3d(0,0,0);
+        -moz-transform: translate3d(0,0,0);
+        -ms-transform: translate3d(0,0,0);
+        -o-transform: translate3d(0,0,0);
+        transform: translate3d(0,0,0);
+        opacity: 1;
+      }
+
+      .fade.out{
+        opacity: 0;
+      }
+    </style>
+
+
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/queue.js"></script>
+    
+
+    <!-- UC Browser Compatible -->
+    <script>
+        var agent = navigator.userAgent.toLowerCase();
+        if(agent.indexOf('ucbrowser')>0) {
+            document.write("<link rel=\"stylesheet\" href=\"/css/uc.css\">");
+            alert('由于 UC 浏览器使用极旧的内核，而本网站使用了一些新的特性。\n为了您能更好的浏览，推荐使用 Chrome 或 Firefox 浏览器。');
+        }
+    </script>
+
+    
+
+    
+
+
+    <!-- Bing Background -->
+    
+
+    <!-- Custom Head -->
+    
+</head>
+
+
+    
+        <body id="scheme-Paradox" class="lazy">
+            <div class="material-layout  mdl-js-layout has-drawer is-upgraded">
+                
+
+                <!-- Main Container -->
+                <main class="material-layout__content" id="main">
+
+                    <!-- Top Anchor -->
+                    <div id="top"></div>
+
+                    
+                        <!-- Hamburger Button -->
+                        <button class="MD-burger-icon sidebar-toggle">
+                            <span class="MD-burger-layer"></span>
+                        </button>
+                    
+
+                    <!-- Post TOC -->
+
+    
+    <!-- Back Button -->
+    <!--
+    <div class="material-back" id="backhome-div" tabindex="0">
+        <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"
+           href="#" onclick="window.history.back();return false;"
+           target="_self"
+           role="button"
+           data-upgraded=",MaterialButton,MaterialRipple">
+            <i class="material-icons" role="presentation">arrow_back</i>
+            <span class="mdl-button__ripple-container">
+                <span class="mdl-ripple"></span>
+            </span>
+        </a>
+    </div>
+    -->
+
+    <!-- Left aligned menu below button -->
+    <button id="post-toc-trigger-btn"
+        class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">format_list_numbered</i>
+    </button>
+
+    <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Activity-setContentView源码分析"><span class="post-toc-number">1.</span> <span class="post-toc-text">Activity setContentView源码分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#在AppCompatActivity中setContentView"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">在AppCompatActivity中setContentView</span></a></li></ol></li></ol></li></ol>
+
+        <!--
+        <li class="mdl-menu__item">
+            Some Action
+        </li>
+        -->
+    </ul>
+
+
+
+
+<!-- Layouts -->
+
+    <!-- Post Module -->
+    <div class="material-post_container">
+
+        <div class="material-post mdl-grid">
+            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+
+                <!-- Post Header(Thumbnail & Title) -->
+                
+    <!-- Paradox Post Header -->
+    
+        
+            <!-- Random Thumbnail -->
+            <div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
+            <script>
+    var randomNum = Math.floor(Math.random() * 19 + 1);
+
+    $('.post_thumbnail-random').attr('data-original', '/img/random/material-' + randomNum + '.png');
+    $('.post_thumbnail-random').addClass('lazy');
+</script>
+
+        
+    
+            <p class="article-headline-p">
+                setContentView源码分析（一）
+            </p>
+        </div>
+
+
+
+
+
+                
+                    <!-- Paradox Post Info -->
+                    <div class="mdl-color-text--grey-700 mdl-card__supporting-text meta">
+
+    <!-- Author Avatar -->
+    <div id="author-avatar">
+        <img src="/img/avatar.png" width="44px" height="44px" alt="Author Avatar"/>
+    </div>
+    <!-- Author Name & Date -->
+    <div>
+        <strong>孙俊卿</strong>
+        <span>6月 28, 2017</span>
+    </div>
+
+    <div class="section-spacer"></div>
+
+    <!-- Favorite -->
+    <!--
+        <button id="article-functions-like-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon btn-like">
+            <i class="material-icons" role="presentation">favorite</i>
+            <span class="visuallyhidden">favorites</span>
+        </button>
+    -->
+
+    <!-- Qrcode -->
+    
+
+    <!-- Tags (bookmark) -->
+    
+    <button id="article-functions-viewtags-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+        <i class="material-icons" role="presentation">bookmark</i>
+        <span class="visuallyhidden">bookmark</span>
+    </button>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-functions-viewtags-button">
+        <li class="mdl-menu__item">
+        
+    </ul>
+    
+
+    <!-- Share -->
+    <button id="article-fuctions-share-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+    <i class="material-icons" role="presentation">share</i>
+    <span class="visuallyhidden">share</span>
+</button>
+<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-fuctions-share-button">
+    
+
+    
+
+    <!-- Share Weibo -->
+    
+        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=setContentView源码分析（一）&url=http://livesun.github.io//2017/06/28/setContentView源码分析/index.html&pic=&searchPic=false&style=simple" target="_blank">
+            <li class="mdl-menu__item">
+                分享到微博
+            </li>
+        </a>
+    
+
+    <!-- Share Twitter -->
+    
+        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=setContentView源码分析（一）&url=http://livesun.github.io//2017/06/28/setContentView源码分析/index.html&via=孙俊卿" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Twitter
+            </li>
+        </a>
+    
+
+    <!-- Share Facebook -->
+    
+        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/06/28/setContentView源码分析/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Facebook
+            </li>
+        </a>
+    
+
+    <!-- Share Google+ -->
+    
+        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/06/28/setContentView源码分析/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Google+
+            </li>
+        </a>
+    
+
+    <!-- Share LinkedIn -->
+    
+
+    <!-- Share QQ -->
+    
+        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=setContentView源码分析（一）&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/06/28/setContentView源码分析/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 QQ
+            </li>
+        </a>
+    
+
+    <!-- Share Telegram -->
+    
+</ul>
+
+</div>
+
+                
+
+                <!-- Post Content -->
+                <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
+    
+        <h2 id="Activity-setContentView源码分析"><a href="#Activity-setContentView源码分析" class="headerlink" title="Activity setContentView源码分析"></a>Activity setContentView源码分析</h2><p>当我们创建一个Activity，只需要在onCreate方法中，调用setContentView方法，把我们的布局id传进去，系统机会自动帮我们把布局展示出来，那setContentView方法究竟都做了什么工作，还有我们的布局添加进了哪里？</p>
+<p>我们今天的问题：</p>
+<ul>
+<li>setContentView的源码都做了哪些工作？</li>
+<li>我们的布局添加到了哪里？</li>
+<li>继承Activity和AppCompatActivity有什么不同？</li>
+</ul>
+<p>首先，我们以Activity为例。</p>
+<p>发现是调用的getWindow的setContentView方法<br><figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">public</span> <span class="selector-tag">void</span> <span class="selector-tag">setContentView</span>(<span class="variable">@LayoutRes</span> int layoutResID) &#123;</div><div class="line">        <span class="selector-tag">getWindow</span>()<span class="selector-class">.setContentView</span>(layoutResID);</div><div class="line">        <span class="selector-tag">initWindowDecorActionBar</span>();</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>而Window是abstract类,用来描述Activity视图最顶端的窗口显示和行为操作，通过代码发现，他的实现类是PhoneWidow<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mWindow = <span class="keyword">new</span> PhoneWindow(<span class="keyword">this</span>, window);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> Window <span class="title">getWindow</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mWindow;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>我们看PhoneWidow中的setContentView方法</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setContentView</span><span class="params">(<span class="keyword">int</span> layoutResID)</span> </span>&#123;</div><div class="line">     </div><div class="line">      <span class="keyword">if</span> (mContentParent == <span class="keyword">null</span>) &#123;</div><div class="line">          installDecor();<span class="comment">//创建DecorView--同时创建mContentParent</span></div><div class="line">          </div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!hasFeature(FEATURE_CONTENT_TRANSITIONS)) &#123;</div><div class="line">          mContentParent.removeAllViews();</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">if</span> (hasFeature(FEATURE_CONTENT_TRANSITIONS)) &#123;</div><div class="line">          <span class="keyword">final</span> Scene newScene = Scene.getSceneForLayout(mContentParent, layoutResID,</div><div class="line">                  getContext());</div><div class="line">          transitionTo(newScene);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">          mLayoutInflater.inflate(layoutResID, mContentParent);<span class="comment">//把我们的布局Id通过inflate添加到mContentParent中</span></div><div class="line">      &#125;</div><div class="line">      mContentParent.requestApplyInsets();</div><div class="line">      <span class="keyword">final</span> Callback cb = getCallback();</div><div class="line">      <span class="keyword">if</span> (cb != <span class="keyword">null</span> &amp;&amp; !isDestroyed()) &#123;</div><div class="line">          cb.onContentChanged();</div><div class="line">      &#125;</div><div class="line">      mContentParentExplicitlySet = <span class="keyword">true</span>;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p> 我们先看installDecor这个方法，这个方法是在mContentParent为null的情况下调用，这里我只抽取了其中两个重要的地方，一个是创建DecorView 一个是创建mContentParent<br><figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">  private void installDecor() &#123;</div><div class="line">  </div><div class="line">        <span class="attr">mForceDecorInstall</span> = <span class="literal">false</span>;</div><div class="line">        <span class="keyword">if</span> (<span class="attr">mDecor</span> == <span class="literal">null</span>) &#123;</div><div class="line">            <span class="attr">mDecor</span> = generateDecor(-<span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">        ....</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (<span class="attr">mContentParent</span> == <span class="literal">null</span>) &#123;</div><div class="line">            <span class="attr">mContentParent</span> = generateLayout(mDecor);</div><div class="line">            .....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>generateDecor(-1);方法</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> DecorView <span class="title">generateDecor</span><span class="params">(<span class="keyword">int</span> featureId)</span> </span>&#123;</div><div class="line">    </div><div class="line">    .....</div><div class="line">    <span class="comment">//new DecorView对象。</span></div><div class="line">     <span class="keyword">return</span> <span class="keyword">new</span> DecorView(context, featureId, <span class="keyword">this</span>, getAttributes());</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>DecorView其实只是一个帧布局<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">DecorView</span> <span class="keyword">extends</span> <span class="title">FrameLayout</span> <span class="title">mplements</span> <span class="title">RootViewSurfaceTaker</span>, <span class="title">WindowCallbacks</span> </span>&#123;</div><div class="line">    ....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p> 这个方法把刚刚创建出来的DecorView传进去<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">mContentParent = generateLayout(mDecor);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">protected</span> ViewGroup <span class="title">generateLayout</span><span class="params">(DecorView decor)</span> </span>&#123;</div><div class="line">        ....</div><div class="line">        </div><div class="line">        <span class="keyword">int</span> layoutResource;</div><div class="line">        <span class="keyword">int</span> features = getLocalFeatures();</div><div class="line">      </div><div class="line">        <span class="keyword">if</span> ((features &amp; (<span class="number">1</span> &lt;&lt; FEATURE_SWIPE_TO_DISMISS)) != <span class="number">0</span>) &#123;</div><div class="line">            layoutResource = R.layout.screen_swipe_dismiss;<span class="comment">//根据一系列判断</span></div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((features &amp; ((<span class="number">1</span> &lt;&lt; FEATURE_LEFT_ICON) | (<span class="number">1</span> &lt;&lt; FEATURE_RIGHT_ICON))) != <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">if</span> (mIsFloating) &#123;</div><div class="line">                TypedValue res = <span class="keyword">new</span> TypedValue();</div><div class="line">                getContext().getTheme().resolveAttribute(</div><div class="line">                        R.attr.dialogTitleIconsDecorLayout, res, <span class="literal">true</span>);</div><div class="line">                layoutResource = res.resourceId;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                layoutResource = R.layout.screen_title_icons;</div><div class="line">            &#125;</div><div class="line">           </div><div class="line">        &#125;</div><div class="line">        .....</div><div class="line">        </div><div class="line"><span class="comment">//这里传入系统选中的一些布局，并把inflate出来的布局添加进decorViw中</span></div><div class="line">mDecor.onResourcesLoaded(mLayoutInflater, layoutResource);</div><div class="line"></div><div class="line"><span class="comment">//ID_ANDROID_CONTENT --com.android.internal.R.id.content;</span></div><div class="line"><span class="comment">//并通过findViewById查找出R.id.content的布局，作为contentParent返回出去。</span></div><div class="line">ViewGroup contentParent = (ViewGroup)findViewById(ID_ANDROID_CONTENT);</div><div class="line"></div><div class="line"><span class="keyword">return</span> contentParent;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//DecorView中的方法。</span></div><div class="line"></div><div class="line"><span class="function">oid <span class="title">onResourcesLoaded</span><span class="params">(LayoutInflater inflater, <span class="keyword">int</span> layoutResource)</span> </span>&#123;</div><div class="line">        ....</div><div class="line">          <span class="keyword">final</span> View root = inflater.inflate(layoutResource, <span class="keyword">null</span>);</div><div class="line">         <span class="comment">//把系统布局添加到DecorView中</span></div><div class="line">        addView(root, <span class="number">0</span>, <span class="keyword">new</span> ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));</div><div class="line">    </div><div class="line">        mContentRoot = (ViewGroup) root;</div><div class="line">        initializeElevation();</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>我们再回到刚开始的地方</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setContentView</span><span class="params">(<span class="keyword">int</span> layoutResID)</span> </span>&#123;</div><div class="line">    </div><div class="line">      <span class="keyword">if</span> (mContentParent == <span class="keyword">null</span>) &#123;</div><div class="line">          installDecor();</div><div class="line">      &#125; </div><div class="line"></div><div class="line">      <span class="keyword">if</span> (hasFeature(FEATURE_CONTENT_TRANSITIONS)) &#123;</div><div class="line">          <span class="keyword">final</span> Scene newScene = Scene.getSceneForLayout(mContentParent, layoutResID,</div><div class="line">                  getContext());</div><div class="line">          transitionTo(newScene);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="comment">//把刚刚查找出来的R.id.content作为我们自己LayoutResID的根布局添加进去</span></div><div class="line">          mLayoutInflater.inflate(layoutResID, mContentParent);</div><div class="line">      &#125;</div></pre></td></tr></table></figure>
+<p>我们重新理理 调用phonewindow的setContentView方法–&gt;installDecor()–&gt;generateDecor()创建DecorView–&gt;generateLatout()把系统的布局添加进DecorView中，并查找R.id.content做为我们layout的根布局返回出去–&gt;mLayoutInflater.inflate(layoutResID, mContentParent);<br>经过这一系列工作之后，我们setContentView，成功的把我们的布局添加进一个id为R.id.content的ViewGroup中，同时这一部分又包含在DecorView中，而DeorView则在PhonWidow对象中。</p>
+<p>如下图所示</p>
+<p><img src="http://img.blog.csdn.net/20151031174042065?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image"></p>
+<p>++图片来源网络++</p>
+<h4 id="在AppCompatActivity中setContentView"><a href="#在AppCompatActivity中setContentView" class="headerlink" title="在AppCompatActivity中setContentView"></a>在AppCompatActivity中setContentView</h4><p>调用的为AppCompatDelegate的setContentView<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setContentView</span><span class="params">(@LayoutRes <span class="keyword">int</span> layoutResID)</span> </span>&#123;</div><div class="line">    getDelegate().setContentView(layoutResID);</div><div class="line">&#125;</div><div class="line"></div><div class="line"> <span class="keyword">public</span> <span class="function">AppCompatDelegate <span class="title">getDelegate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mDelegate == <span class="keyword">null</span>) &#123;</div><div class="line">        mDelegate = AppCompatDelegate.create(<span class="keyword">this</span>, <span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> mDelegate;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>点进去可以看到原来经行了不同版本的判断</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">private <span class="keyword">static</span> AppCompatDelegate create(Context context, Window <span class="built_in">window</span>,</div><div class="line">          AppCompatCallback callback) &#123;</div><div class="line">      <span class="keyword">final</span> <span class="built_in">int</span> sdk = Build.VERSION.SDK_INT;</div><div class="line">      <span class="keyword">if</span> (BuildCompat.isAtLeastN()) &#123;</div><div class="line">          <span class="keyword">return</span> <span class="keyword">new</span> AppCompatDelegateImplN(context, <span class="built_in">window</span>, callback);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sdk &gt;= <span class="number">23</span>) &#123;</div><div class="line">          <span class="keyword">return</span> <span class="keyword">new</span> AppCompatDelegateImplV23(context, <span class="built_in">window</span>, callback);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sdk &gt;= <span class="number">14</span>) &#123;</div><div class="line">          <span class="keyword">return</span> <span class="keyword">new</span> AppCompatDelegateImplV14(context, <span class="built_in">window</span>, callback);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sdk &gt;= <span class="number">11</span>) &#123;</div><div class="line">          <span class="keyword">return</span> <span class="keyword">new</span> AppCompatDelegateImplV11(context, <span class="built_in">window</span>, callback);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="keyword">return</span> <span class="keyword">new</span> AppCompatDelegateImplV9(context, <span class="built_in">window</span>, callback);</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>可以看到一个有趣的现象</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AppCompatDelegateImplN</span> <span class="keyword">extends</span> <span class="title">AppCompatDelegateImplV23</span> </span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AppCompatDelegateImplV23</span> <span class="keyword">extends</span> <span class="title">AppCompatDelegateImplV14</span></span></div><div class="line">....</div></pre></td></tr></table></figure>
+<p>如图所示</p>
+<p><img src="http://img.blog.csdn.net/20170314164728213?watermark/2/text/aHR0cDovL3dleXllLm1l/font/5a6L5L2T/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="image"></p>
+<p>++图片取自网络++</p>
+<p>所以，我们直接看AppCompatDelegateImplV9的setContentView方法。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setContentView</span>(<span class="params">View v</span>) </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setContentView</span>(<span class="params"><span class="keyword">int</span> resId</span>) </span>&#123;</div><div class="line">      ensureSubDecor();</div><div class="line">      <span class="comment">//找到R.id.content作为我们的布局的根布局</span></div><div class="line">      ViewGroup contentParent = (ViewGroup) mSubDecor.findViewById(android.R.id.content);</div><div class="line">      contentParent.removeAllViews();</div><div class="line">      <span class="comment">//把我们的布局添加进contenParent中</span></div><div class="line">      LayoutInflater.<span class="keyword">from</span>(mContext).inflate(resId, contentParent);</div><div class="line">      mOriginalWindowCallback.onContentChanged();</div><div class="line">  &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>这部分看起来要比Activity清晰很多，我们看下ensureSubDecor()这个方法都做了什么</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div></pre></td><td class="code"><pre><div class="line"> <span class="keyword">private</span> <span class="function"><span class="keyword">void</span> <span class="title">ensureSubDecor</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!mSubDecorInstalled) &#123;</div><div class="line">            mSubDecor = createSubDecor();</div><div class="line">...</div><div class="line">&#125;</div><div class="line"></div><div class="line"> <span class="keyword">private</span> <span class="function">ViewGroup <span class="title">createSubDecor</span><span class="params">()</span> </span>&#123;</div><div class="line">        TypedArray a = mContext.obtainStyledAttributes(R.styleable.AppCompatTheme);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!a.hasValue(R.styleable.AppCompatTheme_windowActionBar)) &#123;</div><div class="line">            a.recycle();</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</div><div class="line">                    <span class="string">"You need to use a Theme.AppCompat theme (or descendant) with this activity."</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (a.getBoolean(R.styleable.AppCompatTheme_windowNoTitle, <span class="keyword">false</span>)) &#123;</div><div class="line">            requestWindowFeature(Window.FEATURE_NO_TITLE);</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a.getBoolean(R.styleable.AppCompatTheme_windowActionBar, <span class="keyword">false</span>)) &#123;</div><div class="line">            <span class="comment">// Don't allow an action bar if there is no title.</span></div><div class="line">            requestWindowFeature(FEATURE_SUPPORT_ACTION_BAR);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (a.getBoolean(R.styleable.AppCompatTheme_windowActionBarOverlay, <span class="keyword">false</span>)) &#123;</div><div class="line">            requestWindowFeature(FEATURE_SUPPORT_ACTION_BAR_OVERLAY);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (a.getBoolean(R.styleable.AppCompatTheme_windowActionModeOverlay, <span class="keyword">false</span>)) &#123;</div><div class="line">            requestWindowFeature(FEATURE_ACTION_MODE_OVERLAY);</div><div class="line">        &#125;</div><div class="line">        mIsFloating = a.getBoolean(R.styleable.AppCompatTheme_android_windowIsFloating, <span class="keyword">false</span>);</div><div class="line">        a.recycle();</div><div class="line"></div><div class="line">      </div><div class="line">        mWindow.getDecorView();</div><div class="line">        </div><div class="line">        ViewGroup subDecor = <span class="keyword">null</span>;</div><div class="line"></div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!mWindowNoTitle) &#123;</div><div class="line">            <span class="keyword">if</span> (mIsFloating) &#123;</div><div class="line">                subDecor = (ViewGroup) inflater.inflate(</div><div class="line">                        R.layout.abc_dialog_title_material, <span class="keyword">null</span>);</div><div class="line">                mHasActionBar = mOverlayActionBar = <span class="keyword">false</span>;</div><div class="line">            &#125; </div><div class="line">      subDecor = (ViewGroup) LayoutInflater.from(themedContext)</div><div class="line">                        .inflate(R.layout.abc_screen_toolbar, <span class="keyword">null</span>);</div><div class="line">        </div><div class="line">        &#125;</div><div class="line">        </div><div class="line">         <span class="keyword">if</span> (mOverlayActionMode) &#123;</div><div class="line">                subDecor = (ViewGroup) inflater.inflate(</div><div class="line">                        R.layout.abc_screen_simple_overlay_action_mode, <span class="keyword">null</span>);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                subDecor = (ViewGroup) inflater.inflate(R.layout.abc_screen_simple, <span class="keyword">null</span>);</div><div class="line">            &#125;</div><div class="line">        ....</div><div class="line">        </div><div class="line">        <span class="keyword">final</span> ViewGroup windowContentView = (ViewGroup) mWindow.findViewById(android.R.id.content);</div><div class="line">        </div><div class="line">            contentView.setId(android.R.id.content);</div><div class="line"></div><div class="line">           </div><div class="line">            <span class="keyword">if</span> (windowContentView <span class="keyword">instanceof</span> FrameLayout) &#123;</div><div class="line">                ((FrameLayout) windowContentView).setForeground(<span class="keyword">null</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 最后还是调用decorView方法</span></div><div class="line">        mWindow.setContentView(subDecor);</div><div class="line"></div><div class="line"></div><div class="line">        <span class="keyword">return</span> subDecor;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>经过一些列的判断设值，最终还是调用了PhoneWidow方法的setContentView方法，把视图添加到了DecorVIew中</p>
+<p>未完待续…</p>
+
+    
+
+    
+</div>
+
+
+                
+
+                <!-- Post Comments -->
+                
+                    
+
+
+
+
+
+
+
+                
+            </div>
+
+            <!-- Post Prev & Next Nav -->
+            <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+    <!-- Prev Nav -->
+    
+
+    <!-- Section Spacer -->
+    <div class="section-spacer"></div>
+
+    <!-- Next Nav -->
+    
+        <a href="/2017/06/25/SparseArray_ArrayMap/" id="post_nav-older" class="next-content">
+            旧篇
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                <i class="material-icons">arrow_forward</i>
+            </button>
+        </a>
+    
+</nav>
+
+        </div>
+    </div>
+
+
+
+                    
+                        <!-- Overlay For Active Sidebar -->
+<div class="sidebar-overlay"></div>
+
+<!-- Material sidebar -->
+<aside id="sidebar" class="sidebar sidebar-colored sidebar-fixed-left" role="navigation">
+    <div id="sidebar-main">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header header-cover" style="background-image: url(/img/sidebar_header.png);">
+    <!-- Top bar -->
+    <div class="top-bar"></div>
+
+    <!-- Sidebar toggle button -->
+    <button type="button" class="sidebar-toggle mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" style="display: initial;" data-upgraded=",MaterialButton,MaterialRipple">
+        <i class="material-icons">clear_all</i>
+        <span class="mdl-button__ripple-container">
+            <span class="mdl-ripple">
+            </span>
+        </span>
+    </button>
+
+    <!-- Sidebar Avatar -->
+    <div class="sidebar-image">
+        <img src="/img/avatar.png" alt="孙俊卿's avatar">
+    </div>
+
+    <!-- Sidebar Email -->
+    <a data-toggle="dropdown" class="sidebar-brand" href="#settings-dropdown">
+        290287491@qq.com
+        <b class="caret"></b>
+    </a>
+</div>
+
+
+        <!-- Sidebar Navigation  -->
+        <ul class="nav sidebar-nav">
+    <!-- User dropdown  -->
+    <li class="dropdown">
+        <ul id="settings-dropdown" class="dropdown-menu">
+            
+                <li>
+                    <a href="mailto: 290287491@qq.com" target="_blank" title="Email Me">
+                        
+                            <i class="material-icons sidebar-material-icons sidebar-indent-left1pc-element">email</i>
+                        
+                        Email Me
+                    </a>
+                </li>
+            
+        </ul>
+    </li>
+
+    <!-- Homepage -->
+    
+        <li id="sidebar-first-li">
+            <a href="/" target="_self">
+                
+                    <i class="material-icons sidebar-material-icons">home</i>
+                
+                主页
+            </a>
+        </li>
+        
+    
+
+    <!-- Archives  -->
+    
+        <li class="dropdown">
+            <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+                
+                    <i class="material-icons sidebar-material-icons">inbox</i>
+                
+                    归档
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+            <li>
+                <a class="sidebar_archives-link" href="/archives/2017/06/">六月 2017<span class="sidebar_archives-count">9</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/05/">五月 2017<span class="sidebar_archives-count">1</span></a>
+            </ul>
+        </li>
+        
+    
+
+    <!-- Categories  -->
+    
+        <li class="dropdown">
+            <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+                
+                    <i class="material-icons sidebar-material-icons">chrome_reader_mode</i>
+                
+                分类
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                <a class="sidebar_archives-link" href="/categories/Android架构/">Android架构<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/categories/自定义view/">自定义view<span class="sidebar_archives-count">5</span></a></li><li><a class="sidebar_archives-link" href="/categories/设计模式/">设计模式<span class="sidebar_archives-count">3</span></a>
+            </ul>
+        </li>
+        
+            <li class="divider"></li>
+        
+    
+
+    <!-- Pages  -->
+    
+
+    <!-- Article Number  -->
+    
+</ul>
+
+
+        <!-- Sidebar Footer -->
+        <!--
+I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright, I will thank you so much.
+If you still want to delete the copyrights, could you still retain the first one? Which namely "Theme Material"
+It will not impact the appearance and can give developers a lot of support :)
+
+很高兴您使用并喜欢该主题，开发不易 十分谢谢与希望您可以保留一下版权声明。
+如果您仍然想删除的话 能否只保留第一项呢？即 "Theme Material"
+它不会影响美观并可以给开发者很大的支持和动力。 :)
+-->
+
+<!-- Sidebar Divider -->
+
+    <div class="sidebar-divider"></div>
+
+
+<!-- Theme Material -->
+
+    <a href="https://github.com/viosey/hexo-theme-material"  class="sidebar-footer-text-a" target="_blank">
+        <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+            主题 - Material
+            <span class="sidebar-badge badge-circle">i</span>
+        </div>
+    </a>
+
+
+<!-- Help & Support -->
+<!--
+
+-->
+
+<!-- Feedback -->
+<!--
+
+-->
+
+<!-- About Theme -->
+<!--
+
+-->
+
+    </div>
+
+    <!-- Sidebar Image -->
+    
+
+</aside>
+
+                    
+
+                    
+                        <!-- Footer Top Button -->
+                        <div class="toTop-wrap">
+    <a href="#top" class="toTop">
+        <i class="material-icons footer_top-i">expand_less</i>
+    </a>
+</div>
+
+                    
+
+                    <!--Footer-->
+<footer class="mdl-mini-footer" id="bottom">
+    
+        <!-- Paradox Footer Left Section -->
+        <div class="mdl-mini-footer--left-section sns-list">
+    <!-- Twitter -->
+    
+
+    <!-- Facebook -->
+    
+
+    <!-- Google + -->
+    
+
+    <!-- Weibo -->
+    
+
+    <!-- Instagram -->
+    
+
+    <!-- Tumblr -->
+    
+
+    <!-- Github -->
+    
+
+    <!-- LinkedIn -->
+    
+
+    <!-- Zhihu -->
+    
+
+    <!-- Bilibili -->
+    
+
+    <!-- Telegram -->
+    
+</div>
+
+
+        <!--Copyright-->
+        <div id="copyright">
+            Copyright&nbsp;©&nbsp;
+            <script type="text/javascript">
+                var fd = new Date();
+                document.write(fd.getFullYear());
+            </script>
+            &nbsp;我的博客
+        </div>
+
+        <!-- Paradox Footer Right Section -->
+
+        <!--
+        I am glad you use this theme, the development is no so easy, I hope you can keep the copyright.
+        It will not impact the appearance and can give developers a lot of support :)
+
+        很高兴您使用该主题，开发不易，希望您可以保留一下版权声明。
+        它不会影响美观并可以给开发者很大的支持。 :)
+        -->
+
+        <div class="mdl-mini-footer--right-section">
+            <div>
+                <div class="footer-develop-div">Powered by <a href="https://hexo.io" target="_blank" class="footer-develop-a">Hexo</a></div>
+                <div class="footer-develop-div">Theme - <a href="https://github.com/viosey/hexo-theme-material" target="_blank" class="footer-develop-a">Material</a></div>
+            </div>
+        </div>
+    
+</footer>
+
+
+                    <!-- Import File -->
+
+    <script src="/js/lazyload.min.js"></script>
+    <script src="/js/js.min.js"></script>
+
+
+
+    <script src="/js/nprogress.js"></script>
+
+
+<script type="text/javascript">
+    NProgress.configure({
+        showSpinner: true
+    });
+    NProgress.start();
+    $('#nprogress .bar').css({
+        'background': '#29d'
+    });
+    $('#nprogress .peg').css({
+        'box-shadow': '0 0 10px #29d, 0 0 15px #29d'
+    });
+    $('#nprogress .spinner-icon').css({
+        'border-top-color': '#29d',
+        'border-left-color': '#29d'
+    });
+    setTimeout(function() {
+        NProgress.done();
+        $('.fade').removeClass('out');
+    }, 800);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Window Load-->
+<script>
+    $(window).load(function() {
+        // Post_Toc parent position fixed
+        $('.post-toc-wrap').parent('.mdl-menu__container').css('position', 'fixed');
+    });
+</script>
+
+<!-- MathJax Load-->
+
+<script>
+    <!-- Offer LazyLoad -->
+    queue.offer(function(){
+        $('.lazy').lazyload({
+            effect : 'show'
+        });
+    });
+
+    <!-- Start Queue -->
+    $(document).ready(function(){
+        setInterval(function(){
+            queue.execNext();
+        },200);
+    });
+</script>
+
+                </main>
+            </div>
+        </body>
+    
+</html>
