@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+    <!--
+        © Material Theme
+        https://github.com/viosey/hexo-theme-material
+        Version: 1.3.4 -->
+
+    <!-- Title -->
+    
+    <title>
+        
+            手写一个ioc注解框架 | 
+        
+        我的博客
+    </title>
+
+    <!-- Meta & Info -->
+    <meta charset="utf-8">
+
+    <!-- dns prefetch -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    
+    
+    
+    
+    
+    
+
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0097A7">
+    <meta name="author" content="孙俊卿">
+    <meta name="description" content="记录生活点滴">
+    <meta name="keywords" content="android">
+
+    <!-- Favicons -->
+    <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
+    <link rel="icon" sizes="192x192" href="/img/favicon.png">
+    <link rel="apple-touch-icon" href="/img/favicon.png">
+
+    <!--iOS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="Title">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="480">
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="我的博客">
+
+    <!-- The Open Graph protocol -->
+    <meta property="og:url" content="http://livesun.github.io">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="手写一个ioc注解框架 | 我的博客">
+    <meta property="og:description" content="记录生活点滴">
+    
+
+    <!--[if lte IE 9]>
+        <link rel="stylesheet" href="/css/ie-blocker.css">
+
+        
+            <script src="/js/ie-blocker.zhCN.js"></script>
+        
+    <![endif]-->
+
+    <!-- Import CSS & jQuery -->
+    
+        <link rel="stylesheet" href="/css/material.min.css">
+        <link rel="stylesheet" href="/css/style.min.css">
+        <!-- Config CSS -->
+
+
+<!-- Other Styles -->
+<style>
+  body, html {
+    font-family: Roboto, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  }
+
+  a {
+    color: #00838F;
+  }
+
+  .mdl-card__media,
+  #search-label,
+  #search-form-label:after,
+  #scheme-Paradox .hot_tags-count,
+  #scheme-Paradox .sidebar_archives-count,
+  #scheme-Paradox .sidebar-colored .sidebar-header,
+  #scheme-Paradox .sidebar-colored .sidebar-badge{
+    background-color: #0097A7 !important;
+  }
+
+  /* Sidebar User Drop Down Menu Text Color */
+  #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:hover,
+  #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:focus {
+    color: #0097A7 !important;
+  }
+
+  #post_entry-right-info,
+  .sidebar-colored .sidebar-nav li:hover > a,
+  .sidebar-colored .sidebar-nav li:hover > a i,
+  .sidebar-colored .sidebar-nav li > a:hover,
+  .sidebar-colored .sidebar-nav li > a:hover i,
+  .sidebar-colored .sidebar-nav li > a:focus i,
+  .sidebar-colored .sidebar-nav > .open > a,
+  .sidebar-colored .sidebar-nav > .open > a:hover,
+  .sidebar-colored .sidebar-nav > .open > a:focus,
+  #ds-reset #ds-ctx .ds-ctx-entry .ds-ctx-head a {
+    color: #0097A7 !important;
+  }
+
+  .toTop {
+    background: #757575 !important;
+  }
+
+  .material-layout .material-post>.material-nav,
+  .material-layout .material-index>.material-nav,
+  .material-nav a {
+    color: #757575;
+  }
+
+  #scheme-Paradox .MD-burger-layer {
+    background-color: #757575;
+  }
+
+  #scheme-Paradox #post-toc-trigger-btn {
+    color: #757575;
+  }
+
+  .post-toc a:hover {
+    color: #00838F;
+    text-decoration: underline;
+  }
+
+</style>
+
+
+<!-- Theme Background Related-->
+
+    <style>
+      body{
+        background-color: #F5F5F5;
+      }
+
+      /* blog_info bottom background */
+      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
+        background-color: #fff;
+      }
+    </style>
+
+
+
+
+<!-- Fade Effect -->
+
+    <style>
+      .fade {
+        transition: all 800ms linear;
+        -webkit-transform: translate3d(0,0,0);
+        -moz-transform: translate3d(0,0,0);
+        -ms-transform: translate3d(0,0,0);
+        -o-transform: translate3d(0,0,0);
+        transform: translate3d(0,0,0);
+        opacity: 1;
+      }
+
+      .fade.out{
+        opacity: 0;
+      }
+    </style>
+
+
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/queue.js"></script>
+    
+
+    <!-- UC Browser Compatible -->
+    <script>
+        var agent = navigator.userAgent.toLowerCase();
+        if(agent.indexOf('ucbrowser')>0) {
+            document.write("<link rel=\"stylesheet\" href=\"/css/uc.css\">");
+            alert('由于 UC 浏览器使用极旧的内核，而本网站使用了一些新的特性。\n为了您能更好的浏览，推荐使用 Chrome 或 Firefox 浏览器。');
+        }
+    </script>
+
+    
+
+    
+
+
+    <!-- Bing Background -->
+    
+
+    <!-- Custom Head -->
+    
+<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+    
+        <body id="scheme-Paradox" class="lazy">
+            <div class="material-layout  mdl-js-layout has-drawer is-upgraded">
+                
+
+                <!-- Main Container -->
+                <main class="material-layout__content" id="main">
+
+                    <!-- Top Anchor -->
+                    <div id="top"></div>
+
+                    
+                        <!-- Hamburger Button -->
+                        <button class="MD-burger-icon sidebar-toggle">
+                            <span class="MD-burger-layer"></span>
+                        </button>
+                    
+
+                    <!-- Post TOC -->
+
+    
+    <!-- Back Button -->
+    <!--
+    <div class="material-back" id="backhome-div" tabindex="0">
+        <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"
+           href="#" onclick="window.history.back();return false;"
+           target="_self"
+           role="button"
+           data-upgraded=",MaterialButton,MaterialRipple">
+            <i class="material-icons" role="presentation">arrow_back</i>
+            <span class="mdl-button__ripple-container">
+                <span class="mdl-ripple"></span>
+            </span>
+        </a>
+    </div>
+    -->
+
+    <!-- Left aligned menu below button -->
+    <button id="post-toc-trigger-btn"
+        class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">format_list_numbered</i>
+    </button>
+
+    <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#IOC注解框架"><span class="post-toc-number">1.</span> <span class="post-toc-text">IOC注解框架</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#元注解："><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">元注解：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Target"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">@Target</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。"><span class="post-toc-number">1.0.3.</span> <span class="post-toc-text">顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Target的取值（ElementType-XXX）"><span class="post-toc-number">1.0.4.</span> <span class="post-toc-text">@Target的取值（ElementType.XXX）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Retention"><span class="post-toc-number">1.0.5.</span> <span class="post-toc-text">@Retention</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Documented"><span class="post-toc-number">1.0.6.</span> <span class="post-toc-text">@Documented</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Inherited"><span class="post-toc-number">1.0.7.</span> <span class="post-toc-text">@Inherited</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#反射机制获取类有三种方法"><span class="post-toc-number">1.0.8.</span> <span class="post-toc-text">反射机制获取类有三种方法</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#反射机制获取该类的属性和方法"><span class="post-toc-number">1.0.9.</span> <span class="post-toc-text">反射机制获取该类的属性和方法</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#使用方法"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">使用方法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#github地址：https-github-com-livesun-ioc-tree-master"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">github地址：https://github.com/livesun/ioc/tree/master</span></a></li></ol></li></ol></li></ol>
+
+        <!--
+        <li class="mdl-menu__item">
+            Some Action
+        </li>
+        -->
+    </ul>
+
+
+
+
+<!-- Layouts -->
+
+    <!-- Post Module -->
+    <div class="material-post_container">
+
+        <div class="material-post mdl-grid">
+            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+
+                <!-- Post Header(Thumbnail & Title) -->
+                
+    <!-- Paradox Post Header -->
+    
+        
+            <!-- Random Thumbnail -->
+            <div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
+            <script>
+    var randomNum = Math.floor(Math.random() * 19 + 1);
+
+    $('.post_thumbnail-random').attr('data-original', '/img/random/material-' + randomNum + '.png');
+    $('.post_thumbnail-random').addClass('lazy');
+</script>
+
+        
+    
+            <p class="article-headline-p">
+                手写一个ioc注解框架
+            </p>
+        </div>
+
+
+
+
+
+                
+                    <!-- Paradox Post Info -->
+                    <div class="mdl-color-text--grey-700 mdl-card__supporting-text meta">
+
+    <!-- Author Avatar -->
+    <div id="author-avatar">
+        <img src="/img/avatar.png" width="44px" height="44px" alt="Author Avatar"/>
+    </div>
+    <!-- Author Name & Date -->
+    <div>
+        <strong>孙俊卿</strong>
+        <span>7月 03, 2017</span>
+    </div>
+
+    <div class="section-spacer"></div>
+
+    <!-- Favorite -->
+    <!--
+        <button id="article-functions-like-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon btn-like">
+            <i class="material-icons" role="presentation">favorite</i>
+            <span class="visuallyhidden">favorites</span>
+        </button>
+    -->
+
+    <!-- Qrcode -->
+    
+
+    <!-- Tags (bookmark) -->
+    
+    <button id="article-functions-viewtags-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+        <i class="material-icons" role="presentation">bookmark</i>
+        <span class="visuallyhidden">bookmark</span>
+    </button>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-functions-viewtags-button">
+        <li class="mdl-menu__item">
+        
+    </ul>
+    
+
+    <!-- Share -->
+    <button id="article-fuctions-share-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+    <i class="material-icons" role="presentation">share</i>
+    <span class="visuallyhidden">share</span>
+</button>
+<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-fuctions-share-button">
+    
+
+    
+
+    <!-- Share Weibo -->
+    
+        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=手写一个ioc注解框架&url=http://livesun.github.io//2017/07/03/ioc/index.html&pic=&searchPic=false&style=simple" target="_blank">
+            <li class="mdl-menu__item">
+                分享到微博
+            </li>
+        </a>
+    
+
+    <!-- Share Twitter -->
+    
+        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=手写一个ioc注解框架&url=http://livesun.github.io//2017/07/03/ioc/index.html&via=孙俊卿" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Twitter
+            </li>
+        </a>
+    
+
+    <!-- Share Facebook -->
+    
+        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/07/03/ioc/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Facebook
+            </li>
+        </a>
+    
+
+    <!-- Share Google+ -->
+    
+        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/07/03/ioc/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Google+
+            </li>
+        </a>
+    
+
+    <!-- Share LinkedIn -->
+    
+
+    <!-- Share QQ -->
+    
+        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=手写一个ioc注解框架&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/07/03/ioc/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 QQ
+            </li>
+        </a>
+    
+
+    <!-- Share Telegram -->
+    
+</ul>
+
+</div>
+
+                
+
+                <!-- Post Content -->
+                <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
+    
+        <h2 id="IOC注解框架"><a href="#IOC注解框架" class="headerlink" title="IOC注解框架"></a>IOC注解框架</h2><p>今天这个小框架的功能跟xutils的一样，通过注解的方式，让我们不用在使用findviewById，以及new OnClickListener。其实他的实现原理，就都是利用的反射和注解来实现。</p>
+<p>这里我们先了解一下注解</p>
+<h4 id="元注解："><a href="#元注解：" class="headerlink" title="元注解："></a>元注解：</h4><ul>
+<li>@Target</li>
+<li>@Retention</li>
+<li>@Documented</li>
+<li>@Inherited</li>
+</ul>
+<h4 id="Target"><a href="#Target" class="headerlink" title="@Target"></a>@Target</h4><p>Target –目标，把…作为目标</p>
+<h4 id="顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。"><a href="#顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。" class="headerlink" title="顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。"></a>顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。</h4><p>看下例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//表示该注解只能用在属性上，如果放在其他地方就会报错</div><div class="line">@Target(ElementType.FIELD)</div><div class="line">public @interface Test &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/annotation_target_test.png" alt="image"></p>
+<h4 id="Target的取值（ElementType-XXX）"><a href="#Target的取值（ElementType-XXX）" class="headerlink" title="@Target的取值（ElementType.XXX）"></a>@Target的取值（ElementType.XXX）</h4><ul>
+<li><strong>CONSTRUCTOR</strong>:用于描述构造方法</li>
+<li><strong>FIELD</strong>:用于描述属性</li>
+<li><strong>LOCAL_VARIABLE</strong>:用于描述局部变量</li>
+<li><strong>METHOD</strong>:用于描述方法</li>
+<li><strong>PACKAGE</strong>:用于描述包</li>
+<li><strong>PARAMETER</strong>:用于描述参数</li>
+<li><strong>TYPE</strong>:用于描述类、接口(包括注解类型) 或enum声明</li>
+</ul>
+<h4 id="Retention"><a href="#Retention" class="headerlink" title="@Retention"></a>@Retention</h4><p>Retention 保留<br>意思是说，在什么时候得以保留该Annotation，换句好理解话就是说，<strong>被描述的注解在什么时间内有效</strong>，是在运行时？编译时？还是什么时候。</p>
+<ul>
+<li><strong>SOURCE</strong>:在源文件中有效（即源文件保留）</li>
+<li><strong>CLASS</strong>:在class文件中有效（即class保留）</li>
+<li><strong>RUNTIME</strong>:在运行时有效（即运行时保留）</li>
+</ul>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/annotation_retention_test.png" alt="image"></p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/annotation_retention_test2.png" alt="image"></p>
+<p>这个就表示，该注解的使用范围是在方法上，在源文件中才有效。</p>
+<h4 id="Documented"><a href="#Documented" class="headerlink" title="@Documented"></a>@Documented</h4><p>Documented  备有证明文件的<br>这个注解什么意思呢？就是说用了这个注解，当你使用javadoc工具处理的时候，会把该注解信息也包括在生成的文档中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">@Documented</div><div class="line">public @interface Test_Documented &#123;</div><div class="line"></div><div class="line">   String doTestDocument();</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">public class TestAnnotations &#123;</div><div class="line"></div><div class="line">   public static void main(String arg[]) &#123;</div><div class="line">    doSomeTestRetention();</div><div class="line">     doSomeTestDocumented();</div><div class="line">   &#125;</div><div class="line">   </div><div class="line">    public void doSomeTestRetention() &#123;</div><div class="line">      </div><div class="line">   &#125;</div><div class="line">   </div><div class="line">   @Test_Documented(doTestDocument=&quot;Hello document&quot;)</div><div class="line">   public void doSomeTestDocumented() &#123;</div><div class="line">     </div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/annotation_documented_test.png" alt="image"></p>
+<h4 id="Inherited"><a href="#Inherited" class="headerlink" title="@Inherited"></a>@Inherited</h4><p>Inherited 遗传的 通过继承得到的<br>这个注解的意思，注解在类上面时，子类会自动继承此注解，否则的话，子类不会继承此注解，该注解只对类有效，对接口，方法属性均无效。</p>
+<p>这里有篇文章说的很详尽：<br><a href="http://blog.csdn.net/snow_crazy/article/details/39381695" target="_blank" rel="external">http://blog.csdn.net/snow_crazy/article/details/39381695</a></p>
+<p>当然写这个框架除了注解之外，还需要反射的知识点，这里只简单说明一下，具体详细的内容以后单开一篇。</p>
+<h4 id="反射机制获取类有三种方法"><a href="#反射机制获取类有三种方法" class="headerlink" title="反射机制获取类有三种方法"></a>反射机制获取类有三种方法</h4><p>我们以MyTestBean为例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">public class MyTestBean &#123;</div><div class="line"></div><div class="line">    String name;</div><div class="line">    int age;</div><div class="line"></div><div class="line">    public String getName() &#123;</div><div class="line">        return name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setName(String name) &#123;</div><div class="line">        this.name = name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public int getAge() &#123;</div><div class="line">        return age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setAge(int age) &#123;</div><div class="line">        this.age = age;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//第一种方式：</div><div class="line">//所有的Java对象都有getClass方法。</div><div class="line">MyTestBean textView=new MyTestBean(this);</div><div class="line">Class&lt;? extends MyTestBean&gt; aClass = myTestBean.getClass();</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">//第二种方式</div><div class="line">//java中每个对象都有class属性</div><div class="line"> Class&lt;MyTestBean&gt; aClass = MyTestBean.class;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//第三种方法，通过完整的类名来获取类</div><div class="line">Class&lt;?&gt; aClass2 = Class.forName(&quot;test.com.duanzi.ui.MyTestBean&quot;);</div></pre></td></tr></table></figure>
+<h4 id="反射机制获取该类的属性和方法"><a href="#反射机制获取该类的属性和方法" class="headerlink" title="反射机制获取该类的属性和方法"></a>反射机制获取该类的属性和方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//获取的方法</div><div class="line">try &#123;</div><div class="line">    MyTestBean myTestBean=new MyTestBean();</div><div class="line">    myTestBean.setName(&quot;周杰伦&quot;);</div><div class="line">    Class&lt;? extends MyTestBean&gt; aClass = myTestBean.getClass();</div><div class="line">    Method getName = aClass.getDeclaredMethod(&quot;getName&quot;, new Class&lt;?&gt;[]&#123;&#125;);</div><div class="line">    String name = (String) getName.invoke(myTestBean, new Object[]&#123;&#125;);</div><div class="line">    Log.d(&quot;AAA&quot;,name);</div><div class="line">&#125; catch (Exception e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">//获取该类的属性</div><div class="line">try &#123;</div><div class="line">            MyTestBean myTestBean=new MyTestBean();</div><div class="line">            myTestBean.setAge(30);</div><div class="line">            Class&lt;? extends MyTestBean&gt; aClass = myTestBean.getClass();</div><div class="line">            Field ageField = aClass.getDeclaredField(&quot;age&quot;);</div><div class="line">            ageField.setAccessible(true);//暴力反射。访问私有属性</div><div class="line">            int age  = (int) ageField.get(myTestBean);</div><div class="line">            Log.d(&quot;AAA&quot;,age+&quot;岁&quot;);</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>热身准备完毕，下面我们开始正式动工。</p>
+<p>涉及下面四个类</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/ico_calss.png" alt="image"></p>
+<p>先定义两个注解</p>
+<p>OnClick 点击的注解<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * view点击的注解Annotation</div><div class="line"> * 位置在方法上</div><div class="line"> * 运行时起作用</div><div class="line"> */</div><div class="line">@Target(ElementType.METHOD)</div><div class="line">@Retention(RetentionPolicy.RUNTIME)</div><div class="line">public @interface OnClick &#123;</div><div class="line">    int [] value();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>ViewId 查找id的注解<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * view的注解Annotation</div><div class="line"> * 位置在属性上</div><div class="line"> * 运行时</div><div class="line"> */</div><div class="line">@Target(ElementType.FIELD)</div><div class="line">@Retention(RetentionPolicy.RUNTIME)</div><div class="line">public @interface ViewId &#123;</div><div class="line">    int value();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div></pre></td><td class="code"><pre><div class="line">public class ViewUtils &#123;</div><div class="line"></div><div class="line">    public static void init(Activity activity)&#123;</div><div class="line">        init(new ViewFinder(activity),activity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void init(View view)&#123;</div><div class="line">        init(new ViewFinder(view),view);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void init(View view,Object o)&#123;</div><div class="line">        init(new ViewFinder(view),o);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 为了兼容</div><div class="line">     * @param finder</div><div class="line">     * @param o</div><div class="line">     */</div><div class="line">    private static void init(ViewFinder finder,Object o)&#123;</div><div class="line">        //事件监听</div><div class="line">        initEvent(finder,o);</div><div class="line">        //属性监听</div><div class="line">        initField(finder,o);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private static void initField(ViewFinder finder, Object o) &#123;</div><div class="line">        Class&lt;?&gt; aClass = o.getClass();</div><div class="line">        Field[] fields = aClass.getDeclaredFields();</div><div class="line"></div><div class="line">        for (Field field : fields) &#123;</div><div class="line">            field.setAccessible(true);</div><div class="line">            //获取属性上面的注解</div><div class="line">            ViewId annotation = field.getAnnotation(ViewId.class);</div><div class="line">            if(annotation!=null)&#123;</div><div class="line">                int viewId = annotation.value();</div><div class="line">                //通过注解上的value值获取view</div><div class="line">                View view = finder.findViewById(viewId);</div><div class="line">                if(view!=null)&#123;</div><div class="line">                    try &#123;</div><div class="line">                        field.set(o,view);//设置属性</div><div class="line">                    &#125; catch (IllegalAccessException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private static void initEvent(ViewFinder finder, Object o) &#123;</div><div class="line">        Class&lt;?&gt; aClass = o.getClass();</div><div class="line">        Method[] methods = aClass.getDeclaredMethods();</div><div class="line"></div><div class="line">        for (Method method : methods) &#123;</div><div class="line">            method.setAccessible(true);</div><div class="line">            OnClick annotation = method.getAnnotation(OnClick.class);</div><div class="line">            if(annotation!=null)&#123;</div><div class="line">                int[] values = annotation.value();</div><div class="line">                for (int value : values) &#123;</div><div class="line">                    View view = finder.findViewById(value);</div><div class="line">                    if(view!=null)&#123;</div><div class="line">                        //点击时间</div><div class="line">                        view.setOnClickListener(new DeclaredClickListener(method,o));</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static class DeclaredClickListener implements View.OnClickListener&#123;</div><div class="line"></div><div class="line">        private final Method method;</div><div class="line">        private final Object o;</div><div class="line"></div><div class="line">        public DeclaredClickListener(Method method, Object o) &#123;</div><div class="line"></div><div class="line">            this.method = method;</div><div class="line">            this.o = o;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line"></div><div class="line">        public void onClick(View v) &#123;</div><div class="line">            try &#123;</div><div class="line">                method.invoke(o,v);</div><div class="line">            &#125; catch (Exception e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">                try &#123;</div><div class="line">                    method.invoke(o,new Object[]&#123;&#125;);//不传值走这个</div><div class="line">                &#125; catch (Exception e1) &#123;</div><div class="line">                    e1.printStackTrace();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ViewFinder 辅助类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> Activity mActivity;</div><div class="line"><span class="keyword">private</span> View mView;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ViewFinder</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">    mActivity = activity;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ViewFinder</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">    mView = view;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> View <span class="title">findViewById</span><span class="params">(<span class="keyword">int</span> id)</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> mActivity==<span class="keyword">null</span>?mView.findViewById(id):mActivity.findViewById(id);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">//查找属性</div><div class="line">  @ViewId(R.id.left_iv)</div><div class="line"> private ImageView imageView;</div><div class="line"></div><div class="line">//在Activity的onCreat方法中调用</div><div class="line"></div><div class="line"> protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(getLayoutId());</div><div class="line">        ViewUtils.init(this);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line"> //点击事件，第一种方式无参</div><div class="line"> </div><div class="line">  @OnClick(R.id.left_iv)</div><div class="line">    public void test()&#123;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">     //点击事件，第二种方式有参</div><div class="line">    @OnClick(&#123;R.id.left_iv,R.id.left_tv&#125;)</div><div class="line">    public void test(View v)&#123;</div><div class="line">        switch (v.getId())&#123;</div><div class="line">            case R.id.left_iv:</div><div class="line">                </div><div class="line">                break;</div><div class="line">            </div><div class="line">            case R.id.left_tv:</div><div class="line">                </div><div class="line">                break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h4 id="github地址：https-github-com-livesun-ioc-tree-master"><a href="#github地址：https-github-com-livesun-ioc-tree-master" class="headerlink" title="github地址：https://github.com/livesun/ioc/tree/master"></a>github地址：<a href="https://github.com/livesun/ioc/tree/master" target="_blank" rel="external">https://github.com/livesun/ioc/tree/master</a></h4>
+    
+
+    
+</div>
+
+
+                
+
+                <!-- Post Comments -->
+                
+                    
+
+
+
+
+
+
+
+                
+            </div>
+
+            <!-- Post Prev & Next Nav -->
+            <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+    <!-- Prev Nav -->
+    
+
+    <!-- Section Spacer -->
+    <div class="section-spacer"></div>
+
+    <!-- Next Nav -->
+    
+        <a href="/2017/06/28/setContentView源码分析/" id="post_nav-older" class="next-content">
+            旧篇
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                <i class="material-icons">arrow_forward</i>
+            </button>
+        </a>
+    
+</nav>
+
+        </div>
+    </div>
+
+
+
+                    
+                        <!-- Overlay For Active Sidebar -->
+<div class="sidebar-overlay"></div>
+
+<!-- Material sidebar -->
+<aside id="sidebar" class="sidebar sidebar-colored sidebar-fixed-left" role="navigation">
+    <div id="sidebar-main">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header header-cover" style="background-image: url(/img/sidebar_header.png);">
+    <!-- Top bar -->
+    <div class="top-bar"></div>
+
+    <!-- Sidebar toggle button -->
+    <button type="button" class="sidebar-toggle mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" style="display: initial;" data-upgraded=",MaterialButton,MaterialRipple">
+        <i class="material-icons">clear_all</i>
+        <span class="mdl-button__ripple-container">
+            <span class="mdl-ripple">
+            </span>
+        </span>
+    </button>
+
+    <!-- Sidebar Avatar -->
+    <div class="sidebar-image">
+        <img src="/img/avatar.png" alt="孙俊卿's avatar">
+    </div>
+
+    <!-- Sidebar Email -->
+    <a data-toggle="dropdown" class="sidebar-brand" href="#settings-dropdown">
+        290287491@qq.com
+        <b class="caret"></b>
+    </a>
+</div>
+
+
+        <!-- Sidebar Navigation  -->
+        <ul class="nav sidebar-nav">
+    <!-- User dropdown  -->
+    <li class="dropdown">
+        <ul id="settings-dropdown" class="dropdown-menu">
+            
+                <li>
+                    <a href="mailto: 290287491@qq.com" target="_blank" title="Email Me">
+                        
+                            <i class="material-icons sidebar-material-icons sidebar-indent-left1pc-element">email</i>
+                        
+                        Email Me
+                    </a>
+                </li>
+            
+        </ul>
+    </li>
+
+    <!-- Homepage -->
+    
+        <li id="sidebar-first-li">
+            <a href="/" target="_self">
+                
+                    <i class="material-icons sidebar-material-icons">home</i>
+                
+                主页
+            </a>
+        </li>
+        
+    
+
+    <!-- Archives  -->
+    
+        <li class="dropdown">
+            <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+                
+                    <i class="material-icons sidebar-material-icons">inbox</i>
+                
+                    归档
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+            <li>
+                <a class="sidebar_archives-link" href="/archives/2017/07/">七月 2017<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/06/">六月 2017<span class="sidebar_archives-count">9</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/05/">五月 2017<span class="sidebar_archives-count">1</span></a>
+            </ul>
+        </li>
+        
+    
+
+    <!-- Categories  -->
+    
+        <li class="dropdown">
+            <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+                
+                    <i class="material-icons sidebar-material-icons">chrome_reader_mode</i>
+                
+                分类
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                <a class="sidebar_archives-link" href="/categories/Android架构/">Android架构<span class="sidebar_archives-count">3</span></a></li><li><a class="sidebar_archives-link" href="/categories/自定义view/">自定义view<span class="sidebar_archives-count">5</span></a></li><li><a class="sidebar_archives-link" href="/categories/设计模式/">设计模式<span class="sidebar_archives-count">3</span></a>
+            </ul>
+        </li>
+        
+            <li class="divider"></li>
+        
+    
+
+    <!-- Pages  -->
+    
+
+    <!-- Article Number  -->
+    
+</ul>
+
+
+        <!-- Sidebar Footer -->
+        <!--
+I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright, I will thank you so much.
+If you still want to delete the copyrights, could you still retain the first one? Which namely "Theme Material"
+It will not impact the appearance and can give developers a lot of support :)
+
+很高兴您使用并喜欢该主题，开发不易 十分谢谢与希望您可以保留一下版权声明。
+如果您仍然想删除的话 能否只保留第一项呢？即 "Theme Material"
+它不会影响美观并可以给开发者很大的支持和动力。 :)
+-->
+
+<!-- Sidebar Divider -->
+
+    <div class="sidebar-divider"></div>
+
+
+<!-- Theme Material -->
+
+    <a href="https://github.com/viosey/hexo-theme-material"  class="sidebar-footer-text-a" target="_blank">
+        <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+            主题 - Material
+            <span class="sidebar-badge badge-circle">i</span>
+        </div>
+    </a>
+
+
+<!-- Help & Support -->
+<!--
+
+-->
+
+<!-- Feedback -->
+<!--
+
+-->
+
+<!-- About Theme -->
+<!--
+
+-->
+
+    </div>
+
+    <!-- Sidebar Image -->
+    
+
+</aside>
+
+                    
+
+                    
+                        <!-- Footer Top Button -->
+                        <div class="toTop-wrap">
+    <a href="#top" class="toTop">
+        <i class="material-icons footer_top-i">expand_less</i>
+    </a>
+</div>
+
+                    
+
+                    <!--Footer-->
+<footer class="mdl-mini-footer" id="bottom">
+    
+        <!-- Paradox Footer Left Section -->
+        <div class="mdl-mini-footer--left-section sns-list">
+    <!-- Twitter -->
+    
+
+    <!-- Facebook -->
+    
+
+    <!-- Google + -->
+    
+
+    <!-- Weibo -->
+    
+
+    <!-- Instagram -->
+    
+
+    <!-- Tumblr -->
+    
+
+    <!-- Github -->
+    
+
+    <!-- LinkedIn -->
+    
+
+    <!-- Zhihu -->
+    
+
+    <!-- Bilibili -->
+    
+
+    <!-- Telegram -->
+    
+</div>
+
+
+        <!--Copyright-->
+        <div id="copyright">
+            Copyright&nbsp;©&nbsp;
+            <script type="text/javascript">
+                var fd = new Date();
+                document.write(fd.getFullYear());
+            </script>
+            &nbsp;我的博客
+        </div>
+
+        <!-- Paradox Footer Right Section -->
+
+        <!--
+        I am glad you use this theme, the development is no so easy, I hope you can keep the copyright.
+        It will not impact the appearance and can give developers a lot of support :)
+
+        很高兴您使用该主题，开发不易，希望您可以保留一下版权声明。
+        它不会影响美观并可以给开发者很大的支持。 :)
+        -->
+
+        <div class="mdl-mini-footer--right-section">
+            <div>
+                <div class="footer-develop-div">Powered by <a href="https://hexo.io" target="_blank" class="footer-develop-a">Hexo</a></div>
+                <div class="footer-develop-div">Theme - <a href="https://github.com/viosey/hexo-theme-material" target="_blank" class="footer-develop-a">Material</a></div>
+            </div>
+        </div>
+    
+</footer>
+
+
+                    <!-- Import File -->
+
+    <script src="/js/lazyload.min.js"></script>
+    <script src="/js/js.min.js"></script>
+
+
+
+    <script src="/js/nprogress.js"></script>
+
+
+<script type="text/javascript">
+    NProgress.configure({
+        showSpinner: true
+    });
+    NProgress.start();
+    $('#nprogress .bar').css({
+        'background': '#29d'
+    });
+    $('#nprogress .peg').css({
+        'box-shadow': '0 0 10px #29d, 0 0 15px #29d'
+    });
+    $('#nprogress .spinner-icon').css({
+        'border-top-color': '#29d',
+        'border-left-color': '#29d'
+    });
+    setTimeout(function() {
+        NProgress.done();
+        $('.fade').removeClass('out');
+    }, 800);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Window Load-->
+<script>
+    $(window).load(function() {
+        // Post_Toc parent position fixed
+        $('.post-toc-wrap').parent('.mdl-menu__container').css('position', 'fixed');
+    });
+</script>
+
+<!-- MathJax Load-->
+
+<script>
+    <!-- Offer LazyLoad -->
+    queue.offer(function(){
+        $('.lazy').lazyload({
+            effect : 'show'
+        });
+    });
+
+    <!-- Start Queue -->
+    $(document).ready(function(){
+        setInterval(function(){
+            queue.execNext();
+        },200);
+    });
+</script>
+
+                </main>
+            </div>
+        </body>
+    
+</html>
