@@ -10,7 +10,7 @@
     
     <title>
         
-            Android内存优化---SparseArray和ArrayMap | 
+            Android的IPC方式---Messenger | 
         
         我的博客
     </title>
@@ -58,7 +58,7 @@
     <!-- The Open Graph protocol -->
     <meta property="og:url" content="http://livesun.github.io">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="Android内存优化---SparseArray和ArrayMap | 我的博客">
+    <meta property="og:title" content="Android的IPC方式---Messenger | 我的博客">
     <meta property="og:description" content="记录生活点滴">
     
 
@@ -248,7 +248,7 @@
     </button>
 
     <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
-        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#SparseArray"><span class="post-toc-number">1.</span> <span class="post-toc-text">SparseArray</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#添加数据"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">添加数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#获取数据"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">获取数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#删除数据"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">删除数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#特有方法"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">特有方法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#关于SparseArray的使用场景"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">关于SparseArray的使用场景</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ArrayMap"><span class="post-toc-number">2.</span> <span class="post-toc-text">ArrayMap</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#添加数据-1"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">添加数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#获取数据-1"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">获取数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#删除数据-1"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">删除数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#特有方法-1"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">特有方法</span></a></li></ol></li></ol>
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#来个例子"><span class="post-toc-number">1.</span> <span class="post-toc-text">来个例子</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#app1客户端–ServerA"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">app1客户端–ServerA</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#app2客户端–ClientB"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">app2客户端–ClientB</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#效果如下"><span class="post-toc-number">2.</span> <span class="post-toc-text">效果如下</span></a></li></ol>
 
         <!--
         <li class="mdl-menu__item">
@@ -285,7 +285,7 @@
         
     
             <p class="article-headline-p">
-                Android内存优化---SparseArray和ArrayMap
+                Android的IPC方式---Messenger
             </p>
         </div>
 
@@ -304,7 +304,7 @@
     <!-- Author Name & Date -->
     <div>
         <strong>孙俊卿</strong>
-        <span>6月 25, 2017</span>
+        <span>7月 16, 2017</span>
     </div>
 
     <div class="section-spacer"></div>
@@ -344,7 +344,7 @@
 
     <!-- Share Weibo -->
     
-        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=Android内存优化---SparseArray和ArrayMap&url=http://livesun.github.io//2017/06/25/SparseArray_ArrayMap/index.html&pic=&searchPic=false&style=simple" target="_blank">
+        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=Android的IPC方式---Messenger&url=http://livesun.github.io//2017/07/16/messenger/index.html&pic=&searchPic=false&style=simple" target="_blank">
             <li class="mdl-menu__item">
                 分享到微博
             </li>
@@ -353,7 +353,7 @@
 
     <!-- Share Twitter -->
     
-        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=Android内存优化---SparseArray和ArrayMap&url=http://livesun.github.io//2017/06/25/SparseArray_ArrayMap/index.html&via=孙俊卿" target="_blank">
+        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=Android的IPC方式---Messenger&url=http://livesun.github.io//2017/07/16/messenger/index.html&via=孙俊卿" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Twitter
             </li>
@@ -362,7 +362,7 @@
 
     <!-- Share Facebook -->
     
-        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/06/25/SparseArray_ArrayMap/index.html" target="_blank">
+        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/07/16/messenger/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Facebook
             </li>
@@ -371,7 +371,7 @@
 
     <!-- Share Google+ -->
     
-        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/06/25/SparseArray_ArrayMap/index.html" target="_blank">
+        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/07/16/messenger/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Google+
             </li>
@@ -383,7 +383,7 @@
 
     <!-- Share QQ -->
     
-        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=Android内存优化---SparseArray和ArrayMap&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/06/25/SparseArray_ArrayMap/index.html" target="_blank">
+        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=Android的IPC方式---Messenger&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/07/16/messenger/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 QQ
             </li>
@@ -401,34 +401,18 @@
                 <!-- Post Content -->
                 <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
     
-        <h2 id="SparseArray"><a href="#SparseArray" class="headerlink" title="SparseArray"></a>SparseArray</h2><p>SparseArray比HashMap 更省内存。</p>
-<p>在千级以下的数据处理中，比HashMap的性能更好，因为它避免了对key的自动装箱（int转为Integer类型），同时采取了压缩方式来表示稀疏的数组数据。</p>
-<p>SparseArray 的内部采用两个数组来维持key 和 value</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">private int[] mKeys;</div><div class="line">private Object[] mValues;</div></pre></td></tr></table></figure>
-<p>SparseArray 的key只能为int类型，value 为Object类型。</p>
-<p>在数据存储和查找时，使用的是二分查找。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public void put(int key, E value) &#123;</div><div class="line">        int i = ContainerHelpers.binarySearch(mKeys, mSize, key);</div><div class="line">        ...</div><div class="line">        &#125;</div><div class="line"> public E get(int key, E valueIfKeyNotFound) &#123;</div><div class="line">        int i = ContainerHelpers.binarySearch(mKeys, mSize, key);</div><div class="line">        ...</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
-<p>put 数据的时候，通过使用二分查找key的大小，按照大小顺序排列，所以，SparseArray存储的元素都是按元素的key值从小到大排列好的。 </p>
-<p>get 数据的时候，也是通过二分查找，来判断元素的位置，所以在千级的数据量中就远比HashMap通过比遍历Entry[]数组要快的多。</p>
-<h3 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public void put(int key, E value)</div></pre></td></tr></table></figure>
-<h3 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public E get(int key)</div><div class="line"></div><div class="line">public E get(int key, E valueIfKeyNotFound)</div><div class="line"></div><div class="line">//第二个方法相比与第一个方法，可以设置在key不存在的情况下返回一个默认值</div></pre></td></tr></table></figure>
-<h3 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a>删除数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public void remove(int key)</div><div class="line"></div><div class="line">public void delete(int key)</div><div class="line"></div><div class="line">// 其实最终调用的是delete方法</div></pre></td></tr></table></figure>
-<h3 id="特有方法"><a href="#特有方法" class="headerlink" title="特有方法"></a>特有方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//通过indx获取key</div><div class="line">public int keyAt(int index)</div><div class="line"></div><div class="line">//通过indx获取value</div><div class="line">public E valueAt(int index)</div></pre></td></tr></table></figure>
-<h3 id="关于SparseArray的使用场景"><a href="#关于SparseArray的使用场景" class="headerlink" title="关于SparseArray的使用场景"></a>关于SparseArray的使用场景</h3><ul>
-<li>数据量比较小的情况下，千量级别。</li>
-<li>key为int类型。（如果key为Long类型，还有一个LongSparseArray）</li>
-<li>如果数据量很大，SparseArray的性能 最低不低于HashMap的50%，酌情选择。</li>
-</ul>
-<p>官方文档</p>
-<p>The implementation is not intended to be appropriate for data structures that<br>may contain large numbers of items. It is generally slower than a traditional<br>HashMap, since lookups require a binary search and adds and removes require<br>inserting and deleting entries in the array. For containers holding up to<br>hundreds of items, the performance difference is not significant, less than50%.</p>
-<h2 id="ArrayMap"><a href="#ArrayMap" class="headerlink" title="ArrayMap"></a>ArrayMap</h2><p>关于ArrayMap,它是是一个<key,value>的键值对数据结构，它的内部和SparesArray一样，维持了两个数组，一个储存key，一个储存value，并且都采用二分法进行大小排序，可以理解成SparseArray是一个特殊的ArrayMap,都是针对手机内存优化的存储api</key,value></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">private Object[] mKeys;</div><div class="line"></div><div class="line">private Object[] mValues;</div></pre></td></tr></table></figure>
-<h3 id="添加数据-1"><a href="#添加数据-1" class="headerlink" title="添加数据"></a>添加数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public V put(K key, V value)</div></pre></td></tr></table></figure>
-<h3 id="获取数据-1"><a href="#获取数据-1" class="headerlink" title="获取数据"></a>获取数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public V get(Object key)</div></pre></td></tr></table></figure>
-<h3 id="删除数据-1"><a href="#删除数据-1" class="headerlink" title="删除数据"></a>删除数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public V remove(Object key)</div></pre></td></tr></table></figure>
-<h3 id="特有方法-1"><a href="#特有方法-1" class="headerlink" title="特有方法"></a>特有方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">public K keyAt(int index)</div><div class="line">public V valueAt(int index)</div></pre></td></tr></table></figure>
-<p>以上都只支持到API19版本，如果想向下兼容，导入V4包即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android.support.v4.util.ArrayMap;</div></pre></td></tr></table></figure>
+        <p>Android 进程间通讯是非常重要的知识点，其实他的实现方式有很多种比如，使用Bundle，使用文件共享，使用AIDL，使用ContentProvider,Socket</p>
+<p>今天的通信方式，我们采用另外一种传递信息比较方便方式，Messenger。</p>
+<p>先看个图</p>
+<p><img src="http://img.blog.csdn.net/20150723095636567" alt="image"></p>
+<p>可以看到Client向Server发送一条消息，由服务端的Hanlder来接收，服务端接收到消息再发送给客户端，由客户端的Hanlder接收处理，从而形成一个通信流程。</p>
+<h3 id="来个例子"><a href="#来个例子" class="headerlink" title="来个例子"></a>来个例子</h3><h4 id="app1客户端–ServerA"><a href="#app1客户端–ServerA" class="headerlink" title="app1客户端–ServerA"></a>app1客户端–ServerA</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">public class MessengerService extends Service &#123;</div><div class="line">    private final int SMS_FORM_CLINET=1111;</div><div class="line"></div><div class="line">    @Nullable</div><div class="line">    @Override</div><div class="line">    public IBinder onBind(Intent intent) &#123;</div><div class="line">        return mMessenger.getBinder();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private Messenger mMessenger=new Messenger(new MessageHandler());</div><div class="line"></div><div class="line">    private class MessageHandler extends Handler&#123;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            switch (msg.what)&#123;</div><div class="line"></div><div class="line">                //来自客户端</div><div class="line">                case SMS_FORM_CLINET:</div><div class="line">                    int arg2 = msg.arg2;</div><div class="line">                    String serverMsg=&quot;你好,&quot;+arg2+&quot;号&quot;;</div><div class="line">                    Message message = Message.obtain(null, SMS_FORM_CLINET);</div><div class="line">                    message.arg1=msg.arg1;</div><div class="line">                    Bundle bundle=new Bundle();</div><div class="line">                    bundle.putString(&quot;msg&quot;,serverMsg);</div><div class="line">                    message.setData(bundle);</div><div class="line">                    Messenger client = msg.replyTo;</div><div class="line">                    try &#123;</div><div class="line">                        Thread.sleep(2000);</div><div class="line">                        client.send(message);</div><div class="line">                    &#125; catch (Exception e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                    break;</div><div class="line">            &#125;</div><div class="line"></div><div class="line"></div><div class="line">            super.handleMessage(msg);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>清单文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;service</div><div class="line">           android:name=&quot;.MessengerService&quot;</div><div class="line">           android:enabled=&quot;true&quot;</div><div class="line">           android:exported=&quot;true&quot;</div><div class="line">           &gt;</div><div class="line">           &lt;intent-filter&gt;</div><div class="line">               &lt;action android:name=&quot;com.liv.aidl.calc&quot;&gt;&lt;/action&gt;</div><div class="line">               &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;</div><div class="line">           &lt;/intent-filter&gt;</div><div class="line">       &lt;/service&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="app2客户端–ClientB"><a href="#app2客户端–ClientB" class="headerlink" title="app2客户端–ClientB"></a>app2客户端–ClientB</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div></pre></td><td class="code"><pre><div class="line">public class MainActivity extends AppCompatActivity &#123;</div><div class="line"></div><div class="line">    private ServiceConnection mConnection=new ServiceConnection() &#123;</div><div class="line">        @Override</div><div class="line">        public void onServiceConnected(ComponentName name, IBinder service) &#123;</div><div class="line">            Toast.makeText(MainActivity.this,&quot;成功&quot;,Toast.LENGTH_LONG).show();</div><div class="line">            mServer = new Messenger(service);</div><div class="line">            isConn = true;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void onServiceDisconnected(ComponentName name) &#123;</div><div class="line">            Toast.makeText(MainActivity.this,&quot;失败&quot;,Toast.LENGTH_LONG).show();</div><div class="line">            mServer=null;</div><div class="line">            isConn = false;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    Messenger messenger=new Messenger(new Handler()&#123;</div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            super.handleMessage(msg);</div><div class="line">            switch (msg.what)&#123;</div><div class="line"></div><div class="line">                case SMS_FORM_CLINET:</div><div class="line">                    TextView tv = (TextView) rootView.findViewById(msg.arg1);</div><div class="line">                    String msg1 = msg.getData().getString(&quot;msg&quot;);</div><div class="line">                    tv.setText(tv.getText()+&quot;--&gt;&quot;+msg1);</div><div class="line">                    break;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    private final int SMS_FORM_CLINET=1111;</div><div class="line">    private Messenger mServer;</div><div class="line">    private boolean isConn;</div><div class="line">    private int id=100;</div><div class="line">    private LinearLayout rootView;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        Intent intent=new Intent();</div><div class="line">        intent.setAction(&quot;com.liv.aidl.calc&quot;);</div><div class="line">        intent.setPackage(&quot;livesun.servera&quot;);</div><div class="line">        bindService(intent,mConnection,Context.BIND_AUTO_CREATE);</div><div class="line">        rootView = (LinearLayout) findViewById(R.id.root);</div><div class="line">        findViewById(R.id.binder).setOnClickListener(new View.OnClickListener() &#123;</div><div class="line">            @Override</div><div class="line">            public void onClick(View v) &#123;</div><div class="line">                int textId=id++;</div><div class="line">                int count=(int) (Math.random() * 100);</div><div class="line">                TextView tv = new TextView(MainActivity.this);</div><div class="line">                tv.setText( &quot;服务端,我是&quot;+count+&quot;号...&quot;);</div><div class="line">                tv.setId(textId);</div><div class="line">                rootView.addView(tv);</div><div class="line">                Message message = Message.obtain(null, SMS_FORM_CLINET,textId,count);</div><div class="line">                message.replyTo=messenger;</div><div class="line"></div><div class="line">                if(isConn)&#123;</div><div class="line">                    try &#123;</div><div class="line">                        mServer.send(message);</div><div class="line">                    &#125; catch (RemoteException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onDestroy() &#123;</div><div class="line">        super.onDestroy();</div><div class="line">        unbindService(mConnection);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="效果如下"><a href="#效果如下" class="headerlink" title="效果如下"></a>效果如下</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/messgener_drawab.gif" alt="image"></p>
+<p>点击看下Messenger的构造方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public Messenger(IBinder target) &#123;</div><div class="line">        mTarget = IMessenger.Stub.asInterface(target);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">public Messenger(Handler target) &#123;</div><div class="line">        mTarget = target.getIMessenger();</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>怎么样，是不是感觉特么熟悉，我么可以很明显看出是AIDL的封装，其实仔细看下源码，Messenger确实是根据AIDL来做的，同时Messenger是以串行的方式处理客户端发送来的消息，不能像AIDL一样处理并发请求，而且就像信使这个名字一样，Messenger只负责传递信息，如果想跨进程调用服务端的某个方法，Messenger是做不到的。</p>
+
     
 
     
@@ -454,21 +438,13 @@
             <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
     <!-- Prev Nav -->
     
-        <a href="/2017/06/28/setContentView源码分析/" id="post_nav-newer" class="prev-content">
-            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
-                <i class="material-icons">arrow_back</i>
-            </button>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            新篇
-        </a>
-    
 
     <!-- Section Spacer -->
     <div class="section-spacer"></div>
 
     <!-- Next Nav -->
     
-        <a href="/2017/06/19/Proxy_Mode/" id="post_nav-older" class="next-content">
+        <a href="/2017/07/06/dynamicProxy_mode/" id="post_nav-older" class="next-content">
             旧篇
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
