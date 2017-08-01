@@ -484,7 +484,8 @@
 <p>所以此时的Touch事件流程是这样</p>
 <p>dispatchTouchEvent.DOWN -&gt; OnTouchListener.DOWN -&gt; onTouchEvent.DOWN</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">if (!result &amp;&amp; onTouchEvent(event)) &#123;</div><div class="line">                result = true;</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>还是照着刚刚的那副图，对于view的事件分发，只需要记住，普通情况下的执行流程，而当返回true时，就拦截了事件传递，也就是消费事件，如果容易记混，就多看几遍源码，弄清先后执行的顺序，Touch事件分发并不难。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>ViewGroup的Touch事件分析—&gt; <a href="https://livesun.github.io/2017/08/01/ViewGroupTouchEvent/">https://livesun.github.io/2017/08/01/ViewGroupTouchEvent/</a></p>
+<p>还是照着刚刚的那副图，对于view的事件分发，只需要记住，普通情况下的执行流程，而当返回true时，就拦截了事件传递，也就是消费事件，如果容易记混，就多看几遍源码，弄清先后执行的顺序，Touch事件分发并不难。</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/view_touch5.png" alt="image"></p>
 
     
