@@ -464,7 +464,8 @@
 <p>2、如果子view消费了事件，那么ViewGroup的onToucheEvent将不会执行，也就是说接收不到任何事件，原因就是在dispatchTransformedTouchEvent方法中。</p>
 <p>3、如果设置setOnClickListener,就代表了消费事件，如果不设置setOnClickListener，通常情况下，我们会在View的onTouchEvent中返回true，来消费事件，从而执行MOVE UP　DOWN事件</p>
 <p>至此，整个View与ViewGroup的Touch事件分析完毕，个人水平有限，具体细节不能说明，但是把握住了整个事件派发的大体流程，对以后写自定义控件，处理事件冲突，相比已经有了非常大的帮助。</p>
-<p>上一篇 View的Touch事件分析 –&gt; <a href="https://livesun.github.io/2017/07/27/viewTouchEvent/">https://livesun.github.io/2017/07/27/viewTouchEvent/</a></p>
+<p>View的Touch事件分析 –&gt; <a href="https://livesun.github.io/2017/07/27/viewTouchEvent/">https://livesun.github.io/2017/07/27/viewTouchEvent/</a></p>
+<p>上一篇 </p>
 
     
 
