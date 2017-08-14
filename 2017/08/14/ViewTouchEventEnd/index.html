@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+    <!--
+        © Material Theme
+        https://github.com/viosey/hexo-theme-material
+        Version: 1.3.4 -->
+
+    <!-- Title -->
+    
+    <title>
+        
+            ViewGroup的Touch事件分发以及源码分析 | 
+        
+        我的博客
+    </title>
+
+    <!-- Meta & Info -->
+    <meta charset="utf-8">
+
+    <!-- dns prefetch -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    
+    
+    
+    
+    
+    
+
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0097A7">
+    <meta name="author" content="孙俊卿">
+    <meta name="description" content="记录生活点滴">
+    <meta name="keywords" content="android">
+
+    <!-- Favicons -->
+    <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
+    <link rel="icon" sizes="192x192" href="/img/favicon.png">
+    <link rel="apple-touch-icon" href="/img/favicon.png">
+
+    <!--iOS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="Title">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="480">
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="我的博客">
+
+    <!-- The Open Graph protocol -->
+    <meta property="og:url" content="http://livesun.github.io">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="ViewGroup的Touch事件分发以及源码分析 | 我的博客">
+    <meta property="og:description" content="记录生活点滴">
+    
+
+    <!--[if lte IE 9]>
+        <link rel="stylesheet" href="/css/ie-blocker.css">
+
+        
+            <script src="/js/ie-blocker.zhCN.js"></script>
+        
+    <![endif]-->
+
+    <!-- Import CSS & jQuery -->
+    
+        <link rel="stylesheet" href="/css/material.min.css">
+        <link rel="stylesheet" href="/css/style.min.css">
+        <!-- Config CSS -->
+
+
+<!-- Other Styles -->
+<style>
+  body, html {
+    font-family: Roboto, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  }
+
+  a {
+    color: #00838F;
+  }
+
+  .mdl-card__media,
+  #search-label,
+  #search-form-label:after,
+  #scheme-Paradox .hot_tags-count,
+  #scheme-Paradox .sidebar_archives-count,
+  #scheme-Paradox .sidebar-colored .sidebar-header,
+  #scheme-Paradox .sidebar-colored .sidebar-badge{
+    background-color: #0097A7 !important;
+  }
+
+  /* Sidebar User Drop Down Menu Text Color */
+  #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:hover,
+  #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:focus {
+    color: #0097A7 !important;
+  }
+
+  #post_entry-right-info,
+  .sidebar-colored .sidebar-nav li:hover > a,
+  .sidebar-colored .sidebar-nav li:hover > a i,
+  .sidebar-colored .sidebar-nav li > a:hover,
+  .sidebar-colored .sidebar-nav li > a:hover i,
+  .sidebar-colored .sidebar-nav li > a:focus i,
+  .sidebar-colored .sidebar-nav > .open > a,
+  .sidebar-colored .sidebar-nav > .open > a:hover,
+  .sidebar-colored .sidebar-nav > .open > a:focus,
+  #ds-reset #ds-ctx .ds-ctx-entry .ds-ctx-head a {
+    color: #0097A7 !important;
+  }
+
+  .toTop {
+    background: #757575 !important;
+  }
+
+  .material-layout .material-post>.material-nav,
+  .material-layout .material-index>.material-nav,
+  .material-nav a {
+    color: #757575;
+  }
+
+  #scheme-Paradox .MD-burger-layer {
+    background-color: #757575;
+  }
+
+  #scheme-Paradox #post-toc-trigger-btn {
+    color: #757575;
+  }
+
+  .post-toc a:hover {
+    color: #00838F;
+    text-decoration: underline;
+  }
+
+</style>
+
+
+<!-- Theme Background Related-->
+
+    <style>
+      body{
+        background-color: #F5F5F5;
+      }
+
+      /* blog_info bottom background */
+      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
+        background-color: #fff;
+      }
+    </style>
+
+
+
+
+<!-- Fade Effect -->
+
+    <style>
+      .fade {
+        transition: all 800ms linear;
+        -webkit-transform: translate3d(0,0,0);
+        -moz-transform: translate3d(0,0,0);
+        -ms-transform: translate3d(0,0,0);
+        -o-transform: translate3d(0,0,0);
+        transform: translate3d(0,0,0);
+        opacity: 1;
+      }
+
+      .fade.out{
+        opacity: 0;
+      }
+    </style>
+
+
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/queue.js"></script>
+    
+
+    <!-- UC Browser Compatible -->
+    <script>
+        var agent = navigator.userAgent.toLowerCase();
+        if(agent.indexOf('ucbrowser')>0) {
+            document.write("<link rel=\"stylesheet\" href=\"/css/uc.css\">");
+            alert('由于 UC 浏览器使用极旧的内核，而本网站使用了一些新的特性。\n为了您能更好的浏览，推荐使用 Chrome 或 Firefox 浏览器。');
+        }
+    </script>
+
+    
+
+    
+
+
+    <!-- Bing Background -->
+    
+
+    <!-- Custom Head -->
+    
+<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+    
+        <body id="scheme-Paradox" class="lazy">
+            <div class="material-layout  mdl-js-layout has-drawer is-upgraded">
+                
+
+                <!-- Main Container -->
+                <main class="material-layout__content" id="main">
+
+                    <!-- Top Anchor -->
+                    <div id="top"></div>
+
+                    
+                        <!-- Hamburger Button -->
+                        <button class="MD-burger-icon sidebar-toggle">
+                            <span class="MD-burger-layer"></span>
+                        </button>
+                    
+
+                    <!-- Post TOC -->
+
+    
+    <!-- Back Button -->
+    <!--
+    <div class="material-back" id="backhome-div" tabindex="0">
+        <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"
+           href="#" onclick="window.history.back();return false;"
+           target="_self"
+           role="button"
+           data-upgraded=",MaterialButton,MaterialRipple">
+            <i class="material-icons" role="presentation">arrow_back</i>
+            <span class="mdl-button__ripple-container">
+                <span class="mdl-ripple"></span>
+            </span>
+        </a>
+    </div>
+    -->
+
+    <!-- Left aligned menu below button -->
+    <button id="post-toc-trigger-btn"
+        class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">format_list_numbered</i>
+    </button>
+
+    <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#这是对前两篇的总结和补充"><span class="post-toc-number">1.</span> <span class="post-toc-text">这是对前两篇的总结和补充</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Activity对点击事件的分发过程"><span class="post-toc-number">2.</span> <span class="post-toc-text">Activity对点击事件的分发过程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ViewGroup的事件分发流程"><span class="post-toc-number">3.</span> <span class="post-toc-text">ViewGroup的事件分发流程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ViewGroup如何拦截事件？"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">ViewGroup如何拦截事件？</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ViewGroup不拦截事件，将事件分发给childView。"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">ViewGroup不拦截事件，将事件分发给childView。</span></a></li></ol></li></ol>
+
+        <!--
+        <li class="mdl-menu__item">
+            Some Action
+        </li>
+        -->
+    </ul>
+
+
+
+
+<!-- Layouts -->
+
+    <!-- Post Module -->
+    <div class="material-post_container">
+
+        <div class="material-post mdl-grid">
+            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+
+                <!-- Post Header(Thumbnail & Title) -->
+                
+    <!-- Paradox Post Header -->
+    
+        
+            <!-- Random Thumbnail -->
+            <div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
+            <script>
+    var randomNum = Math.floor(Math.random() * 19 + 1);
+
+    $('.post_thumbnail-random').attr('data-original', '/img/random/material-' + randomNum + '.png');
+    $('.post_thumbnail-random').addClass('lazy');
+</script>
+
+        
+    
+            <p class="article-headline-p">
+                ViewGroup的Touch事件分发以及源码分析
+            </p>
+        </div>
+
+
+
+
+
+                
+                    <!-- Paradox Post Info -->
+                    <div class="mdl-color-text--grey-700 mdl-card__supporting-text meta">
+
+    <!-- Author Avatar -->
+    <div id="author-avatar">
+        <img src="/img/avatar.png" width="44px" height="44px" alt="Author Avatar"/>
+    </div>
+    <!-- Author Name & Date -->
+    <div>
+        <strong>孙俊卿</strong>
+        <span>8月 14, 2017</span>
+    </div>
+
+    <div class="section-spacer"></div>
+
+    <!-- Favorite -->
+    <!--
+        <button id="article-functions-like-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon btn-like">
+            <i class="material-icons" role="presentation">favorite</i>
+            <span class="visuallyhidden">favorites</span>
+        </button>
+    -->
+
+    <!-- Qrcode -->
+    
+
+    <!-- Tags (bookmark) -->
+    
+    <button id="article-functions-viewtags-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+        <i class="material-icons" role="presentation">bookmark</i>
+        <span class="visuallyhidden">bookmark</span>
+    </button>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-functions-viewtags-button">
+        <li class="mdl-menu__item">
+        
+    </ul>
+    
+
+    <!-- Share -->
+    <button id="article-fuctions-share-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+    <i class="material-icons" role="presentation">share</i>
+    <span class="visuallyhidden">share</span>
+</button>
+<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-fuctions-share-button">
+    
+
+    
+
+    <!-- Share Weibo -->
+    
+        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=ViewGroup的Touch事件分发以及源码分析&url=http://livesun.github.io//2017/08/14/ViewTouchEventEnd/index.html&pic=&searchPic=false&style=simple" target="_blank">
+            <li class="mdl-menu__item">
+                分享到微博
+            </li>
+        </a>
+    
+
+    <!-- Share Twitter -->
+    
+        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=ViewGroup的Touch事件分发以及源码分析&url=http://livesun.github.io//2017/08/14/ViewTouchEventEnd/index.html&via=孙俊卿" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Twitter
+            </li>
+        </a>
+    
+
+    <!-- Share Facebook -->
+    
+        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://livesun.github.io//2017/08/14/ViewTouchEventEnd/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Facebook
+            </li>
+        </a>
+    
+
+    <!-- Share Google+ -->
+    
+        <a class="post_share-link" href="https://plus.google.com/share?url=http://livesun.github.io//2017/08/14/ViewTouchEventEnd/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Google+
+            </li>
+        </a>
+    
+
+    <!-- Share LinkedIn -->
+    
+
+    <!-- Share QQ -->
+    
+        <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=我的博客&title=ViewGroup的Touch事件分发以及源码分析&summary=记录生活点滴&pics=http://livesun.github.io/img/favicon.png&url=http://livesun.github.io/2017/08/14/ViewTouchEventEnd/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 QQ
+            </li>
+        </a>
+    
+
+    <!-- Share Telegram -->
+    
+</ul>
+
+</div>
+
+                
+
+                <!-- Post Content -->
+                <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
+    
+        <h3 id="这是对前两篇的总结和补充"><a href="#这是对前两篇的总结和补充" class="headerlink" title="这是对前两篇的总结和补充"></a>这是对前两篇的总结和补充</h3><p>1、对于一个根ViewGroup来说，点击事件产生后，首先会传给它的dispatchTouchEvent方法，如果onIterceptTouchEvent方法返回false，不拦截该事件，则执行其子View/ViewGroup的dispatchTouchEvent方法，如果如果onIterceptTouchEvent方法返回true，则表示拦截改事件，则执行其本身的onToucheEvent方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public boolean dispatchTouchEvent (MotionEvent ev)&#123;</div><div class="line">    boolean result =false;</div><div class="line">    if(onInterceptTouchEvent(ev))&#123;</div><div class="line">        result=onTouchEvent(ev);</div><div class="line">    &#125;else&#123;</div><div class="line">        result=child.dispatchTouchEvent(ev);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    returen result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>2、当一个View需要处理事件时，如果设置setOnTouchListener,其onTouch返回false，则onTouchEvent调用，如果onTouch返回true，则onTouchEvent不调用，可以看到setOnTouchListener的优先级 &gt; onTouchEvent &gt; setOnClickListener。</p>
+<p>3、事件传递的顺序：Activity -&gt; Window -&gt; View，顶级View接收到传递事件之后，然后一步步分发下去。但如果一个View的onTouchEvent返回false，就会往上调用其父控件的onTouchEvent，依此类推，如果所有的View都不处理该事件，则会将该事件又传递给Activity，即传递给Activity的onTouchEvent方法。</p>
+<p>4、如果一个ViewGroup决定拦截，那么这个事件就只能由它来处理，并且onInterceptTouchEvent在调用一次DOWN之后，不再调用，会走ViewGroup的onTouchEvent方法。</p>
+<p>5、再父控件不拦截的情况下，无论父控件是否消费事件，点击子控件都会优先把事件交给子控件来消费，只有子控件不消费事件的时候，才会再传递给父控件来消费。这也很好理解，上级有能力做某事，但优先交给下级做，下级做不了，上级才会做。</p>
+<p>6、如果View不消耗除了ACTION_DOWN以外的其他事件，那么这个点击事件会消失，此时父元素的onTouchEvent并不会调用，当前View可以收到后续的事件，最终，这些消失的点击事件会传递给Activity。</p>
+<p>7、View和ViewGroup不同，ViewGroup有onInteceptTouchEvent方法，只有当onInteceptTouchEvent返回true，拦截掉事件之后，才会调用本身的onTouchEvent方法，而View没有onInteceptTouchEvent方法，会直接调用本身的onTouchEvent方法。</p>
+<p>8、View的enable属性不影响onTouchEvent的默认返回值，只要它的clickable或者longCikcable有一个为true，那么它的onTouchEvent就返回true。</p>
+<p>9、onClick会发生的前提是当前View是可点击的，并且它收到了down和up的事件。</p>
+<p>10、通过requestDisallowInterceptTouchEvent方法，子元素可以干预父元素的事件分发过程，但是无法干预ACTION_DOWN事件，因为在VIewGroup的dispatchTouchEvent中，对ACTION_DOWN做了处理，每次都会重置mGroupFlags值。</p>
+<h3 id="Activity对点击事件的分发过程"><a href="#Activity对点击事件的分发过程" class="headerlink" title="Activity对点击事件的分发过程"></a>Activity对点击事件的分发过程</h3><p>一个点击事件发生时，最先传递给当前的Activity，由其dispatchTouchEvent派发，流程为：Activity -&gt; Window -&gt; DecorView -&gt; 下面的各个childView。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public boolean dispatchTouchEvent(MotionEvent ev) &#123;</div><div class="line">     if (ev.getAction() == MotionEvent.ACTION_DOWN) &#123;</div><div class="line">         onUserInteraction();</div><div class="line">     &#125;</div><div class="line">     if (getWindow().superDispatchTouchEvent(ev)) &#123;</div><div class="line">         return true;</div><div class="line">     &#125;</div><div class="line">     return onTouchEvent(ev);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p> onUserInteraction() 是一个空方法，我们可以在外部复写使用，接着往下，调用Window的superDispatchTouchEvent(ev)方法，如果返回true，代表事件消费掉，则整个事件循环结束，如果返回false，则代表没有消费，就会调用Activity的onTouchEvent方法，证明了结论6。</p>
+<p> Window是抽象类，它的实现类为PhoneWindow。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">@Override</div><div class="line">public boolean superDispatchTouchEvent(MotionEvent event) &#123;</div><div class="line">    return mDecor.superDispatchTouchEvent(event);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>调用了DecorView的superDispatchTouchEvent方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public boolean superDispatchTouchEvent(MotionEvent event) &#123;</div><div class="line">        return super.dispatchTouchEvent(event);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>最终，通过super.dispatchTouchEvent(event);调用了ViewGroup的dispatchTouchEvent方法，开启了View的事件传递。</p>
+<h3 id="ViewGroup的事件分发流程"><a href="#ViewGroup的事件分发流程" class="headerlink" title="ViewGroup的事件分发流程"></a>ViewGroup的事件分发流程</h3><p>点击事件在通过Activity -&gt; Window之后，最终到达顶级View，DecorView中，通过dispatchTouchEvent方法经行派发，如果ViewGroup拦截了事件，即onIntercetTouchEvent返回true，则事件交给ViewGroup本身处理，会调用onTouchEvent方法，如果此刻给ViewGroup设置setOnTouchListener，则优先调用onTouch方法，如果onTouch返回true，则不会调用onTouchEvent方法。</p>
+<p>如果ViewGroup不拦截事件，则会传递给其子view，这时子view的dispatchTouchEvent方法被调用，传递过程跟顶级View是一样的，如此循环，直到消费事件为止。</p>
+<p>如果事件没有消费，则传递给Activity的onTouchEvent方法。</p>
+<h4 id="ViewGroup如何拦截事件？"><a href="#ViewGroup如何拦截事件？" class="headerlink" title="ViewGroup如何拦截事件？"></a>ViewGroup如何拦截事件？</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">   // 检查intercepted</div><div class="line">final boolean intercepted;</div><div class="line">     if (actionMasked == MotionEvent.ACTION_DOWN</div><div class="line">             || mFirstTouchTarget != null) &#123;</div><div class="line">         final boolean disallowIntercept = (mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0;</div><div class="line">         if (!disallowIntercept) &#123;</div><div class="line">             intercepted = onInterceptTouchEvent(ev);</div><div class="line">             ev.setAction(action);</div><div class="line">         &#125; else &#123;</div><div class="line">             intercepted = false;</div><div class="line">         &#125;</div><div class="line">     &#125; else &#123;</div><div class="line">        </div><div class="line">         intercepted = true;</div><div class="line">     &#125;</div></pre></td></tr></table></figure>
+<p>首先，当事件类型为ACTION_DOWN或者mFirstTouchTarget!=null时，ViewGroup会判断是否要拦截当前事件，ACTION_DOWN很好理解，mFirstTouchTarget是什么意思，当事件成功交给子控件处理，就是不拦截事件时，mFirstTouchTarget!=null，当事件拦截，mFirstTouchTarget==null，所以，如果ViewGroup拦截事件，在当MOVE和UP事件进来时，所有条件不成立，不会在执行onInterceptTouchEvent方法，验证结论4。</p>
+<p>这里面还有一个变量disallowIntercept，这个变量是通过requestDisallowInterceptTouchEvent来设置的，一旦设置之后，ViewGroup就无法拦截除了ACTION_DOWN以外的事件。之所以无法拦截ACTION_DOWN事件,是因为在拦截之前，会把FLAG_DISALLOW_INTERCEPT标记进行重置，这也证实了结论10。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"> if (actionMasked == MotionEvent.ACTION_DOWN) &#123;</div><div class="line">                cancelAndClearTouchTargets(ev);</div><div class="line">                resetTouchState();</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">private void resetTouchState() &#123;</div><div class="line">        clearTouchTargets();</div><div class="line">        resetCancelNextUpFlag(this);</div><div class="line">        mGroupFlags &amp;= ~FLAG_DISALLOW_INTERCEPT;</div><div class="line">        mNestedScrollAxes = SCROLL_AXIS_NONE;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) &#123;</div><div class="line"></div><div class="line">       if (disallowIntercept == ((mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0)) &#123;</div><div class="line">        </div><div class="line">           return;</div><div class="line">       &#125;</div><div class="line">       if (disallowIntercept) &#123;</div><div class="line">           mGroupFlags |= FLAG_DISALLOW_INTERCEPT;</div><div class="line">       &#125; else &#123;</div><div class="line">           mGroupFlags &amp;= ~FLAG_DISALLOW_INTERCEPT;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       if (mParent != null) &#123;</div><div class="line">           mParent.requestDisallowInterceptTouchEvent(disallowIntercept);</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<h4 id="ViewGroup不拦截事件，将事件分发给childView。"><a href="#ViewGroup不拦截事件，将事件分发给childView。" class="headerlink" title="ViewGroup不拦截事件，将事件分发给childView。"></a>ViewGroup不拦截事件，将事件分发给childView。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line">//</div><div class="line">                        final View[] children = mChildren;</div><div class="line">                        for (int i = childrenCount - 1; i &gt;= 0; i--) &#123;</div><div class="line">                            final int childIndex = getAndVerifyPreorderedIndex(</div><div class="line">                                    childrenCount, i, customOrder);</div><div class="line">                            final View child = getAndVerifyPreorderedView(</div><div class="line">                                    preorderedList, children, childIndex);</div><div class="line"></div><div class="line">                           //是否有焦点</div><div class="line">                            if (childWithAccessibilityFocus != null) &#123;</div><div class="line">                                if (childWithAccessibilityFocus != child) &#123;</div><div class="line">                                    continue;</div><div class="line">                                &#125;</div><div class="line">                                childWithAccessibilityFocus = null;</div><div class="line">                                i = childrenCount - 1;</div><div class="line">                            &#125;</div><div class="line"></div><div class="line">                            //子元素是否能接受事件--能否可见，是不是在执行动画</div><div class="line">                            if (!canViewReceivePointerEvents(child)</div><div class="line">                            //点击事件的坐标是否落在子元素内</div><div class="line">                                    || !isTransformedTouchPointInView(x, y, child, null)) &#123;</div><div class="line">                                ev.setTargetAccessibilityFocus(false);</div><div class="line">                                continue;</div><div class="line">                            &#125;</div><div class="line"></div><div class="line">                            newTouchTarget = getTouchTarget(child);</div><div class="line">                            if (newTouchTarget != null) &#123;</div><div class="line">                                </div><div class="line">                                newTouchTarget.pointerIdBits |= idBitsToAssign;</div><div class="line">                                break;</div><div class="line">                            &#125;</div><div class="line"></div><div class="line">                            resetCancelNextUpFlag(child);</div><div class="line">                            if (dispatchTransformedTouchEvent(ev, false, child, idBitsToAssign)) &#123;</div><div class="line">                                </div><div class="line">                                mLastTouchDownTime = ev.getDownTime();</div><div class="line">                                if (preorderedList != null) &#123;</div><div class="line">                                    </div><div class="line">                                    for (int j = 0; j &lt; childrenCount; j++) &#123;</div><div class="line">                                        if (children[childIndex] == mChildren[j]) &#123;</div><div class="line">                                            mLastTouchDownIndex = j;</div><div class="line">                                            break;</div><div class="line">                                        &#125;</div><div class="line">                                    &#125;</div><div class="line">                                &#125; else &#123;</div><div class="line">                                    mLastTouchDownIndex = childIndex;</div><div class="line">                                &#125;</div><div class="line">                                mLastTouchDownX = ev.getX();</div><div class="line">                                mLastTouchDownY = ev.getY();</div><div class="line">                                newTouchTarget = addTouchTarget(child, idBitsToAssign);</div><div class="line">                                alreadyDispatchedToNewTouchTarget = true;</div><div class="line">                                break;</div><div class="line">                            &#125;</div><div class="line"></div><div class="line">                           </div><div class="line">                            ev.setTargetAccessibilityFocus(false);</div><div class="line">                        &#125;</div></pre></td></tr></table></figure>
+<p>上面的代码逻辑非常清晰，可以看到，dispatchTransformedTouchEvent(ev, false, child, idBitsToAssign)这个方法内部，是这样实现的。如果子控件为null就调用View的dispatchTouchEvent方法，如果子控件不为null，就会调用子控件的dispatchTouchEvent派发事件，完成下轮事件分发。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">if (child == null) &#123;</div><div class="line">                handled = super.dispatchTouchEvent(event);</div><div class="line">            &#125; else &#123;</div><div class="line">                handled = child.dispatchTouchEvent(event);</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
+<p>如果dispatchTransformedTouchEvent返回true，那么mFirstTouchTarget就会赋值，并且跳出for循环。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">//</div><div class="line">                newTouchTarget = addTouchTarget(child, idBitsToAssign);</div><div class="line">                alreadyDispatchedToNewTouchTarget = true;</div><div class="line">                        break;</div><div class="line">                        </div><div class="line">       // mFirstTouchTarget  赋值的方法                      </div><div class="line">  private TouchTarget addTouchTarget(@NonNull View child, int pointerIdBits) &#123;</div><div class="line">        final TouchTarget target = TouchTarget.obtain(child, pointerIdBits);</div><div class="line">        target.next = mFirstTouchTarget;</div><div class="line">        mFirstTouchTarget = target;</div><div class="line">        return target;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>接着走下面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">if (mFirstTouchTarget == null) &#123;</div><div class="line">             </div><div class="line">               handled = dispatchTransformedTouchEvent(ev, canceled, null,</div><div class="line">                       TouchTarget.ALL_POINTER_IDS);</div><div class="line">           &#125; else &#123;</div><div class="line">              </div><div class="line">               TouchTarget predecessor = null;</div><div class="line">               TouchTarget target = mFirstTouchTarget;</div><div class="line">               while (target != null) &#123;</div><div class="line">                   final TouchTarget next = target.next;</div><div class="line">                   if (alreadyDispatchedToNewTouchTarget &amp;&amp; target == newTouchTarget) &#123;</div><div class="line">                       handled = true;</div><div class="line">                   &#125; else &#123;</div><div class="line">                       final boolean cancelChild = resetCancelNextUpFlag(target.child)</div><div class="line">                               || intercepted;</div><div class="line">                       if (dispatchTransformedTouchEvent(ev, cancelChild,</div><div class="line">                               target.child, target.pointerIdBits)) &#123;</div><div class="line">                           handled = true;</div><div class="line">                       &#125;</div><div class="line">                       if (cancelChild) &#123;</div><div class="line">                           if (predecessor == null) &#123;</div><div class="line">                               mFirstTouchTarget = next;</div><div class="line">                           &#125; else &#123;</div><div class="line">                               predecessor.next = next;</div><div class="line">                           &#125;</div><div class="line">                           target.recycle();</div><div class="line">                           target = next;</div><div class="line">                           continue;</div><div class="line">                       &#125;</div><div class="line">                   &#125;</div><div class="line">                   predecessor = target;</div><div class="line">                   target = next;</div><div class="line">               &#125;</div><div class="line">           &#125;</div></pre></td></tr></table></figure>
+<p>在第一次点击事件时，没给mFirstTouchTarget赋值，有两种情况：第一种，ViewGroup没有子元素，第二种，child不为null时，dispatchTransformedTouchEvent返回false，说明子控件的dispatchTouchEvent中返回false。</p>
+<p>到这里我们总结一下，如果dispatchTransformedTouchEvent返回true，mFirstTouchTarget！=null,跳出for循环。如果dispatchTransformedTouchEvent返回false，mFirstTouchTarget==null。注意下面代码，第三个参数为null,就会转到View的dispatchTouchEvent方法。</p>
+<p>最终调用ViewGroup本身的onTouchEvent方法，自己处理点击事件，证明了结论4。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">if (mFirstTouchTarget == null) &#123;</div><div class="line">              </div><div class="line">                handled = dispatchTransformedTouchEvent(ev, canceled, null,</div><div class="line">                        TouchTarget.ALL_POINTER_IDS);</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
+<p>单child为null，调用super.dispatchTouchEvent方法，这到了View，View对事件处理比较简单。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">public boolean dispatchTouchEvent(MotionEvent event) &#123;</div><div class="line"></div><div class="line"> boolean result = false;</div><div class="line">  ListenerInfo li = mListenerInfo;</div><div class="line">           if (li != null &amp;&amp; li.mOnTouchListener != null</div><div class="line">                   &amp;&amp; (mViewFlags &amp; ENABLED_MASK) == ENABLED</div><div class="line">                   &amp;&amp; li.mOnTouchListener.onTouch(this, event)) &#123;</div><div class="line">               result = true;</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           if (!result &amp;&amp; onTouchEvent(event)) &#123;</div><div class="line">               result = true;</div><div class="line">           &#125;</div><div class="line"></div><div class="line">return true;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，首先会判断有没有设置setTouchListener方法，如果onTouch方法返回true，那么onTouchEvent便不会调用，优先级OnTouchListener的优先级高于onTouchEvent.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line">public boolean onTouchEvent(MotionEvent event) &#123;</div><div class="line">        ...</div><div class="line"></div><div class="line">        if ((viewFlags &amp; ENABLED_MASK) == DISABLED) &#123;</div><div class="line">            if (action == MotionEvent.ACTION_UP &amp;&amp; (mPrivateFlags &amp; PFLAG_PRESSED) != 0) &#123;</div><div class="line">                setPressed(false);</div><div class="line">            &#125;</div><div class="line">            // A disabled view that is clickable still consumes the touch</div><div class="line">            // events, it just doesn&apos;t respond to them.</div><div class="line">            return (((viewFlags &amp; CLICKABLE) == CLICKABLE</div><div class="line">                    || (viewFlags &amp; LONG_CLICKABLE) == LONG_CLICKABLE)</div><div class="line">                    || (viewFlags &amp; CONTEXT_CLICKABLE) == CONTEXT_CLICKABLE);</div><div class="line">        &#125;</div><div class="line">        ...</div><div class="line">        </div><div class="line">        if (((viewFlags &amp; CLICKABLE) == CLICKABLE ||</div><div class="line">                (viewFlags &amp; LONG_CLICKABLE) == LONG_CLICKABLE) ||</div><div class="line">                (viewFlags &amp; CONTEXT_CLICKABLE) == CONTEXT_CLICKABLE) &#123;</div><div class="line">            switch (action) &#123;</div><div class="line">                case MotionEvent.ACTION_UP:</div><div class="line">                    boolean prepressed = (mPrivateFlags &amp; PFLAG_PREPRESSED) != 0;</div><div class="line">                    if ((mPrivateFlags &amp; PFLAG_PRESSED) != 0 || prepressed) &#123;</div><div class="line">                        // take focus if we don&apos;t have it already and we should in</div><div class="line">                        // touch mode.</div><div class="line">                        boolean focusTaken = false;</div><div class="line">                        if (isFocusable() &amp;&amp; isFocusableInTouchMode() &amp;&amp; !isFocused()) &#123;</div><div class="line">                            focusTaken = requestFocus();</div><div class="line">                        &#125;</div><div class="line"></div><div class="line">                        if (prepressed) &#123;</div><div class="line">                            // The button is being released before we actually</div><div class="line">                            // showed it as pressed.  Make it show the pressed</div><div class="line">                            // state now (before scheduling the click) to ensure</div><div class="line">                            // the user sees it.</div><div class="line">                            setPressed(true, x, y);</div><div class="line">                       &#125;</div><div class="line"></div><div class="line">                        if (!mHasPerformedLongPress &amp;&amp; !mIgnoreNextUpEvent) &#123;</div><div class="line">                            // This is a tap, so remove the longpress check</div><div class="line">                            removeLongPressCallback();</div><div class="line"></div><div class="line">                            // Only perform take click actions if we were in the pressed state</div><div class="line">                            if (!focusTaken) &#123;</div><div class="line">                                // Use a Runnable and post this rather than calling</div><div class="line">                                // performClick directly. This lets other visual state</div><div class="line">                                // of the view update before click actions start.</div><div class="line">                                if (mPerformClick == null) &#123;</div><div class="line">                                    mPerformClick = new PerformClick();</div><div class="line">                                &#125;</div><div class="line">                                if (!post(mPerformClick)) &#123;</div><div class="line">                                    performClick();</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line"></div><div class="line">                        if (mUnsetPressedState == null) &#123;</div><div class="line">                            mUnsetPressedState = new UnsetPressedState();</div><div class="line">                        &#125;</div><div class="line"></div><div class="line">                        if (prepressed) &#123;</div><div class="line">                            postDelayed(mUnsetPressedState,</div><div class="line">                                    ViewConfiguration.getPressedStateDuration());</div><div class="line">                        &#125; else if (!post(mUnsetPressedState)) &#123;</div><div class="line">                            // If the post failed, unpress right now</div><div class="line">                            mUnsetPressedState.run();</div><div class="line">                        &#125;</div><div class="line"></div><div class="line">                        removeTapCallback();</div><div class="line">                    &#125;</div><div class="line">                    mIgnoreNextUpEvent = false;</div><div class="line">                    break;</div><div class="line">        </div><div class="line">        return false;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>在看OnTouchEvent方法，即使View是DISABLED 不可用状态，但是如果是可点击或者可长按状态，都会返回true，消费事件。</p>
+<p>在onTouchEvent的ACTION_UP事件分发时，会调用performClick方法，如果设置了setOnClickListener，就会调用onClick方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public boolean performClick() &#123;</div><div class="line">        final boolean result;</div><div class="line">        final ListenerInfo li = mListenerInfo;</div><div class="line">        if (li != null &amp;&amp; li.mOnClickListener != null) &#123;</div><div class="line">            playSoundEffect(SoundEffectConstants.CLICK);</div><div class="line">            li.mOnClickListener.onClick(this);</div><div class="line">            result = true;</div><div class="line">        &#125; else &#123;</div><div class="line">            result = false;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);</div><div class="line">        return result;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>至此，VIew的事件分发流程终于告一段落。</p>
+
+    
+
+    
+</div>
+
+
+                
+
+                <!-- Post Comments -->
+                
+                    
+
+
+
+
+
+
+
+                
+            </div>
+
+            <!-- Post Prev & Next Nav -->
+            <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+    <!-- Prev Nav -->
+    
+
+    <!-- Section Spacer -->
+    <div class="section-spacer"></div>
+
+    <!-- Next Nav -->
+    
+        <a href="/2017/08/01/ViewGroupTouchEvent/" id="post_nav-older" class="next-content">
+            旧篇
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                <i class="material-icons">arrow_forward</i>
+            </button>
+        </a>
+    
+</nav>
+
+        </div>
+    </div>
+
+
+
+                    
+                        <!-- Overlay For Active Sidebar -->
+<div class="sidebar-overlay"></div>
+
+<!-- Material sidebar -->
+<aside id="sidebar" class="sidebar sidebar-colored sidebar-fixed-left" role="navigation">
+    <div id="sidebar-main">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header header-cover" style="background-image: url(/img/sidebar_header.png);">
+    <!-- Top bar -->
+    <div class="top-bar"></div>
+
+    <!-- Sidebar toggle button -->
+    <button type="button" class="sidebar-toggle mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" style="display: initial;" data-upgraded=",MaterialButton,MaterialRipple">
+        <i class="material-icons">clear_all</i>
+        <span class="mdl-button__ripple-container">
+            <span class="mdl-ripple">
+            </span>
+        </span>
+    </button>
+
+    <!-- Sidebar Avatar -->
+    <div class="sidebar-image">
+        <img src="/img/avatar.png" alt="孙俊卿's avatar">
+    </div>
+
+    <!-- Sidebar Email -->
+    <a data-toggle="dropdown" class="sidebar-brand" href="#settings-dropdown">
+        290287491@qq.com
+        <b class="caret"></b>
+    </a>
+</div>
+
+
+        <!-- Sidebar Navigation  -->
+        <ul class="nav sidebar-nav">
+    <!-- User dropdown  -->
+    <li class="dropdown">
+        <ul id="settings-dropdown" class="dropdown-menu">
+            
+                <li>
+                    <a href="mailto: 290287491@qq.com" target="_blank" title="Email Me">
+                        
+                            <i class="material-icons sidebar-material-icons sidebar-indent-left1pc-element">email</i>
+                        
+                        Email Me
+                    </a>
+                </li>
+            
+        </ul>
+    </li>
+
+    <!-- Homepage -->
+    
+        <li id="sidebar-first-li">
+            <a href="/" target="_self">
+                
+                    <i class="material-icons sidebar-material-icons">home</i>
+                
+                主页
+            </a>
+        </li>
+        
+    
+
+    <!-- Archives  -->
+    
+        <li class="dropdown">
+            <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+                
+                    <i class="material-icons sidebar-material-icons">inbox</i>
+                
+                    归档
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+            <li>
+                <a class="sidebar_archives-link" href="/archives/2017/08/">八月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/07/">七月 2017<span class="sidebar_archives-count">6</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/06/">六月 2017<span class="sidebar_archives-count">9</span></a>
+            </ul>
+        </li>
+        
+    
+
+    <!-- Categories  -->
+    
+        <li class="dropdown">
+            <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+                
+                    <i class="material-icons sidebar-material-icons">chrome_reader_mode</i>
+                
+                分类
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                <a class="sidebar_archives-link" href="/categories/Android架构/">Android架构<span class="sidebar_archives-count">4</span></a></li><li><a class="sidebar_archives-link" href="/categories/自定义view/">自定义view<span class="sidebar_archives-count">9</span></a></li><li><a class="sidebar_archives-link" href="/categories/设计模式/">设计模式<span class="sidebar_archives-count">4</span></a>
+            </ul>
+        </li>
+        
+            <li class="divider"></li>
+        
+    
+
+    <!-- Pages  -->
+    
+
+    <!-- Article Number  -->
+    
+</ul>
+
+
+        <!-- Sidebar Footer -->
+        <!--
+I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright, I will thank you so much.
+If you still want to delete the copyrights, could you still retain the first one? Which namely "Theme Material"
+It will not impact the appearance and can give developers a lot of support :)
+
+很高兴您使用并喜欢该主题，开发不易 十分谢谢与希望您可以保留一下版权声明。
+如果您仍然想删除的话 能否只保留第一项呢？即 "Theme Material"
+它不会影响美观并可以给开发者很大的支持和动力。 :)
+-->
+
+<!-- Sidebar Divider -->
+
+    <div class="sidebar-divider"></div>
+
+
+<!-- Theme Material -->
+
+    <a href="https://github.com/viosey/hexo-theme-material"  class="sidebar-footer-text-a" target="_blank">
+        <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+            主题 - Material
+            <span class="sidebar-badge badge-circle">i</span>
+        </div>
+    </a>
+
+
+<!-- Help & Support -->
+<!--
+
+-->
+
+<!-- Feedback -->
+<!--
+
+-->
+
+<!-- About Theme -->
+<!--
+
+-->
+
+    </div>
+
+    <!-- Sidebar Image -->
+    
+
+</aside>
+
+                    
+
+                    
+                        <!-- Footer Top Button -->
+                        <div class="toTop-wrap">
+    <a href="#top" class="toTop">
+        <i class="material-icons footer_top-i">expand_less</i>
+    </a>
+</div>
+
+                    
+
+                    <!--Footer-->
+<footer class="mdl-mini-footer" id="bottom">
+    
+        <!-- Paradox Footer Left Section -->
+        <div class="mdl-mini-footer--left-section sns-list">
+    <!-- Twitter -->
+    
+
+    <!-- Facebook -->
+    
+
+    <!-- Google + -->
+    
+
+    <!-- Weibo -->
+    
+
+    <!-- Instagram -->
+    
+
+    <!-- Tumblr -->
+    
+
+    <!-- Github -->
+    
+
+    <!-- LinkedIn -->
+    
+
+    <!-- Zhihu -->
+    
+
+    <!-- Bilibili -->
+    
+
+    <!-- Telegram -->
+    
+</div>
+
+
+        <!--Copyright-->
+        <div id="copyright">
+            Copyright&nbsp;©&nbsp;
+            <script type="text/javascript">
+                var fd = new Date();
+                document.write(fd.getFullYear());
+            </script>
+            &nbsp;我的博客
+        </div>
+
+        <!-- Paradox Footer Right Section -->
+
+        <!--
+        I am glad you use this theme, the development is no so easy, I hope you can keep the copyright.
+        It will not impact the appearance and can give developers a lot of support :)
+
+        很高兴您使用该主题，开发不易，希望您可以保留一下版权声明。
+        它不会影响美观并可以给开发者很大的支持。 :)
+        -->
+
+        <div class="mdl-mini-footer--right-section">
+            <div>
+                <div class="footer-develop-div">Powered by <a href="https://hexo.io" target="_blank" class="footer-develop-a">Hexo</a></div>
+                <div class="footer-develop-div">Theme - <a href="https://github.com/viosey/hexo-theme-material" target="_blank" class="footer-develop-a">Material</a></div>
+            </div>
+        </div>
+    
+</footer>
+
+
+                    <!-- Import File -->
+
+    <script src="/js/lazyload.min.js"></script>
+    <script src="/js/js.min.js"></script>
+
+
+
+    <script src="/js/nprogress.js"></script>
+
+
+<script type="text/javascript">
+    NProgress.configure({
+        showSpinner: true
+    });
+    NProgress.start();
+    $('#nprogress .bar').css({
+        'background': '#29d'
+    });
+    $('#nprogress .peg').css({
+        'box-shadow': '0 0 10px #29d, 0 0 15px #29d'
+    });
+    $('#nprogress .spinner-icon').css({
+        'border-top-color': '#29d',
+        'border-left-color': '#29d'
+    });
+    setTimeout(function() {
+        NProgress.done();
+        $('.fade').removeClass('out');
+    }, 800);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Window Load-->
+<script>
+    $(window).load(function() {
+        // Post_Toc parent position fixed
+        $('.post-toc-wrap').parent('.mdl-menu__container').css('position', 'fixed');
+    });
+</script>
+
+<!-- MathJax Load-->
+
+<script>
+    <!-- Offer LazyLoad -->
+    queue.offer(function(){
+        $('.lazy').lazyload({
+            effect : 'show'
+        });
+    });
+
+    <!-- Start Queue -->
+    $(document).ready(function(){
+        setInterval(function(){
+            queue.execNext();
+        },200);
+    });
+</script>
+
+                </main>
+            </div>
+        </body>
+    
+</html>
