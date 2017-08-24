@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -411,8 +407,12 @@
 </ul>
 <h4 id="Target"><a href="#Target" class="headerlink" title="@Target"></a>@Target</h4><p>Target –目标，把…作为目标</p>
 <h4 id="顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。"><a href="#顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。" class="headerlink" title="顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。"></a>顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。</h4><p>看下例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//表示该注解只能用在属性上，如果放在其他地方就会报错</div><div class="line">@Target(ElementType.FIELD)</div><div class="line">public @interface Test &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/annotation_target_test.png" alt="image"></p>
+<pre><code>//表示该注解只能用在属性上，如果放在其他地方就会报错
+@Target(ElementType.FIELD)
+public @interface Test {
+
+}
+</code></pre><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/annotation_target_test.png" alt="image"></p>
 <h4 id="Target的取值（ElementType-XXX）"><a href="#Target的取值（ElementType-XXX）" class="headerlink" title="@Target的取值（ElementType.XXX）"></a>@Target的取值（ElementType.XXX）</h4><ul>
 <li><strong>CONSTRUCTOR</strong>:用于描述构造方法</li>
 <li><strong>FIELD</strong>:用于描述属性</li>
@@ -432,29 +432,259 @@
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/annotation_retention_test2.png" alt="image"></p>
 <p>这个就表示，该注解的使用范围是在方法上，在源文件中才有效。</p>
 <h4 id="Documented"><a href="#Documented" class="headerlink" title="@Documented"></a>@Documented</h4><p>Documented  备有证明文件的<br>这个注解什么意思呢？就是说用了这个注解，当你使用javadoc工具处理的时候，会把该注解信息也包括在生成的文档中。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">@Documented</div><div class="line">public @interface Test_Documented &#123;</div><div class="line"></div><div class="line">   String doTestDocument();</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">public class TestAnnotations &#123;</div><div class="line"></div><div class="line">   public static void main(String arg[]) &#123;</div><div class="line">    doSomeTestRetention();</div><div class="line">     doSomeTestDocumented();</div><div class="line">   &#125;</div><div class="line">   </div><div class="line">    public void doSomeTestRetention() &#123;</div><div class="line">      </div><div class="line">   &#125;</div><div class="line">   </div><div class="line">   @Test_Documented(doTestDocument=&quot;Hello document&quot;)</div><div class="line">   public void doSomeTestDocumented() &#123;</div><div class="line">     </div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/annotation_documented_test.png" alt="image"></p>
+<pre><code>@Documented
+public @interface Test_Documented {
+
+   String doTestDocument();
+}
+
+
+public class TestAnnotations {
+
+   public static void main(String arg[]) {
+    doSomeTestRetention();
+     doSomeTestDocumented();
+   }
+
+    public void doSomeTestRetention() {
+
+   }
+
+   @Test_Documented(doTestDocument=&quot;Hello document&quot;)
+   public void doSomeTestDocumented() {
+
+   }
+}
+</code></pre><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/annotation_documented_test.png" alt="image"></p>
 <h4 id="Inherited"><a href="#Inherited" class="headerlink" title="@Inherited"></a>@Inherited</h4><p>Inherited 遗传的 通过继承得到的<br>这个注解的意思，注解在类上面时，子类会自动继承此注解，否则的话，子类不会继承此注解，该注解只对类有效，对接口，方法属性均无效。</p>
 <p>这里有篇文章说的很详尽：<br><a href="http://blog.csdn.net/snow_crazy/article/details/39381695" target="_blank" rel="external">http://blog.csdn.net/snow_crazy/article/details/39381695</a></p>
 <p>当然写这个框架除了注解之外，还需要反射的知识点，这里只简单说明一下，具体详细的内容以后单开一篇。</p>
 <h4 id="反射机制获取类有三种方法"><a href="#反射机制获取类有三种方法" class="headerlink" title="反射机制获取类有三种方法"></a>反射机制获取类有三种方法</h4><p>我们以MyTestBean为例</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">public class MyTestBean &#123;</div><div class="line"></div><div class="line">    String name;</div><div class="line">    int age;</div><div class="line"></div><div class="line">    public String getName() &#123;</div><div class="line">        return name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setName(String name) &#123;</div><div class="line">        this.name = name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public int getAge() &#123;</div><div class="line">        return age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setAge(int age) &#123;</div><div class="line">        this.age = age;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//第一种方式：</div><div class="line">//所有的Java对象都有getClass方法。</div><div class="line">MyTestBean textView=new MyTestBean(this);</div><div class="line">Class&lt;? extends MyTestBean&gt; aClass = myTestBean.getClass();</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">//第二种方式</div><div class="line">//java中每个对象都有class属性</div><div class="line"> Class&lt;MyTestBean&gt; aClass = MyTestBean.class;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//第三种方法，通过完整的类名来获取类</div><div class="line">Class&lt;?&gt; aClass2 = Class.forName(&quot;test.com.duanzi.ui.MyTestBean&quot;);</div></pre></td></tr></table></figure>
-<h4 id="反射机制获取该类的属性和方法"><a href="#反射机制获取该类的属性和方法" class="headerlink" title="反射机制获取该类的属性和方法"></a>反射机制获取该类的属性和方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//获取的方法</div><div class="line">try &#123;</div><div class="line">    MyTestBean myTestBean=new MyTestBean();</div><div class="line">    myTestBean.setName(&quot;周杰伦&quot;);</div><div class="line">    Class&lt;? extends MyTestBean&gt; aClass = myTestBean.getClass();</div><div class="line">    Method getName = aClass.getDeclaredMethod(&quot;getName&quot;, new Class&lt;?&gt;[]&#123;&#125;);</div><div class="line">    String name = (String) getName.invoke(myTestBean, new Object[]&#123;&#125;);</div><div class="line">    Log.d(&quot;AAA&quot;,name);</div><div class="line">&#125; catch (Exception e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">//获取该类的属性</div><div class="line">try &#123;</div><div class="line">            MyTestBean myTestBean=new MyTestBean();</div><div class="line">            myTestBean.setAge(30);</div><div class="line">            Class&lt;? extends MyTestBean&gt; aClass = myTestBean.getClass();</div><div class="line">            Field ageField = aClass.getDeclaredField(&quot;age&quot;);</div><div class="line">            ageField.setAccessible(true);//暴力反射。访问私有属性</div><div class="line">            int age  = (int) ageField.get(myTestBean);</div><div class="line">            Log.d(&quot;AAA&quot;,age+&quot;岁&quot;);</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
-<p>热身准备完毕，下面我们开始正式动工。</p>
+<pre><code>public class MyTestBean {
+
+    String name;
+    int age;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+</code></pre><pre><code>//第一种方式：
+//所有的Java对象都有getClass方法。
+MyTestBean textView=new MyTestBean(this);
+Class&lt;? extends MyTestBean&gt; aClass = myTestBean.getClass();
+</code></pre><pre><code>//第二种方式
+//java中每个对象都有class属性
+ Class&lt;MyTestBean&gt; aClass = MyTestBean.class;
+</code></pre><pre><code>//第三种方法，通过完整的类名来获取类
+Class&lt;?&gt; aClass2 = Class.forName(&quot;test.com.duanzi.ui.MyTestBean&quot;);
+</code></pre><h4 id="反射机制获取该类的属性和方法"><a href="#反射机制获取该类的属性和方法" class="headerlink" title="反射机制获取该类的属性和方法"></a>反射机制获取该类的属性和方法</h4><pre><code>        //获取的方法
+        try {
+            MyTestBean myTestBean=new MyTestBean();
+            myTestBean.setName(&quot;周杰伦&quot;);
+            Class&lt;? extends MyTestBean&gt; aClass = myTestBean.getClass();
+            Method getName = aClass.getDeclaredMethod(&quot;getName&quot;, new Class&lt;?&gt;[]{});
+            String name = (String) getName.invoke(myTestBean, new Object[]{});
+            Log.d(&quot;AAA&quot;,name);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+</code></pre><pre><code>//获取该类的属性
+try {
+            MyTestBean myTestBean=new MyTestBean();
+            myTestBean.setAge(30);
+            Class&lt;? extends MyTestBean&gt; aClass = myTestBean.getClass();
+            Field ageField = aClass.getDeclaredField(&quot;age&quot;);
+            ageField.setAccessible(true);//暴力反射。访问私有属性
+            int age  = (int) ageField.get(myTestBean);
+            Log.d(&quot;AAA&quot;,age+&quot;岁&quot;);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+</code></pre><p>热身准备完毕，下面我们开始正式动工。</p>
 <p>涉及下面四个类</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/ico_calss.png" alt="image"></p>
 <p>先定义两个注解</p>
-<p>OnClick 点击的注解<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * view点击的注解Annotation</div><div class="line"> * 位置在方法上</div><div class="line"> * 运行时起作用</div><div class="line"> */</div><div class="line">@Target(ElementType.METHOD)</div><div class="line">@Retention(RetentionPolicy.RUNTIME)</div><div class="line">public @interface OnClick &#123;</div><div class="line">    int [] value();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>ViewId 查找id的注解<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * view的注解Annotation</div><div class="line"> * 位置在属性上</div><div class="line"> * 运行时</div><div class="line"> */</div><div class="line">@Target(ElementType.FIELD)</div><div class="line">@Retention(RetentionPolicy.RUNTIME)</div><div class="line">public @interface ViewId &#123;</div><div class="line">    int value();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div></pre></td><td class="code"><pre><div class="line">public class ViewUtils &#123;</div><div class="line"></div><div class="line">    public static void init(Activity activity)&#123;</div><div class="line">        init(new ViewFinder(activity),activity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void init(View view)&#123;</div><div class="line">        init(new ViewFinder(view),view);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void init(View view,Object o)&#123;</div><div class="line">        init(new ViewFinder(view),o);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 为了兼容</div><div class="line">     * @param finder</div><div class="line">     * @param o</div><div class="line">     */</div><div class="line">    private static void init(ViewFinder finder,Object o)&#123;</div><div class="line">        //事件监听</div><div class="line">        initEvent(finder,o);</div><div class="line">        //属性监听</div><div class="line">        initField(finder,o);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private static void initField(ViewFinder finder, Object o) &#123;</div><div class="line">        Class&lt;?&gt; aClass = o.getClass();</div><div class="line">        Field[] fields = aClass.getDeclaredFields();</div><div class="line"></div><div class="line">        for (Field field : fields) &#123;</div><div class="line">            field.setAccessible(true);</div><div class="line">            //获取属性上面的注解</div><div class="line">            ViewId annotation = field.getAnnotation(ViewId.class);</div><div class="line">            if(annotation!=null)&#123;</div><div class="line">                int viewId = annotation.value();</div><div class="line">                //通过注解上的value值获取view</div><div class="line">                View view = finder.findViewById(viewId);</div><div class="line">                if(view!=null)&#123;</div><div class="line">                    try &#123;</div><div class="line">                        field.set(o,view);//设置属性</div><div class="line">                    &#125; catch (IllegalAccessException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private static void initEvent(ViewFinder finder, Object o) &#123;</div><div class="line">        Class&lt;?&gt; aClass = o.getClass();</div><div class="line">        Method[] methods = aClass.getDeclaredMethods();</div><div class="line"></div><div class="line">        for (Method method : methods) &#123;</div><div class="line">            method.setAccessible(true);</div><div class="line">            OnClick annotation = method.getAnnotation(OnClick.class);</div><div class="line">            if(annotation!=null)&#123;</div><div class="line">                int[] values = annotation.value();</div><div class="line">                for (int value : values) &#123;</div><div class="line">                    View view = finder.findViewById(value);</div><div class="line">                    if(view!=null)&#123;</div><div class="line">                        //点击时间</div><div class="line">                        view.setOnClickListener(new DeclaredClickListener(method,o));</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static class DeclaredClickListener implements View.OnClickListener&#123;</div><div class="line"></div><div class="line">        private final Method method;</div><div class="line">        private final Object o;</div><div class="line"></div><div class="line">        public DeclaredClickListener(Method method, Object o) &#123;</div><div class="line"></div><div class="line">            this.method = method;</div><div class="line">            this.o = o;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line"></div><div class="line">        public void onClick(View v) &#123;</div><div class="line">            try &#123;</div><div class="line">                method.invoke(o,v);</div><div class="line">            &#125; catch (Exception e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">                try &#123;</div><div class="line">                    method.invoke(o,new Object[]&#123;&#125;);//不传值走这个</div><div class="line">                &#125; catch (Exception e1) &#123;</div><div class="line">                    e1.printStackTrace();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>ViewFinder 辅助类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> Activity mActivity;</div><div class="line"><span class="keyword">private</span> View mView;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ViewFinder</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">    mActivity = activity;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ViewFinder</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">    mView = view;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> View <span class="title">findViewById</span><span class="params">(<span class="keyword">int</span> id)</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> mActivity==<span class="keyword">null</span>?mView.findViewById(id):mActivity.findViewById(id);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">//查找属性</div><div class="line">  @ViewId(R.id.left_iv)</div><div class="line"> private ImageView imageView;</div><div class="line"></div><div class="line">//在Activity的onCreat方法中调用</div><div class="line"></div><div class="line"> protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(getLayoutId());</div><div class="line">        ViewUtils.init(this);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line"> //点击事件，第一种方式无参</div><div class="line"> </div><div class="line">  @OnClick(R.id.left_iv)</div><div class="line">    public void test()&#123;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">     //点击事件，第二种方式有参</div><div class="line">    @OnClick(&#123;R.id.left_iv,R.id.left_tv&#125;)</div><div class="line">    public void test(View v)&#123;</div><div class="line">        switch (v.getId())&#123;</div><div class="line">            case R.id.left_iv:</div><div class="line">                </div><div class="line">                break;</div><div class="line">            </div><div class="line">            case R.id.left_tv:</div><div class="line">                </div><div class="line">                break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<h4 id="github地址：https-github-com-livesun-ioc-tree-master"><a href="#github地址：https-github-com-livesun-ioc-tree-master" class="headerlink" title="github地址：https://github.com/livesun/ioc/tree/master"></a>github地址：<a href="https://github.com/livesun/ioc/tree/master" target="_blank" rel="external">https://github.com/livesun/ioc/tree/master</a></h4>
+<p>OnClick 点击的注解</p>
+<pre><code>/**
+ * view点击的注解Annotation
+ * 位置在方法上
+ * 运行时起作用
+ */
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface OnClick {
+    int [] value();
+}
+</code></pre><p>ViewId 查找id的注解</p>
+<pre><code>/**
+ * view的注解Annotation
+ * 位置在属性上
+ * 运行时
+ */
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ViewId {
+    int value();
+}
+</code></pre><pre><code>public class ViewUtils {
+
+    public static void init(Activity activity){
+        init(new ViewFinder(activity),activity);
+    }
+
+    public static void init(View view){
+        init(new ViewFinder(view),view);
+    }
+
+    public static void init(View view,Object o){
+        init(new ViewFinder(view),o);
+    }
+
+    /**
+     * 为了兼容
+     * @param finder
+     * @param o
+     */
+    private static void init(ViewFinder finder,Object o){
+        //事件监听
+        initEvent(finder,o);
+        //属性监听
+        initField(finder,o);
+    }
+
+    private static void initField(ViewFinder finder, Object o) {
+        Class&lt;?&gt; aClass = o.getClass();
+        Field[] fields = aClass.getDeclaredFields();
+
+        for (Field field : fields) {
+            field.setAccessible(true);
+            //获取属性上面的注解
+            ViewId annotation = field.getAnnotation(ViewId.class);
+            if(annotation!=null){
+                int viewId = annotation.value();
+                //通过注解上的value值获取view
+                View view = finder.findViewById(viewId);
+                if(view!=null){
+                    try {
+                        field.set(o,view);//设置属性
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    private static void initEvent(ViewFinder finder, Object o) {
+        Class&lt;?&gt; aClass = o.getClass();
+        Method[] methods = aClass.getDeclaredMethods();
+
+        for (Method method : methods) {
+            method.setAccessible(true);
+            OnClick annotation = method.getAnnotation(OnClick.class);
+            if(annotation!=null){
+                int[] values = annotation.value();
+                for (int value : values) {
+                    View view = finder.findViewById(value);
+                    if(view!=null){
+                        //点击时间
+                        view.setOnClickListener(new DeclaredClickListener(method,o));
+                    }
+                }
+            }
+        }
+    }
+
+    public static class DeclaredClickListener implements View.OnClickListener{
+
+        private final Method method;
+        private final Object o;
+
+        public DeclaredClickListener(Method method, Object o) {
+
+            this.method = method;
+            this.o = o;
+        }
+
+        @Override
+
+        public void onClick(View v) {
+            try {
+                method.invoke(o,v);
+            } catch (Exception e) {
+                e.printStackTrace();
+                try {
+                    method.invoke(o,new Object[]{});//不传值走这个
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+}
+</code></pre><p>ViewFinder 辅助类</p>
+<pre class="line-numbers language-java"><code class="language-java">    <span class="token keyword">private</span> Activity mActivity<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> View mView<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">ViewFinder</span><span class="token punctuation">(</span>Activity activity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        mActivity <span class="token operator">=</span> activity<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token function">ViewFinder</span><span class="token punctuation">(</span>View view<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        mView <span class="token operator">=</span> view<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> View <span class="token function">findViewById</span><span class="token punctuation">(</span><span class="token keyword">int</span> id<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> mActivity<span class="token operator">==</span>null<span class="token operator">?</span>mView<span class="token punctuation">.</span><span class="token function">findViewById</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token operator">:</span>mActivity<span class="token punctuation">.</span><span class="token function">findViewById</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><pre><code>
+//查找属性
+  @ViewId(R.id.left_iv)
+ private ImageView imageView;
+
+//在Activity的onCreat方法中调用
+
+ protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(getLayoutId());
+        ViewUtils.init(this);
+    }
+
+ //点击事件，第一种方式无参
+
+  @OnClick(R.id.left_iv)
+    public void test(){
+
+    }
+
+     //点击事件，第二种方式有参
+    @OnClick({R.id.left_iv,R.id.left_tv})
+    public void test(View v){
+        switch (v.getId()){
+            case R.id.left_iv:
+
+                break;
+
+            case R.id.left_tv:
+
+                break;
+        }
+    }
+</code></pre><h4 id="github地址：https-github-com-livesun-ioc-tree-master"><a href="#github地址：https-github-com-livesun-ioc-tree-master" class="headerlink" title="github地址：https://github.com/livesun/ioc/tree/master"></a>github地址：<a href="https://github.com/livesun/ioc/tree/master" target="_blank" rel="external">https://github.com/livesun/ioc/tree/master</a></h4>
     
 
     

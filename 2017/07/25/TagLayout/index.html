@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -403,12 +399,226 @@
     
         <p>流式布局,相信很多项目中都有这样的需求，比如各大软件的标签呀，小说，热搜等，网上现成的有很多，不过普通的流布局并不难，今天闲来无事，我们就来实现一下。</p>
 <p>下面的这种效果就是典型的流式布局。<br><img src="http://upload-images.jianshu.io/upload_images/1234624-cf6abdeb578a7bb8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
-<p>代码如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div></pre></td><td class="code"><pre><div class="line">public class TagLayout extends ViewGroup&#123;</div><div class="line">    private TagAdapter mAdapter;</div><div class="line"></div><div class="line">    public TagLayout(Context context) &#123;</div><div class="line">        this(context,null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public TagLayout(Context context, AttributeSet attrs) &#123;</div><div class="line">        this(context, attrs,0);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public TagLayout(Context context, AttributeSet attrs, int defStyleAttr) &#123;</div><div class="line">        super(context, attrs, defStyleAttr);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">   </div><div class="line">    @Override</div><div class="line">    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) &#123;</div><div class="line">        super.onMeasure(widthMeasureSpec, heightMeasureSpec);</div><div class="line">        int widthSize = MeasureSpec.getSize(widthMeasureSpec);</div><div class="line">        int heightSize = MeasureSpec.getSize(heightMeasureSpec);</div><div class="line">        int modeWidth = MeasureSpec.getMode(widthMeasureSpec);</div><div class="line">        int modeHeight = MeasureSpec.getMode(heightMeasureSpec);</div><div class="line"></div><div class="line">        int width=0;</div><div class="line">        int height=0;</div><div class="line"></div><div class="line">        //一行的宽度</div><div class="line">        int lineWidth=0;</div><div class="line"></div><div class="line">        //一行的高度</div><div class="line">        int lineHeight=0;</div><div class="line"></div><div class="line">        //子控件的数目</div><div class="line">        int childCount = getChildCount();</div><div class="line">        for(int i=0;i&lt;childCount;i++)&#123;</div><div class="line">            //获取子控件</div><div class="line">            View childAt = getChildAt(i);</div><div class="line"></div><div class="line">            //测量</div><div class="line">            measureChild(childAt,widthMeasureSpec,heightMeasureSpec);</div><div class="line"></div><div class="line">            //得到margin</div><div class="line">            MarginLayoutParams lp= (MarginLayoutParams) childAt.getLayoutParams();</div><div class="line"></div><div class="line">            //子控件的宽度</div><div class="line">            int childWidth = childAt.getMeasuredWidth()+lp.leftMargin+lp.rightMargin;</div><div class="line"></div><div class="line">            //子控件的高度</div><div class="line">            int childHeight = childAt.getMeasuredHeight()+lp.topMargin+lp.bottomMargin;</div><div class="line"></div><div class="line">            //大于宽度换行</div><div class="line">            if(lineWidth+childWidth&gt;widthSize)&#123;</div><div class="line">                //宽度</div><div class="line">                width=Math.max(lineWidth,childWidth);</div><div class="line">                lineWidth=childWidth;</div><div class="line"></div><div class="line">                //高度</div><div class="line">                height+=lineHeight;</div><div class="line">                lineHeight=childHeight;</div><div class="line">            &#125;else&#123;</div><div class="line">                lineWidth+=childWidth;</div><div class="line">                lineHeight=Math.max(lineHeight,childHeight);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            //如果是最后一个</div><div class="line">            if(i==childCount-1)&#123;</div><div class="line">                width=Math.max(width,lineWidth);</div><div class="line">                height+=lineHeight;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        //设置进去</div><div class="line">        setMeasuredDimension((modeWidth==MeasureSpec.EXACTLY)?widthSize:width</div><div class="line">                ,(modeHeight==MeasureSpec.EXACTLY)?heightSize:height</div><div class="line">        );</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onLayout(boolean changed, int l, int t, int r, int b) &#123;</div><div class="line">        int childCount = getChildCount();</div><div class="line">        int lineWidth=0;</div><div class="line">        int lineHeight=0;</div><div class="line">        int left=0,top=0;</div><div class="line">        int measuredWidth = getMeasuredWidth();</div><div class="line">        for(int i=0;i&lt;childCount;i++)&#123;</div><div class="line">            //获取子控件</div><div class="line">            View childView = getChildAt(i);</div><div class="line">            //如果子控件不可见跳出循环</div><div class="line">            if(childView.getVisibility()==GONE)&#123;</div><div class="line">                continue;</div><div class="line">            &#125;</div><div class="line">            MarginLayoutParams lp = (MarginLayoutParams) childView</div><div class="line">                    .getLayoutParams();</div><div class="line">            int childWidth = childView.getMeasuredWidth()+lp.leftMargin+lp.rightMargin;</div><div class="line">            int childHeight = childView.getMeasuredHeight()+lp.topMargin+lp.bottomMargin;</div><div class="line">            if(lineWidth+childWidth&gt; measuredWidth)&#123;</div><div class="line">                //如果换行，高度叠加，left从左开始</div><div class="line">                top += lineHeight;</div><div class="line">                left = 0;</div><div class="line">                //初始化lineHeight和lineWidth</div><div class="line">                lineHeight = childHeight;</div><div class="line">                lineWidth = childWidth;</div><div class="line">            &#125;else &#123;</div><div class="line">                lineHeight = Math.max(lineHeight,childHeight);</div><div class="line">                lineWidth += childWidth;</div><div class="line">            &#125;</div><div class="line">            //算出child的四个点</div><div class="line">            int cl=left+lp.leftMargin;</div><div class="line">            int ct=top+lp.topMargin;</div><div class="line">            int cr=cl+childView.getMeasuredWidth();</div><div class="line">            int cb=ct+childView.getMeasuredHeight();</div><div class="line"></div><div class="line">            //摆放child的位置</div><div class="line">            childView.layout(cl,ct,cr,cb);</div><div class="line"></div><div class="line">            //更新left的位置,把下一个子控件的位置作为起点</div><div class="line">            left+=childWidth;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public LayoutParams generateLayoutParams(AttributeSet attrs) &#123;</div><div class="line">        return new MarginLayoutParams(getContext(),attrs);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * 设置设配器</div><div class="line">     * @param adapter</div><div class="line">     */</div><div class="line">    public void setAdapter(TagAdapter adapter)&#123;</div><div class="line">        if(adapter==null)&#123;</div><div class="line">            throw new NullPointerException(&quot;TagAdapter不能为空&quot;);</div><div class="line">        &#125;</div><div class="line">        removeAllViews();</div><div class="line">        mAdapter = adapter;</div><div class="line">        int itemCount = mAdapter.getItemCount();</div><div class="line">        for(int i=0;i&lt;itemCount;i++)&#123;</div><div class="line">            View childView = mAdapter.getView(i, this);</div><div class="line">            addView(childView);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>//创建适配器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public abstract class TagAdapter &#123;</div><div class="line"></div><div class="line">    public abstract int getItemCount();</div><div class="line"></div><div class="line">    public abstract View getView(int position, ViewGroup parent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>//MainActivity</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div></pre></td><td class="code"><pre><div class="line">public class MainActivity extends AppCompatActivity &#123;</div><div class="line"></div><div class="line">    private TagLayout tagLayout;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        tagLayout = (TagLayout) findViewById(R.id.tagview);</div><div class="line"></div><div class="line">        tagLayout.setAdapter(new MyAdapter(getDatas()));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * adapter</div><div class="line">     */</div><div class="line">    class MyAdapter extends TagAdapter&#123;</div><div class="line"></div><div class="line">        private List&lt;TagBean&gt; datas;</div><div class="line"></div><div class="line">        public MyAdapter(List&lt;TagBean&gt; datas)&#123;</div><div class="line"></div><div class="line">            this.datas = datas;</div><div class="line">        &#125;</div><div class="line">        @Override</div><div class="line">        public int getItemCount() &#123;</div><div class="line">            return datas.size();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public View getView(int position, ViewGroup parent) &#123;</div><div class="line">            TextView itmeView = (TextView) LayoutInflater.from(MainActivity.this).inflate(R.layout.tag_item, parent, false);</div><div class="line">            itmeView.setText(datas.get(position).getSrc());</div><div class="line">            GradientDrawable drawable=new GradientDrawable();</div><div class="line">            drawable.setStroke(1,Color.parseColor(&quot;#99541D&quot;));</div><div class="line">            drawable.setCornerRadius(5);</div><div class="line">            drawable.setColor(datas.get(position).getBgColor());</div><div class="line">            itmeView.setBackgroundDrawable(drawable);</div><div class="line">            </div><div class="line">            //设置点击事件</div><div class="line">             itmeView.setOnClickListener(new View.OnClickListener() &#123;</div><div class="line">                @Override</div><div class="line">                public void onClick(View v) &#123;</div><div class="line">                    Toast.makeText(MainActivity.this,datas.get(position).getSrc(),Toast.LENGTH_SHORT).show();</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">            return itmeView;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public List&lt;TagBean&gt; getDatas() &#123;</div><div class="line">        List&lt;TagBean&gt; datas=new ArrayList&lt;&gt;();</div><div class="line">        datas.add(new TagBean(Color.parseColor(&quot;#F8F2EC&quot;),&quot;微信&quot;));</div><div class="line">        datas.add(new TagBean(Color.parseColor(&quot;#F8EAEB&quot;),&quot;百度糯米&quot;));</div><div class="line">        datas.add(new TagBean(Color.parseColor(&quot;#F2F2F2&quot;),&quot;qq&quot;));</div><div class="line">        datas.add(new TagBean(Color.parseColor(&quot;#F2F5E9&quot;),&quot;大众点评&quot;));</div><div class="line">        datas.add(new TagBean(Color.parseColor(&quot;#F2F5E9&quot;),&quot;同程旅游&quot;));</div><div class="line">        datas.add(new TagBean(Color.parseColor(&quot;#F2F5E9&quot;),&quot;爱奇艺&quot;));</div><div class="line">        datas.add(new TagBean(Color.parseColor(&quot;#F8F2EC&quot;),&quot;贝贝&quot;));</div><div class="line">        datas.add(new TagBean(Color.parseColor(&quot;#F8EAEB&quot;),&quot;万能钥匙&quot;));</div><div class="line">        datas.add(new TagBean(Color.parseColor(&quot;#E8F6F6&quot;),&quot;驾校一点通&quot;));</div><div class="line">        datas.add(new TagBean(Color.parseColor(&quot;#F8F2EC&quot;),&quot;天天快报&quot;));</div><div class="line">        datas.add(new TagBean(Color.parseColor(&quot;#E8F6F6&quot;),&quot;蘑菇街&quot;));</div><div class="line">        return datas;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/taglayout.gif" alt="image"></p>
+<p>代码如下</p>
+<pre><code>public class TagLayout extends ViewGroup{
+    private TagAdapter mAdapter;
+
+    public TagLayout(Context context) {
+        this(context,null);
+    }
+
+    public TagLayout(Context context, AttributeSet attrs) {
+        this(context, attrs,0);
+    }
+
+    public TagLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int modeWidth = MeasureSpec.getMode(widthMeasureSpec);
+        int modeHeight = MeasureSpec.getMode(heightMeasureSpec);
+
+        int width=0;
+        int height=0;
+
+        //一行的宽度
+        int lineWidth=0;
+
+        //一行的高度
+        int lineHeight=0;
+
+        //子控件的数目
+        int childCount = getChildCount();
+        for(int i=0;i&lt;childCount;i++){
+            //获取子控件
+            View childAt = getChildAt(i);
+
+            //测量
+            measureChild(childAt,widthMeasureSpec,heightMeasureSpec);
+
+            //得到margin
+            MarginLayoutParams lp= (MarginLayoutParams) childAt.getLayoutParams();
+
+            //子控件的宽度
+            int childWidth = childAt.getMeasuredWidth()+lp.leftMargin+lp.rightMargin;
+
+            //子控件的高度
+            int childHeight = childAt.getMeasuredHeight()+lp.topMargin+lp.bottomMargin;
+
+            //大于宽度换行
+            if(lineWidth+childWidth&gt;widthSize){
+                //宽度
+                width=Math.max(lineWidth,childWidth);
+                lineWidth=childWidth;
+
+                //高度
+                height+=lineHeight;
+                lineHeight=childHeight;
+            }else{
+                lineWidth+=childWidth;
+                lineHeight=Math.max(lineHeight,childHeight);
+            }
+
+            //如果是最后一个
+            if(i==childCount-1){
+                width=Math.max(width,lineWidth);
+                height+=lineHeight;
+            }
+        }
+
+        //设置进去
+        setMeasuredDimension((modeWidth==MeasureSpec.EXACTLY)?widthSize:width
+                ,(modeHeight==MeasureSpec.EXACTLY)?heightSize:height
+        );
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int childCount = getChildCount();
+        int lineWidth=0;
+        int lineHeight=0;
+        int left=0,top=0;
+        int measuredWidth = getMeasuredWidth();
+        for(int i=0;i&lt;childCount;i++){
+            //获取子控件
+            View childView = getChildAt(i);
+            //如果子控件不可见跳出循环
+            if(childView.getVisibility()==GONE){
+                continue;
+            }
+            MarginLayoutParams lp = (MarginLayoutParams) childView
+                    .getLayoutParams();
+            int childWidth = childView.getMeasuredWidth()+lp.leftMargin+lp.rightMargin;
+            int childHeight = childView.getMeasuredHeight()+lp.topMargin+lp.bottomMargin;
+            if(lineWidth+childWidth&gt; measuredWidth){
+                //如果换行，高度叠加，left从左开始
+                top += lineHeight;
+                left = 0;
+                //初始化lineHeight和lineWidth
+                lineHeight = childHeight;
+                lineWidth = childWidth;
+            }else {
+                lineHeight = Math.max(lineHeight,childHeight);
+                lineWidth += childWidth;
+            }
+            //算出child的四个点
+            int cl=left+lp.leftMargin;
+            int ct=top+lp.topMargin;
+            int cr=cl+childView.getMeasuredWidth();
+            int cb=ct+childView.getMeasuredHeight();
+
+            //摆放child的位置
+            childView.layout(cl,ct,cr,cb);
+
+            //更新left的位置,把下一个子控件的位置作为起点
+            left+=childWidth;
+        }
+    }
+
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new MarginLayoutParams(getContext(),attrs);
+    }
+
+
+    /**
+     * 设置设配器
+     * @param adapter
+     */
+    public void setAdapter(TagAdapter adapter){
+        if(adapter==null){
+            throw new NullPointerException(&quot;TagAdapter不能为空&quot;);
+        }
+        removeAllViews();
+        mAdapter = adapter;
+        int itemCount = mAdapter.getItemCount();
+        for(int i=0;i&lt;itemCount;i++){
+            View childView = mAdapter.getView(i, this);
+            addView(childView);
+        }
+    }
+}
+</code></pre><p>//创建适配器</p>
+<pre><code>public abstract class TagAdapter {
+
+    public abstract int getItemCount();
+
+    public abstract View getView(int position, ViewGroup parent);
+}
+</code></pre><p>//MainActivity</p>
+<pre><code>public class MainActivity extends AppCompatActivity {
+
+    private TagLayout tagLayout;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        tagLayout = (TagLayout) findViewById(R.id.tagview);
+
+        tagLayout.setAdapter(new MyAdapter(getDatas()));
+    }
+
+    /**
+     * adapter
+     */
+    class MyAdapter extends TagAdapter{
+
+        private List&lt;TagBean&gt; datas;
+
+        public MyAdapter(List&lt;TagBean&gt; datas){
+
+            this.datas = datas;
+        }
+        @Override
+        public int getItemCount() {
+            return datas.size();
+        }
+
+        @Override
+        public View getView(int position, ViewGroup parent) {
+            TextView itmeView = (TextView) LayoutInflater.from(MainActivity.this).inflate(R.layout.tag_item, parent, false);
+            itmeView.setText(datas.get(position).getSrc());
+            GradientDrawable drawable=new GradientDrawable();
+            drawable.setStroke(1,Color.parseColor(&quot;#99541D&quot;));
+            drawable.setCornerRadius(5);
+            drawable.setColor(datas.get(position).getBgColor());
+            itmeView.setBackgroundDrawable(drawable);
+
+            //设置点击事件
+             itmeView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(MainActivity.this,datas.get(position).getSrc(),Toast.LENGTH_SHORT).show();
+                }
+            });
+            return itmeView;
+        }
+    }
+
+    public List&lt;TagBean&gt; getDatas() {
+        List&lt;TagBean&gt; datas=new ArrayList&lt;&gt;();
+        datas.add(new TagBean(Color.parseColor(&quot;#F8F2EC&quot;),&quot;微信&quot;));
+        datas.add(new TagBean(Color.parseColor(&quot;#F8EAEB&quot;),&quot;百度糯米&quot;));
+        datas.add(new TagBean(Color.parseColor(&quot;#F2F2F2&quot;),&quot;qq&quot;));
+        datas.add(new TagBean(Color.parseColor(&quot;#F2F5E9&quot;),&quot;大众点评&quot;));
+        datas.add(new TagBean(Color.parseColor(&quot;#F2F5E9&quot;),&quot;同程旅游&quot;));
+        datas.add(new TagBean(Color.parseColor(&quot;#F2F5E9&quot;),&quot;爱奇艺&quot;));
+        datas.add(new TagBean(Color.parseColor(&quot;#F8F2EC&quot;),&quot;贝贝&quot;));
+        datas.add(new TagBean(Color.parseColor(&quot;#F8EAEB&quot;),&quot;万能钥匙&quot;));
+        datas.add(new TagBean(Color.parseColor(&quot;#E8F6F6&quot;),&quot;驾校一点通&quot;));
+        datas.add(new TagBean(Color.parseColor(&quot;#F8F2EC&quot;),&quot;天天快报&quot;));
+        datas.add(new TagBean(Color.parseColor(&quot;#E8F6F6&quot;),&quot;蘑菇街&quot;));
+        return datas;
+    }
+}
+</code></pre><h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/taglayout.gif" alt="image"></p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>流式布局的实现并不复杂，在这里使用对象Adapter设计模式，可以很好的拥抱变化，我们不用在关心Ui层是什么样子，只需知道是view即可，从而达到无限适配，拥抱变化的目的。</p>
 <h3 id="源码地址："><a href="#源码地址：" class="headerlink" title="源码地址："></a>源码地址：</h3><p><a href="https://github.com/livesun/TagLayout" target="_blank" rel="external">https://github.com/livesun/TagLayout</a></p>
 

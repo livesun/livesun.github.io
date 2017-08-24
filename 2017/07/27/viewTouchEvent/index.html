@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -402,12 +398,119 @@
                 <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
     
         <p>Touch事件分发中有两个主角:ViewGroup和View。<br>为了方便理解，今天我们先单独讲View的Touch事件分发，我们先看下实例代码</p>
-<p>首先，我们自定义一个view<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">public class TouchView extends View &#123;</div><div class="line">    private  Context context;</div><div class="line">    private  AttributeSet attrs;</div><div class="line"></div><div class="line">    public TouchView(Context context) &#123;</div><div class="line">        super(context);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public TouchView(Context context, AttributeSet attrs) &#123;</div><div class="line">        super(context, attrs);</div><div class="line">        this.context = context;</div><div class="line">        this.attrs = attrs;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public TouchView(Context context, AttributeSet attrs, int defStyleAttr) &#123;</div><div class="line">        super(context, attrs, defStyleAttr);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</div><div class="line">        addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());</div><div class="line">        return super.onTouchEvent(event);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 用来做事件分发</div><div class="line">     * @param event</div><div class="line">     * @return</div><div class="line">     */</div><div class="line">    @Override</div><div class="line">    public boolean dispatchTouchEvent(MotionEvent event) &#123;</div><div class="line">        addTextView(&quot;dispatchTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());</div><div class="line">        return super.dispatchTouchEvent(event);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void addTextView(String tag, ViewGroup viewGroup)&#123;</div><div class="line">        TextView textView=new TextView(context);</div><div class="line">        textView.setText(tag);</div><div class="line">        textView.setTextSize(18);</div><div class="line">        textView.setTextColor(Color.BLACK);</div><div class="line">        viewGroup.addView(textView);</div><div class="line">        TextView text=new TextView(context);</div><div class="line">        text.setText(&quot;↓&quot;);</div><div class="line">        viewGroup.addView(text);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>接着这是xml</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;ScrollView</div><div class="line">    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;</div><div class="line">    tools:context=&quot;livesun.clientb.MainActivity&quot;&gt;</div><div class="line"></div><div class="line">&lt;LinearLayout</div><div class="line">    android:id=&quot;@+id/root&quot;</div><div class="line">    android:orientation=&quot;vertical&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;</div><div class="line">    &gt;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;livesun.clientb.TouchView</div><div class="line">        android:id=&quot;@+id/touch&quot;</div><div class="line">        android:layout_width=&quot;200dp&quot;</div><div class="line">        android:layout_height=&quot;150dp&quot;</div><div class="line">        android:background=&quot;@color/colorAccent&quot;</div><div class="line">        /&gt;</div><div class="line">&lt;/LinearLayout&gt;</div><div class="line">&lt;/ScrollView&gt;</div></pre></td></tr></table></figure>
-<p>Activity里的代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">public class MainActivity extends AppCompatActivity&#123;</div><div class="line"></div><div class="line">    private LinearLayout root;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        root = (LinearLayout) findViewById(R.id.root);</div><div class="line">        TouchView touchView= (TouchView) findViewById(R.id.touch);</div><div class="line"></div><div class="line">        //设置Touch事件</div><div class="line">        touchView.setOnTouchListener(new View.OnTouchListener() &#123;</div><div class="line">            @Override</div><div class="line">            public boolean onTouch(View v, MotionEvent event) &#123;</div><div class="line">                addTextView(&quot;OnTouchListener-&gt;&quot;+event.getAction());</div><div class="line">                return false;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        touchView.setOnClickListener(new View.OnClickListener() &#123;</div><div class="line">            @Override</div><div class="line">            public void onClick(View v) &#123;</div><div class="line">                addTextView(&quot;OnClickListener&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void addTextView(String tag)&#123;</div><div class="line">        TextView textView=new TextView(this);</div><div class="line">        textView.setText(tag);</div><div class="line">        textView.setTextSize(18);</div><div class="line">        textView.setTextColor(Color.BLACK);</div><div class="line">        root.addView(textView);</div><div class="line">        TextView text=new TextView(this);</div><div class="line">        text.setText(&quot;↓&quot;);</div><div class="line">        root.addView(text);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>成功运行后的截图</p>
+<p>首先，我们自定义一个view</p>
+<pre><code>public class TouchView extends View {
+    private  Context context;
+    private  AttributeSet attrs;
+
+    public TouchView(Context context) {
+        super(context);
+    }
+
+    public TouchView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.context = context;
+        this.attrs = attrs;
+    }
+
+    public TouchView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
+        return super.onTouchEvent(event);
+    }
+
+    /**
+     * 用来做事件分发
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        addTextView(&quot;dispatchTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
+        return super.dispatchTouchEvent(event);
+    }
+
+    public void addTextView(String tag, ViewGroup viewGroup){
+        TextView textView=new TextView(context);
+        textView.setText(tag);
+        textView.setTextSize(18);
+        textView.setTextColor(Color.BLACK);
+        viewGroup.addView(textView);
+        TextView text=new TextView(context);
+        text.setText(&quot;↓&quot;);
+        viewGroup.addView(text);
+    }
+}
+</code></pre><p>接着这是xml</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;ScrollView
+    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;livesun.clientb.MainActivity&quot;&gt;
+
+&lt;LinearLayout
+    android:id=&quot;@+id/root&quot;
+    android:orientation=&quot;vertical&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    &gt;
+
+
+    &lt;livesun.clientb.TouchView
+        android:id=&quot;@+id/touch&quot;
+        android:layout_width=&quot;200dp&quot;
+        android:layout_height=&quot;150dp&quot;
+        android:background=&quot;@color/colorAccent&quot;
+        /&gt;
+&lt;/LinearLayout&gt;
+&lt;/ScrollView&gt;
+</code></pre><p>Activity里的代码</p>
+<pre><code>public class MainActivity extends AppCompatActivity{
+
+    private LinearLayout root;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        root = (LinearLayout) findViewById(R.id.root);
+        TouchView touchView= (TouchView) findViewById(R.id.touch);
+
+        //设置Touch事件
+        touchView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                addTextView(&quot;OnTouchListener-&gt;&quot;+event.getAction());
+                return false;
+            }
+        });
+        touchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addTextView(&quot;OnClickListener&quot;);
+            }
+        });
+
+    }
+
+    public void addTextView(String tag){
+        TextView textView=new TextView(this);
+        textView.setText(tag);
+        textView.setTextSize(18);
+        textView.setTextColor(Color.BLACK);
+        root.addView(textView);
+        TextView text=new TextView(this);
+        text.setText(&quot;↓&quot;);
+        root.addView(text);
+    }
+}
+</code></pre><p>成功运行后的截图</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/view_touch1.png" alt="image"></p>
 <h3 id="现象1"><a href="#现象1" class="headerlink" title="现象1"></a>现象1</h3><p>按照上面的代码，我们点击TocuchView</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/view_touch3.gif" alt="image"></p>
@@ -415,56 +518,228 @@
 <p> Touch事件是这样走的<br> dispatchTouchEvent.ACTION_DOWN -&gt; OnTouchListener.ACTION_DOWN -&gt; onTouchEvent.ACTION_DOWN -&gt; dispatchTouchEvent.ACTION_MOVE -&gt; OnTouchListener.ACTION_MOVE -&gt; onTouchEvent.ACTION_MOVE -&gt; dispatchTouchEvent.ACTION_UP -&gt; OnTouchListener.ACTION_UP -&gt; onTouchEvent.ACTION_UP -&gt; OnClickListener</p>
 <p>如下图（图画的比较丑，不要介意。。。）</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/view_touch5.png" alt="image"></p>
-<h3 id="现象2"><a href="#现象2" class="headerlink" title="现象2"></a>现象2</h3><p>如果在dispatchTouchEvent返回false的情况下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">   public boolean dispatchTouchEvent(MotionEvent event) &#123;</div><div class="line">       addTextView(&quot;dispatchTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());</div><div class="line">       return false;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
-<p>Touch事件是这样走的</p>
+<h3 id="现象2"><a href="#现象2" class="headerlink" title="现象2"></a>现象2</h3><p>如果在dispatchTouchEvent返回false的情况下</p>
+<pre><code> @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        addTextView(&quot;dispatchTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
+        return false;
+    }
+</code></pre><p>Touch事件是这样走的</p>
 <p>只走了 dispatchTouchEvent.ACTION_DOWN</p>
-<h3 id="现象3"><a href="#现象3" class="headerlink" title="现象3"></a>现象3</h3><p>如果在dispatchTouchEvent返回true的情况下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">   public boolean dispatchTouchEvent(MotionEvent event) &#123;</div><div class="line">       addTextView(&quot;dispatchTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());</div><div class="line">       return true;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
-<p>Touch事件走的dispatchTouchEvent.ACTION_DOWN -&gt; dispatchTouchEvent.ACTION_MOVE -&gt; dispatchTouchEvent.ACTION_UP</p>
+<h3 id="现象3"><a href="#现象3" class="headerlink" title="现象3"></a>现象3</h3><p>如果在dispatchTouchEvent返回true的情况下</p>
+<pre><code> @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        addTextView(&quot;dispatchTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
+        return true;
+    }
+</code></pre><p>Touch事件走的dispatchTouchEvent.ACTION_DOWN -&gt; dispatchTouchEvent.ACTION_MOVE -&gt; dispatchTouchEvent.ACTION_UP</p>
 <h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p><strong>也就是说，无论dispatchTouchEvent返回true或false，只要不执行super.dispatchTouchEvent(event)，后续的事件都不会执行。</strong></p>
 <h3 id="现象4"><a href="#现象4" class="headerlink" title="现象4"></a>现象4</h3><p>下面我们让dispatchTouchEvent恢复原状，让onTouch返回true</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">touchView.setOnTouchListener(new View.OnTouchListener() &#123;</div><div class="line">           @Override</div><div class="line">           public boolean onTouch(View v, MotionEvent event) &#123;</div><div class="line">               addTextView(&quot;OnTouchListener-&gt;&quot;+event.getAction());</div><div class="line">               return true;</div><div class="line">           &#125;</div><div class="line">       &#125;);</div></pre></td></tr></table></figure>
-<p>此时，Touch事件是这样走的</p>
+<pre><code> touchView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                addTextView(&quot;OnTouchListener-&gt;&quot;+event.getAction());
+                return true;
+            }
+        });
+</code></pre><p>此时，Touch事件是这样走的</p>
 <p>dispatchTouchEvent.ACTION_DOWN -&gt; OnTouchListener.ACTION_DOWN -&gt; dispatchTouchEvent.ACTION_MOVE -&gt; OnTouchListener.ACTION_MOVE -&gt; dispatchTouchEvent.ACTION_UP -&gt; OnTouchListener.ACTION_UP</p>
 <h3 id="现象5"><a href="#现象5" class="headerlink" title="现象5"></a>现象5</h3><p>我们接着让onTouch复原为false，让onTouchEvent返回为true</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">   public boolean onTouchEvent(MotionEvent event) &#123;</div><div class="line">       addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());</div><div class="line">     </div><div class="line">       return true;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>此时Touch事件的流程跟现象1默认差不读哦，从dispatchTouchEvent-&gt;OnTouchListener-&gt;onTouchEvent 从down -&gt; move -&gt; up，唯独不走onClickListener。我们此时返回true，也称消费事件。</p>
+<pre><code> @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
+
+        return true;
+    }
+</code></pre><p>此时Touch事件的流程跟现象1默认差不读哦，从dispatchTouchEvent-&gt;OnTouchListener-&gt;onTouchEvent 从down -&gt; move -&gt; up，唯独不走onClickListener。我们此时返回true，也称消费事件。</p>
 <h3 id="现象6"><a href="#现象6" class="headerlink" title="现象6"></a>现象6</h3><p>那让onTouchEvent返回为false呢</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">   public boolean onTouchEvent(MotionEvent event) &#123;</div><div class="line">       addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());</div><div class="line">     </div><div class="line">       return false;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>Touch 的事件流程是这样</p>
+<pre><code> @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
+
+        return false;
+    }
+</code></pre><p>Touch 的事件流程是这样</p>
 <p>dispatchTouchEvent.DOWN -&gt; OnTouchListener.DOWN -&gt; onTouchEvent.DOWN</p>
 <h3 id="注意-1"><a href="#注意-1" class="headerlink" title="注意"></a>注意</h3><p>跟dispatchTouchEvent类似，onTouchEvent也默认返回super.onTouchEvent(event);</p>
-<p>如果，在返回true之前 执行super.onTouchEvent(event);<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">   public boolean onTouchEvent(MotionEvent event) &#123;</div><div class="line">       addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());</div><div class="line">     super.onTouchEvent(event);</div><div class="line">       return true;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
-<p>我们惊奇的发现 Touch事件的执行顺序跟正常情况也就是现象1的流程一摸一样。</p>
+<p>如果，在返回true之前 执行super.onTouchEvent(event);</p>
+<pre><code> @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
+      super.onTouchEvent(event);
+        return true;
+    }
+</code></pre><p>我们惊奇的发现 Touch事件的执行顺序跟正常情况也就是现象1的流程一摸一样。</p>
 <p>而在返回false之前 执行super.onTouchEvent(event);</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">   public boolean onTouchEvent(MotionEvent event) &#123;</div><div class="line">       addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());</div><div class="line">     super.onTouchEvent(event);</div><div class="line">       return false;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>Touch事件的执行顺序跟不加super.onTouchEvent(event);是同样的<br>dispatchTouchEvent.DOWN -&gt; OnTouchListener.DOWN -&gt; onTouchEvent.DOWN</p>
+<pre><code> @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
+      super.onTouchEvent(event);
+        return false;
+    }
+</code></pre><p>Touch事件的执行顺序跟不加super.onTouchEvent(event);是同样的<br>dispatchTouchEvent.DOWN -&gt; OnTouchListener.DOWN -&gt; onTouchEvent.DOWN</p>
 <p>也就是说，决定执行顺序的，不单单由返回值决定，还跟super也就是父类的方法有关。</p>
 <p>下面，我们根据上述几种现象，通过源码逐一分析。</p>
 <hr>
 <p>对于View来说，事件传递机制有两个函数：dispatchTouchEvent和onTouchEvent，dispatchTouchEvent负责事件分发，onTouchEvent负责事件执行，也就是消费事件。</p>
 <p>view的事件传递入口是dispatchTouchEvent()方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">public boolean dispatchTouchEvent(MotionEvent event) &#123;</div><div class="line">    </div><div class="line">     if (event.isTargetAccessibilityFocus()) &#123;</div><div class="line">            if (!isAccessibilityFocusedViewOrHost()) &#123;</div><div class="line">                return false;</div><div class="line">            &#125;</div><div class="line">            event.setTargetAccessibilityFocus(false);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        boolean result = false;</div><div class="line"></div><div class="line">        if (mInputEventConsistencyVerifier != null) &#123;</div><div class="line">            mInputEventConsistencyVerifier.onTouchEvent(event, 0);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        final int actionMasked = event.getActionMasked();</div><div class="line">        if (actionMasked == MotionEvent.ACTION_DOWN) &#123;</div><div class="line">           //按下的时候，清空滚动状态</div><div class="line">            stopNestedScroll();</div><div class="line">        &#125;</div><div class="line">        //控件是否被其他窗口遮盖</div><div class="line">        if (onFilterTouchEventForSecurity(event)) &#123;</div><div class="line">        //控件是否是可用，斌且是否为滚动条拖动</div><div class="line">            if ((mViewFlags &amp; ENABLED_MASK) == ENABLED &amp;&amp; handleScrollBarDragging(event)) &#123;</div><div class="line">            </div><div class="line">                result = true;</div><div class="line">            &#125;</div><div class="line">           </div><div class="line">           //这是一个关键，ListenerInfo存放了关于view的所有listener信息，如OnClickListener、OnTouchListener等</div><div class="line">            ListenerInfo li = mListenerInfo;</div><div class="line">            if (li != null &amp;&amp; li.mOnTouchListener != null</div><div class="line">                    &amp;&amp; (mViewFlags &amp; ENABLED_MASK) == ENABLED</div><div class="line">                    &amp;&amp; li.mOnTouchListener.onTouch(this, event)) &#123;</div><div class="line">                result = true;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            if (!result &amp;&amp; onTouchEvent(event)) &#123;</div><div class="line">                result = true;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (!result &amp;&amp; mInputEventConsistencyVerifier != null) &#123;</div><div class="line">            mInputEventConsistencyVerifier.onUnhandledEvent(event, 0);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        </div><div class="line">        if (actionMasked == MotionEvent.ACTION_UP ||</div><div class="line">                actionMasked == MotionEvent.ACTION_CANCEL ||</div><div class="line">                (actionMasked == MotionEvent.ACTION_DOWN &amp;&amp; !result)) &#123;</div><div class="line">            stopNestedScroll();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        return result;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>可以看到，View的dispatchTouchEvent方法中，通过result来标识控件是否消费该事件,我们一步步看</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//控件是否被其他窗口遮盖</div><div class="line">        if (onFilterTouchEventForSecurity(event)) &#123;</div><div class="line">        //控件是否是可用，斌且是否为滚动条拖动</div><div class="line">            if ((mViewFlags &amp; ENABLED_MASK) == ENABLED &amp;&amp; handleScrollBarDragging(event)) &#123;</div><div class="line">            </div><div class="line">                result = true;</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
-<p>如果该控件被其他窗口遮挡，并且可用同时被拖动，则直接返回true退出方法，不会再往下执行，也就是说，OnTouchListener onTouchEvent OnClickListener 就不会执行。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//这是一个关键，ListenerInfo存放了关于view的所有listener信息，如OnClickListener、OnTouchListener等</div><div class="line">           ListenerInfo li = mListenerInfo;</div></pre></td></tr></table></figure>
-<p>这是一处关键代码，我们先看ListenerInfo</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">tatic class ListenerInfo &#123;</div><div class="line">       // ...</div><div class="line">       </div><div class="line">        private CopyOnWriteArrayList&lt;OnAttachStateChangeListener&gt; mOnAttachStateChangeListeners;</div><div class="line"></div><div class="line">        public OnClickListener mOnClickListener;</div><div class="line"></div><div class="line">      // ...</div><div class="line"></div><div class="line">        private OnKeyListener mOnKeyListener;</div><div class="line"></div><div class="line">        private OnTouchListener mOnTouchListener;</div><div class="line"></div><div class="line">       // ...</div><div class="line">        OnApplyWindowInsetsListener mOnApplyWindowInsetsListener;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>比如view的setOnClickListener方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public void setOnClickListener(@Nullable OnClickListener l) &#123;</div><div class="line">        if (!isClickable()) &#123;</div><div class="line">            setClickable(true);</div><div class="line">        &#125;</div><div class="line">        getListenerInfo().mOnClickListener = l;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">ListenerInfo getListenerInfo() &#123;</div><div class="line">        if (mListenerInfo != null) &#123;</div><div class="line">            return mListenerInfo;</div><div class="line">        &#125;</div><div class="line">        mListenerInfo = new ListenerInfo();</div><div class="line">        return mListenerInfo;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>接着下一步</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">if (li != null &amp;&amp; li.mOnTouchListener != null</div><div class="line">                   //控件石佛可用</div><div class="line">                   &amp;&amp; (mViewFlags &amp; ENABLED_MASK) == ENABLED</div><div class="line">                   &amp;&amp; li.mOnTouchListener.onTouch(this, event)) &#123;</div><div class="line">               result = true;</div><div class="line">           &#125;</div></pre></td></tr></table></figure>
-<p>li 不为空条件成立，再我们的例子中，设置了setOnTouchListener,所以mOnTouchListener不为空的条件也成立，第三个，我们并没有设置控件不可用，所以依然成立，最关键的是第四个参数，在<strong>现象4</strong>中，我们返回true,所有条件成立，result=true,而<strong>现象1</strong>中，按默认返回false，则条件不成立，result还是默认的false。</p>
+<pre><code>public boolean dispatchTouchEvent(MotionEvent event) {
+
+     if (event.isTargetAccessibilityFocus()) {
+            if (!isAccessibilityFocusedViewOrHost()) {
+                return false;
+            }
+            event.setTargetAccessibilityFocus(false);
+        }
+
+        boolean result = false;
+
+        if (mInputEventConsistencyVerifier != null) {
+            mInputEventConsistencyVerifier.onTouchEvent(event, 0);
+        }
+
+        final int actionMasked = event.getActionMasked();
+        if (actionMasked == MotionEvent.ACTION_DOWN) {
+           //按下的时候，清空滚动状态
+            stopNestedScroll();
+        }
+        //控件是否被其他窗口遮盖
+        if (onFilterTouchEventForSecurity(event)) {
+        //控件是否是可用，斌且是否为滚动条拖动
+            if ((mViewFlags &amp; ENABLED_MASK) == ENABLED &amp;&amp; handleScrollBarDragging(event)) {
+
+                result = true;
+            }
+
+           //这是一个关键，ListenerInfo存放了关于view的所有listener信息，如OnClickListener、OnTouchListener等
+            ListenerInfo li = mListenerInfo;
+            if (li != null &amp;&amp; li.mOnTouchListener != null
+                    &amp;&amp; (mViewFlags &amp; ENABLED_MASK) == ENABLED
+                    &amp;&amp; li.mOnTouchListener.onTouch(this, event)) {
+                result = true;
+            }
+
+            if (!result &amp;&amp; onTouchEvent(event)) {
+                result = true;
+            }
+        }
+
+        if (!result &amp;&amp; mInputEventConsistencyVerifier != null) {
+            mInputEventConsistencyVerifier.onUnhandledEvent(event, 0);
+        }
+
+
+        if (actionMasked == MotionEvent.ACTION_UP ||
+                actionMasked == MotionEvent.ACTION_CANCEL ||
+                (actionMasked == MotionEvent.ACTION_DOWN &amp;&amp; !result)) {
+            stopNestedScroll();
+        }
+
+        return result;
+    }
+</code></pre><p>可以看到，View的dispatchTouchEvent方法中，通过result来标识控件是否消费该事件,我们一步步看</p>
+<pre><code>//控件是否被其他窗口遮盖
+        if (onFilterTouchEventForSecurity(event)) {
+        //控件是否是可用，斌且是否为滚动条拖动
+            if ((mViewFlags &amp; ENABLED_MASK) == ENABLED &amp;&amp; handleScrollBarDragging(event)) {
+
+                result = true;
+            }
+</code></pre><p>如果该控件被其他窗口遮挡，并且可用同时被拖动，则直接返回true退出方法，不会再往下执行，也就是说，OnTouchListener onTouchEvent OnClickListener 就不会执行。</p>
+<pre><code> //这是一个关键，ListenerInfo存放了关于view的所有listener信息，如OnClickListener、OnTouchListener等
+            ListenerInfo li = mListenerInfo;
+</code></pre><p>这是一处关键代码，我们先看ListenerInfo</p>
+<pre><code>tatic class ListenerInfo {
+       // ...
+
+        private CopyOnWriteArrayList&lt;OnAttachStateChangeListener&gt; mOnAttachStateChangeListeners;
+
+        public OnClickListener mOnClickListener;
+
+      // ...
+
+        private OnKeyListener mOnKeyListener;
+
+        private OnTouchListener mOnTouchListener;
+
+       // ...
+        OnApplyWindowInsetsListener mOnApplyWindowInsetsListener;
+    }
+</code></pre><p>比如view的setOnClickListener方法</p>
+<pre><code>public void setOnClickListener(@Nullable OnClickListener l) {
+        if (!isClickable()) {
+            setClickable(true);
+        }
+        getListenerInfo().mOnClickListener = l;
+    }
+
+ListenerInfo getListenerInfo() {
+        if (mListenerInfo != null) {
+            return mListenerInfo;
+        }
+        mListenerInfo = new ListenerInfo();
+        return mListenerInfo;
+    }
+</code></pre><p>接着下一步</p>
+<pre><code> if (li != null &amp;&amp; li.mOnTouchListener != null
+                    //控件石佛可用
+                    &amp;&amp; (mViewFlags &amp; ENABLED_MASK) == ENABLED
+                    &amp;&amp; li.mOnTouchListener.onTouch(this, event)) {
+                result = true;
+            }
+</code></pre><p>li 不为空条件成立，再我们的例子中，设置了setOnTouchListener,所以mOnTouchListener不为空的条件也成立，第三个，我们并没有设置控件不可用，所以依然成立，最关键的是第四个参数，在<strong>现象4</strong>中，我们返回true,所有条件成立，result=true,而<strong>现象1</strong>中，按默认返回false，则条件不成立，result还是默认的false。</p>
 <p>再接着下面这段代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">if (!result &amp;&amp; onTouchEvent(event)) &#123;</div><div class="line">                result = true;</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
-<p>如果result为false,那！result就成立，接着会走onTouchEvent(event) 检查是否成立。</p>
+<pre><code>if (!result &amp;&amp; onTouchEvent(event)) {
+                result = true;
+            }
+</code></pre><p>如果result为false,那！result就成立，接着会走onTouchEvent(event) 检查是否成立。</p>
 <p>如果resulet为true,那！result不成立，应为&amp;&amp;只要一个条件不成立，就不会走第二个条件，所以onTouchEvent(event)就不会走，（这代码设计的，太精妙了！）</p>
 <p>所以现在明白了吧，在<strong>现象4</strong>中，我们返回true，result为true，此刻onTouchEvent(event)压根不走，而onTouchEvent(event) 不走，也就不会走onClicklistener方法</p>
 <p>我们接着看代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">public boolean onTouchEvent(MotionEvent event) &#123;</div><div class="line">       // ...</div><div class="line"></div><div class="line">        //如果是可点击 或可长按等 返回true</div><div class="line">        if (((viewFlags &amp; CLICKABLE) == CLICKABLE ||</div><div class="line">                (viewFlags &amp; LONG_CLICKABLE) == LONG_CLICKABLE) ||</div><div class="line">                (viewFlags &amp; CONTEXT_CLICKABLE) == CONTEXT_CLICKABLE) &#123;</div><div class="line">            switch (action) &#123;</div><div class="line">                case MotionEvent.ACTION_UP:</div><div class="line">                    boolean prepressed = (mPrivateFlags &amp; PFLAG_PREPRESSED) != 0;</div><div class="line">            // ...</div><div class="line">                            if (!focusTaken) &#123;</div><div class="line">                              </div><div class="line">                                if (mPerformClick == null) &#123;</div><div class="line">                                    mPerformClick = new PerformClick();</div><div class="line">                                &#125;</div><div class="line">                                if (!post(mPerformClick)) &#123;</div><div class="line">                                    performClick();</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">         </div><div class="line">                    break;</div><div class="line">        // ....</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            return true;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        return false;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>在ACTION_UP中调用performClick(),其实也就是调用li.mOnClickListener.onClick(this)，也就是我们的点击事件，所以现在清楚了 为什么在<strong>现象1</strong>中onTouchEvent的ACTION_UP之后才走OnClickListener方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public boolean performClick() &#123;</div><div class="line">        final boolean result;</div><div class="line">        final ListenerInfo li = mListenerInfo;</div><div class="line">        if (li != null &amp;&amp; li.mOnClickListener != null) &#123;</div><div class="line">            playSoundEffect(SoundEffectConstants.CLICK);</div><div class="line">            li.mOnClickListener.onClick(this);</div><div class="line">            result = true;</div><div class="line">        &#125; else &#123;</div><div class="line">            result = false;</div><div class="line">        &#125;</div><div class="line">        return result;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>现在源码分析完毕，我们来看看之前的现象</p>
+<pre><code>public boolean onTouchEvent(MotionEvent event) {
+       // ...
+
+        //如果是可点击 或可长按等 返回true
+        if (((viewFlags &amp; CLICKABLE) == CLICKABLE ||
+                (viewFlags &amp; LONG_CLICKABLE) == LONG_CLICKABLE) ||
+                (viewFlags &amp; CONTEXT_CLICKABLE) == CONTEXT_CLICKABLE) {
+            switch (action) {
+                case MotionEvent.ACTION_UP:
+                    boolean prepressed = (mPrivateFlags &amp; PFLAG_PREPRESSED) != 0;
+            // ...
+                            if (!focusTaken) {
+
+                                if (mPerformClick == null) {
+                                    mPerformClick = new PerformClick();
+                                }
+                                if (!post(mPerformClick)) {
+                                    performClick();
+                                }
+                            }
+
+                    break;
+        // ....
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+</code></pre><p>在ACTION_UP中调用performClick(),其实也就是调用li.mOnClickListener.onClick(this)，也就是我们的点击事件，所以现在清楚了 为什么在<strong>现象1</strong>中onTouchEvent的ACTION_UP之后才走OnClickListener方法</p>
+<pre><code>public boolean performClick() {
+        final boolean result;
+        final ListenerInfo li = mListenerInfo;
+        if (li != null &amp;&amp; li.mOnClickListener != null) {
+            playSoundEffect(SoundEffectConstants.CLICK);
+            li.mOnClickListener.onClick(this);
+            result = true;
+        } else {
+            result = false;
+        }
+        return result;
+    }
+</code></pre><p>现在源码分析完毕，我们来看看之前的现象</p>
 <ul>
 <li><strong>现象1</strong></li>
 </ul>
@@ -483,7 +758,10 @@
 <p>我们直接让onTouchEvent返回false或者true，这跟<strong>现象2和3</strong>道理是一样，都没有执行父类的方法，自然而然会出现问题。当返回true时，满足下面的if条件，最终result=true，dispatchTouchEvent返回为true，便会一直派发事件，只是走不了onTouchEvent的UP事件中的onClick方法，而onTouchEvent返回false时，if条件不满足，result=false，dispatchTouchEvent返值为false，所以即不会继续派发，具体原因等到我们讲ViewGroup时再说，</p>
 <p>所以此时的Touch事件流程是这样</p>
 <p>dispatchTouchEvent.DOWN -&gt; OnTouchListener.DOWN -&gt; onTouchEvent.DOWN</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">if (!result &amp;&amp; onTouchEvent(event)) &#123;</div><div class="line">                result = true;</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
+<pre class="line-numbers language-onTouchEven"><code class="language-onTouchEven">if (!result && onTouchEvent(event)) {
+                result = true;
+            }
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>ViewGroup的Touch事件分析—&gt; <a href="https://livesun.github.io/2017/08/01/ViewGroupTouchEvent/">https://livesun.github.io/2017/08/01/ViewGroupTouchEvent/</a></p>
 <p>还是照着刚刚的那副图，对于view的事件分发，只需要记住，普通情况下的执行流程，而当返回true时，就拦截了事件传递，也就是消费事件，如果容易记混，就多看几遍源码，弄清先后执行的顺序，Touch事件分发并不难。</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/view_touch5.png" alt="image"></p>

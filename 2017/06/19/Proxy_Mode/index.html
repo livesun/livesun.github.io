@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -406,32 +402,314 @@
 <h3 id="上类图"><a href="#上类图" class="headerlink" title="上类图"></a>上类图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/Proxy_Mode.png" alt="image"></p>
 <p>随着科技的发达，机器人越来越先进，终于有一天，机器人做的跟我们一摸一样，然后他们负责替我们做工作，我们吃喝玩乐，来我们就用代码创建两个机器人。</p>
 <h3 id="以下是代码："><a href="#以下是代码：" class="headerlink" title="以下是代码："></a>以下是代码：</h3><p>首先是定义共同的接口，我们能做的事情，机器人也能要能做。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Created by 29028 on 2017/6/19.</div><div class="line"> *</div><div class="line"> * 自己的接口</div><div class="line"> */</div><div class="line"></div><div class="line">public interface ISlef &#123;</div><div class="line"></div><div class="line">    //我能干什么</div><div class="line"></div><div class="line">    //吃</div><div class="line">    public void eat();</div><div class="line"></div><div class="line">    //工作</div><div class="line">    public void doWork();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>接着定义两个机器人替身。</p>
+<pre><code>/**
+ * Created by 29028 on 2017/6/19.
+ *
+ * 自己的接口
+ */
+
+public interface ISlef {
+
+    //我能干什么
+
+    //吃
+    public void eat();
+
+    //工作
+    public void doWork();
+}
+</code></pre><p>接着定义两个机器人替身。</p>
 <p>替身1号</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">/**</div><div class="line"> * Created by 29028 on 2017/6/19.</div><div class="line"> * 机器人替身1号 我会的他也会</div><div class="line"> */</div><div class="line"></div><div class="line">public class ProxyRobot1 implements ISlef &#123;</div><div class="line"></div><div class="line">    public void eat() &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;机器人替身1号吃电&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void doWork() &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;机器人替身1号帮我做工作&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>替身1号</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Created by 29028 on 2017/6/19.</div><div class="line"> * 机器人替身2号 我会的他也会</div><div class="line"> */</div><div class="line"></div><div class="line">public class ProxyRobot2 implements ISlef &#123;</div><div class="line"></div><div class="line">    public void eat() &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;机器人替身2号吃电&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void doWork() &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;机器人替身2号帮我做工作&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>再接着创建我们自己</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Created by 29028 on 2017/6/19.</div><div class="line"> * 真的自己</div><div class="line"> */</div><div class="line"></div><div class="line">public class TrueSelf implements ISlef &#123;</div><div class="line"></div><div class="line">    private ISlef slef;</div><div class="line"></div><div class="line">    //默认让一号来</div><div class="line">    public TrueSelf()&#123;</div><div class="line">        slef =new ProxyRobot1();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //设置替身 我想谁几号替我就让几号来</div><div class="line">    public void setProxy(ISlef slef)&#123;</div><div class="line"></div><div class="line">        this.slef = slef;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    //吃东西这事还是我们自己来比较好</div><div class="line">    public void eat() &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;我悠哉悠哉的吃肉&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void doWork() &#123;</div><div class="line">        slef.doWork();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>终于弄好了两个替身，下面我们看看替身的威力吧</p>
-<p>老板去让我做事，我照着做了，老板其实不知道是谁在做。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private void doThings() &#123;</div><div class="line">       TrueSelf self=new TrueSelf();</div><div class="line">       self.doWork();</div><div class="line">       self.eat();</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
-<p>打印结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">机器人替身1号帮我做工作</div><div class="line">我悠哉悠哉的吃肉</div></pre></td></tr></table></figure></p>
-<p>老让1号替身怕他太累了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">private void doThings() &#123;</div><div class="line">       TrueSelf self=new TrueSelf();</div><div class="line">       self.setProxy(new ProxyRobot2());</div><div class="line">       self.doWork();</div><div class="line">       self.eat();</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>打印结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">机器人替身2号帮我做工作</div><div class="line">我悠哉悠哉的吃肉</div></pre></td></tr></table></figure></p>
-<p>是不是美滋滋，我们总结一下，代理模式主要是使用了Java的多态，干活的是被代理类，而作为代理的我们只负责悠哉悠哉的吃肉就行了。</p>
+<pre><code>
+/**
+ * Created by 29028 on 2017/6/19.
+ * 机器人替身1号 我会的他也会
+ */
+
+public class ProxyRobot1 implements ISlef {
+
+    public void eat() {
+        Log.d(&quot;AAA&quot;,&quot;机器人替身1号吃电&quot;);
+    }
+
+    public void doWork() {
+        Log.d(&quot;AAA&quot;,&quot;机器人替身1号帮我做工作&quot;);
+    }
+}
+</code></pre><p>替身1号</p>
+<pre><code>/**
+ * Created by 29028 on 2017/6/19.
+ * 机器人替身2号 我会的他也会
+ */
+
+public class ProxyRobot2 implements ISlef {
+
+    public void eat() {
+        Log.d(&quot;AAA&quot;,&quot;机器人替身2号吃电&quot;);
+    }
+
+    public void doWork() {
+        Log.d(&quot;AAA&quot;,&quot;机器人替身2号帮我做工作&quot;);
+    }
+}
+</code></pre><p>再接着创建我们自己</p>
+<pre><code>/**
+ * Created by 29028 on 2017/6/19.
+ * 真的自己
+ */
+
+public class TrueSelf implements ISlef {
+
+    private ISlef slef;
+
+    //默认让一号来
+    public TrueSelf(){
+        slef =new ProxyRobot1();
+    }
+
+    //设置替身 我想谁几号替我就让几号来
+    public void setProxy(ISlef slef){
+
+        this.slef = slef;
+    }
+
+    //吃东西这事还是我们自己来比较好
+    public void eat() {
+        Log.d(&quot;AAA&quot;,&quot;我悠哉悠哉的吃肉&quot;);
+    }
+
+    public void doWork() {
+        slef.doWork();
+    }
+}
+</code></pre><p>终于弄好了两个替身，下面我们看看替身的威力吧</p>
+<p>老板去让我做事，我照着做了，老板其实不知道是谁在做。</p>
+<pre><code> private void doThings() {
+        TrueSelf self=new TrueSelf();
+        self.doWork();
+        self.eat();
+    }
+</code></pre><p>打印结果</p>
+<pre><code>机器人替身1号帮我做工作
+我悠哉悠哉的吃肉
+</code></pre><p>老让1号替身怕他太累了</p>
+<pre><code> private void doThings() {
+        TrueSelf self=new TrueSelf();
+        self.setProxy(new ProxyRobot2());
+        self.doWork();
+        self.eat();
+    }
+</code></pre><p>打印结果</p>
+<pre><code>机器人替身2号帮我做工作
+我悠哉悠哉的吃肉
+</code></pre><p>是不是美滋滋，我们总结一下，代理模式主要是使用了Java的多态，干活的是被代理类，而作为代理的我们只负责悠哉悠哉的吃肉就行了。</p>
 <h3 id="下面是再Android开发中的实践"><a href="#下面是再Android开发中的实践" class="headerlink" title="下面是再Android开发中的实践"></a>下面是再Android开发中的实践</h3><p>我们以上篇app中的沉浸式为例，使用代理模式重构一下我们的代码。</p>
 <p>首先定义一个公共的抽象类</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line">abstract class Immersion &#123;</div><div class="line"></div><div class="line">    protected final Activity activity;</div><div class="line">    protected final boolean isShowUi;</div><div class="line"></div><div class="line">    public Immersion(Activity activity, boolean isShowUi)&#123;</div><div class="line"></div><div class="line">        this.activity = activity;</div><div class="line">        this.isShowUi = isShowUi;</div><div class="line">        if(isShowUi) &#123;</div><div class="line">            toggleHideyBar(activity);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    public abstract void setStatusColor(View titleBar, @ColorRes int resId);</div><div class="line"></div><div class="line">    public abstract  void setStatusPicture(View titleBar, @DrawableRes int drawableId);</div><div class="line"></div><div class="line">    public abstract void setStatusAndNaviagtion(View titleBar, View botoomBar,  @ColorRes int resId );</div><div class="line">    /**</div><div class="line">     * dip 转 px</div><div class="line">     */</div><div class="line">    protected static int dp2px(int dp,Activity activity) &#123;</div><div class="line">        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dp,activity.getResources().getDisplayMetrics());</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * 开关</div><div class="line">     */</div><div class="line">    protected static void toggleHideyBar(Activity activity) &#123;</div><div class="line"></div><div class="line">        int newUiOptions = activity.getWindow().getDecorView().getSystemUiVisibility();</div><div class="line"></div><div class="line">        if (Build.VERSION.SDK_INT &gt;= 14) &#123;</div><div class="line">            newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (Build.VERSION.SDK_INT &gt;= 16) &#123;</div><div class="line">            newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (Build.VERSION.SDK_INT &gt;= 18) &#123;</div><div class="line">            newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;</div><div class="line">        &#125;</div><div class="line">        activity.getWindow().getDecorView().setSystemUiVisibility(newUiOptions);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * 获取状态栏的高度</div><div class="line">     */</div><div class="line">    protected static int getStatusHeight(Activity activity)&#123;</div><div class="line">        int stastusHeight=-1;</div><div class="line">        int statusId = activity.getResources().getIdentifier(&quot;status_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);</div><div class="line">        if(statusId&gt;0)&#123;</div><div class="line">            stastusHeight = activity.getResources().getDimensionPixelSize(statusId);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        return stastusHeight==-1?dp2px(24,activity):stastusHeight;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 获取底部导航栏的高度</div><div class="line">     */</div><div class="line">    protected static int getNavigationHeight(Activity activity)&#123;</div><div class="line">        int navigationHeight=-1;</div><div class="line">        int navigationId = activity.getResources().getIdentifier(&quot;navigation_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);</div><div class="line">        if(navigationId&gt;0)&#123;</div><div class="line">            navigationHeight=activity.getResources().getDimensionPixelSize(navigationId);</div><div class="line">        &#125;</div><div class="line">        return navigationHeight==-1?dp2px(48,activity):navigationHeight;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在定义一个适配4.4的被代理类。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">class ImmersionApi19 extends Immersion &#123;</div><div class="line"></div><div class="line">    public ImmersionApi19(Activity activity, boolean isShowUi) &#123;</div><div class="line">        super(activity, isShowUi);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setStatusColor(View titleBar, @ColorRes int resId) &#123;</div><div class="line">       int color;</div><div class="line">       if(resId &gt; 0) &#123;</div><div class="line">          color = activity.getResources().getColor(resId);</div><div class="line">       &#125; else &#123;</div><div class="line">          color = Color.parseColor(&quot;#FF4081&quot;);</div><div class="line">       &#125;</div><div class="line">       int statusHeight = getStatusHeight(activity);</div><div class="line">       if(titleBar!=null)&#123;</div><div class="line">            ViewGroup.LayoutParams params = titleBar.getLayoutParams();</div><div class="line">            params.height+=statusHeight;</div><div class="line">            titleBar.setLayoutParams(params);</div><div class="line">            titleBar.setPadding(titleBar.getPaddingLeft(),</div><div class="line">                    titleBar.getPaddingTop()+statusHeight,</div><div class="line">                    titleBar.getPaddingRight(),</div><div class="line">                    titleBar.getPaddingBottom());</div><div class="line">            titleBar.setBackgroundColor(color);</div><div class="line">         &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    </div><div class="line">    public void setStatusPicture(View titleBar, @DrawableRes int drawableId) &#123;</div><div class="line">        Drawable drawableBg;</div><div class="line">        if(drawableId &gt; 0) &#123;</div><div class="line">            drawableBg = activity.getResources().getDrawable(drawableId);</div><div class="line">        &#125; else &#123;</div><div class="line">            drawableBg = activity.getResources().getDrawable(livesun.translucent.R.drawable.ic_launcher);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        int statusHeight = getStatusHeight(activity);</div><div class="line"></div><div class="line">            if(titleBar != null) &#123;</div><div class="line">                ViewGroup.LayoutParams decorView1 = titleBar.getLayoutParams();</div><div class="line">                decorView1.height += statusHeight;</div><div class="line">                titleBar.setLayoutParams(decorView1);</div><div class="line">                titleBar.setPadding(titleBar.getPaddingLeft(),</div><div class="line">                        titleBar.getPaddingTop() + statusHeight,</div><div class="line">                        titleBar.getPaddingRight(),</div><div class="line">                        titleBar.getPaddingBottom());</div><div class="line">                titleBar.setBackground(drawableBg);</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setStatusAndNaviagtion(View titleBar, View botoomBar, @ColorRes int resId) &#123;</div><div class="line">        //时间原因 暂不实现</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>以及一个适配5.0的被代理类。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">class ImmersionApi21 extends Immersion &#123;</div><div class="line">    public ImmersionApi21(Activity activity, boolean isShowUi) &#123;</div><div class="line">        super(activity, isShowUi);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    </div><div class="line">    public void setStatusColor(View titleBar, @ColorRes int resId) &#123;</div><div class="line">       int color;</div><div class="line">       if(resId &gt; 0) &#123;</div><div class="line">          color = activity.getResources().getColor(resId);</div><div class="line">       &#125; else &#123;</div><div class="line">          color = Color.parseColor(&quot;#FF4081&quot;);</div><div class="line">       &#125;</div><div class="line">       activity.getWindow().setStatusBarColor(color);</div><div class="line">       titleBar.setBackgroundColor(color);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    public void setStatusPicture(View titleBar, @DrawableRes int drawableId) &#123;</div><div class="line">//      new ImmersionApi19(activity,isShowUi).setStatusPicture(titleBar, drawableId);</div><div class="line">        View decorView = activity.getWindow().getDecorView();</div><div class="line">        int option = View.SYSTEM_UI_FLAG_FULLSCREEN;</div><div class="line">        decorView.setSystemUiVisibility(option);</div><div class="line">        titleBar.setBackground(activity.getResources().getDrawable(drawableId));</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setStatusAndNaviagtion(View titleBar, View botoomBar, @ColorRes int resId) &#123;</div><div class="line">        //暂时不实现</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>接下来就是我们的代理类</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">public class ImmersionProxy extends Immersion &#123;</div><div class="line"></div><div class="line">    private  Immersion immersion;</div><div class="line"></div><div class="line">    public ImmersionProxy(Activity activity, boolean isShowUi) &#123;</div><div class="line">        super(activity, isShowUi);</div><div class="line">        if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.KITKAT</div><div class="line">                &amp;&amp;Build.VERSION.SDK_INT&lt;Build.VERSION_CODES.LOLLIPOP</div><div class="line">                )&#123;</div><div class="line">            immersion = new ImmersionApi19(activity,isShowUi);</div><div class="line">        &#125;</div><div class="line">        if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.LOLLIPOP)&#123;</div><div class="line">            immersion=new ImmersionApi21(activity,isShowUi);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setStatusColor(View titleBar, @ColorRes int resId) &#123;</div><div class="line">        immersion.setStatusColor(titleBar,resId);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setStatusPicture(View titleBar, @DrawableRes int drawableId) &#123;</div><div class="line">        immersion.setStatusPicture(titleBar,drawableId);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setStatusAndNaviagtion(View titleBar, View botoomBar, @ColorRes int resId) &#123;</div><div class="line">        immersion.setStatusAndNaviagtion(titleBar,botoomBar,resId);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>然后，我们就可以很开心的调用了，我们不必关心是调用API19还是API21，只管在Activity中的OnCreat方法调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line"> </div><div class="line">        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line">        Toolbar toolbar= (Toolbar) findViewById(R.id.toolbar);</div><div class="line">        ImmersionProxy proxy = new ImmersionProxy(this, false);</div><div class="line">        proxy.setStatusColor(toolbar,R.color.colorAccent);</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_one.png" alt="image"></p>
+<pre><code>abstract class Immersion {
+
+    protected final Activity activity;
+    protected final boolean isShowUi;
+
+    public Immersion(Activity activity, boolean isShowUi){
+
+        this.activity = activity;
+        this.isShowUi = isShowUi;
+        if(isShowUi) {
+            toggleHideyBar(activity);
+        }
+    }
+
+
+    public abstract void setStatusColor(View titleBar, @ColorRes int resId);
+
+    public abstract  void setStatusPicture(View titleBar, @DrawableRes int drawableId);
+
+    public abstract void setStatusAndNaviagtion(View titleBar, View botoomBar,  @ColorRes int resId );
+    /**
+     * dip 转 px
+     */
+    protected static int dp2px(int dp,Activity activity) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dp,activity.getResources().getDisplayMetrics());
+    }
+
+
+    /**
+     * 开关
+     */
+    protected static void toggleHideyBar(Activity activity) {
+
+        int newUiOptions = activity.getWindow().getDecorView().getSystemUiVisibility();
+
+        if (Build.VERSION.SDK_INT &gt;= 14) {
+            newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        }
+
+        if (Build.VERSION.SDK_INT &gt;= 16) {
+            newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        }
+
+        if (Build.VERSION.SDK_INT &gt;= 18) {
+            newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        }
+        activity.getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
+    }
+
+
+    /**
+     * 获取状态栏的高度
+     */
+    protected static int getStatusHeight(Activity activity){
+        int stastusHeight=-1;
+        int statusId = activity.getResources().getIdentifier(&quot;status_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);
+        if(statusId&gt;0){
+            stastusHeight = activity.getResources().getDimensionPixelSize(statusId);
+        }
+
+        return stastusHeight==-1?dp2px(24,activity):stastusHeight;
+    }
+
+    /**
+     * 获取底部导航栏的高度
+     */
+    protected static int getNavigationHeight(Activity activity){
+        int navigationHeight=-1;
+        int navigationId = activity.getResources().getIdentifier(&quot;navigation_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);
+        if(navigationId&gt;0){
+            navigationHeight=activity.getResources().getDimensionPixelSize(navigationId);
+        }
+        return navigationHeight==-1?dp2px(48,activity):navigationHeight;
+    }
+
+}
+</code></pre><p>在定义一个适配4.4的被代理类。</p>
+<pre><code>class ImmersionApi19 extends Immersion {
+
+    public ImmersionApi19(Activity activity, boolean isShowUi) {
+        super(activity, isShowUi);
+    }
+
+    public void setStatusColor(View titleBar, @ColorRes int resId) {
+       int color;
+       if(resId &gt; 0) {
+          color = activity.getResources().getColor(resId);
+       } else {
+          color = Color.parseColor(&quot;#FF4081&quot;);
+       }
+       int statusHeight = getStatusHeight(activity);
+       if(titleBar!=null){
+            ViewGroup.LayoutParams params = titleBar.getLayoutParams();
+            params.height+=statusHeight;
+            titleBar.setLayoutParams(params);
+            titleBar.setPadding(titleBar.getPaddingLeft(),
+                    titleBar.getPaddingTop()+statusHeight,
+                    titleBar.getPaddingRight(),
+                    titleBar.getPaddingBottom());
+            titleBar.setBackgroundColor(color);
+         }
+    }
+
+
+    public void setStatusPicture(View titleBar, @DrawableRes int drawableId) {
+        Drawable drawableBg;
+        if(drawableId &gt; 0) {
+            drawableBg = activity.getResources().getDrawable(drawableId);
+        } else {
+            drawableBg = activity.getResources().getDrawable(livesun.translucent.R.drawable.ic_launcher);
+        }
+
+        int statusHeight = getStatusHeight(activity);
+
+            if(titleBar != null) {
+                ViewGroup.LayoutParams decorView1 = titleBar.getLayoutParams();
+                decorView1.height += statusHeight;
+                titleBar.setLayoutParams(decorView1);
+                titleBar.setPadding(titleBar.getPaddingLeft(),
+                        titleBar.getPaddingTop() + statusHeight,
+                        titleBar.getPaddingRight(),
+                        titleBar.getPaddingBottom());
+                titleBar.setBackground(drawableBg);
+            }
+    }
+
+    public void setStatusAndNaviagtion(View titleBar, View botoomBar, @ColorRes int resId) {
+        //时间原因 暂不实现
+    }
+</code></pre><p>以及一个适配5.0的被代理类。</p>
+<pre><code>class ImmersionApi21 extends Immersion {
+    public ImmersionApi21(Activity activity, boolean isShowUi) {
+        super(activity, isShowUi);
+    }
+
+
+
+    public void setStatusColor(View titleBar, @ColorRes int resId) {
+       int color;
+       if(resId &gt; 0) {
+          color = activity.getResources().getColor(resId);
+       } else {
+          color = Color.parseColor(&quot;#FF4081&quot;);
+       }
+       activity.getWindow().setStatusBarColor(color);
+       titleBar.setBackgroundColor(color);
+    }
+
+
+    public void setStatusPicture(View titleBar, @DrawableRes int drawableId) {
+//      new ImmersionApi19(activity,isShowUi).setStatusPicture(titleBar, drawableId);
+        View decorView = activity.getWindow().getDecorView();
+        int option = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(option);
+        titleBar.setBackground(activity.getResources().getDrawable(drawableId));
+
+    }
+
+    public void setStatusAndNaviagtion(View titleBar, View botoomBar, @ColorRes int resId) {
+        //暂时不实现
+    }
+}
+</code></pre><p>接下来就是我们的代理类</p>
+<pre><code>public class ImmersionProxy extends Immersion {
+
+    private  Immersion immersion;
+
+    public ImmersionProxy(Activity activity, boolean isShowUi) {
+        super(activity, isShowUi);
+        if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.KITKAT
+                &amp;&amp;Build.VERSION.SDK_INT&lt;Build.VERSION_CODES.LOLLIPOP
+                ){
+            immersion = new ImmersionApi19(activity,isShowUi);
+        }
+        if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.LOLLIPOP){
+            immersion=new ImmersionApi21(activity,isShowUi);
+        }
+
+    }
+
+    public void setStatusColor(View titleBar, @ColorRes int resId) {
+        immersion.setStatusColor(titleBar,resId);
+    }
+
+    public void setStatusPicture(View titleBar, @DrawableRes int drawableId) {
+        immersion.setStatusPicture(titleBar,drawableId);
+    }
+
+    public void setStatusAndNaviagtion(View titleBar, View botoomBar, @ColorRes int resId) {
+        immersion.setStatusAndNaviagtion(titleBar,botoomBar,resId);
+    }
+}
+</code></pre><p>然后，我们就可以很开心的调用了，我们不必关心是调用API19还是API21，只管在Activity中的OnCreat方法调用</p>
+<pre><code>protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar= (Toolbar) findViewById(R.id.toolbar);
+        ImmersionProxy proxy = new ImmersionProxy(this, false);
+        proxy.setStatusColor(toolbar,R.color.colorAccent);
+
+    }
+</code></pre><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_one.png" alt="image"></p>
 <h3 id="搞完收工"><a href="#搞完收工" class="headerlink" title="搞完收工"></a>搞完收工</h3>
     
 

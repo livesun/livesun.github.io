@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -408,8 +404,57 @@
 <li>当流布局关闭时，ListView消费事件，并且当滑倒顶部时，下拉的滑动事件交由父控件消费，而上滑的滑动事件依然自己消费。</li>
 </ul>
 <p>看代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">public class FoldMenu extends FrameLayout&#123;</div><div class="line">    private ViewDragHelper mViewDragHelper;</div><div class="line">    private View mBottomView;</div><div class="line">    private View mTopView;</div><div class="line">public FoldMenu(Context context) &#123;</div><div class="line">        this(context,null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public FoldMenu(Context context, AttributeSet attrs) &#123;</div><div class="line">        this(context, attrs,0);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public FoldMenu(Context context, AttributeSet attrs, int defStyleAttr) &#123;</div><div class="line">        super(context, attrs, defStyleAttr);</div><div class="line">        mViewDragHelper = ViewDragHelper.create(this,mDragHelper);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">private ViewDragHelper.Callback mDragHelper =new ViewDragHelper.Callback() &#123;</div><div class="line">        @Override</div><div class="line">        public boolean tryCaptureView(View child, int pointerId) &#123;</div><div class="line">            //mTopView可以滑动 返回true</div><div class="line">            return child==mTopView;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public int clampViewPositionVertical(View child, int top, int dy) &#123;</div><div class="line">            return top;</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line"> @Override</div><div class="line">    protected void onFinishInflate() &#123;</div><div class="line">        super.onFinishInflate();</div><div class="line">        int childCount = getChildCount();</div><div class="line">        if(childCount!=2)&#123;</div><div class="line">            throw new IllegalArgumentException(&quot;只能有两个子布局&quot;);</div><div class="line">        &#125;</div><div class="line">        mBottomView = getChildAt(0);</div><div class="line">        mTopView = getChildAt(1);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">//将事件交给ViewDragHelper处理，应为需要完整的接受到DOWN-&gt;MOVE-&gt;UP</div><div class="line"> @Override</div><div class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</div><div class="line">        mViewDragHelper.processTouchEvent(event);</div><div class="line">        //消费事件</div><div class="line">        return true;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>目前代码应该非常简单，就是一个FrameLayout，里面两个子控件，其中mTopView是可以上下移动。</p>
+<pre><code>public class FoldMenu extends FrameLayout{
+    private ViewDragHelper mViewDragHelper;
+    private View mBottomView;
+    private View mTopView;
+public FoldMenu(Context context) {
+        this(context,null);
+    }
+
+    public FoldMenu(Context context, AttributeSet attrs) {
+        this(context, attrs,0);
+    }
+
+    public FoldMenu(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        mViewDragHelper = ViewDragHelper.create(this,mDragHelper);
+    }
+
+private ViewDragHelper.Callback mDragHelper =new ViewDragHelper.Callback() {
+        @Override
+        public boolean tryCaptureView(View child, int pointerId) {
+            //mTopView可以滑动 返回true
+            return child==mTopView;
+        }
+
+        @Override
+        public int clampViewPositionVertical(View child, int top, int dy) {
+            return top;
+        }
+
+
+ @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        int childCount = getChildCount();
+        if(childCount!=2){
+            throw new IllegalArgumentException(&quot;只能有两个子布局&quot;);
+        }
+        mBottomView = getChildAt(0);
+        mTopView = getChildAt(1);
+
+    }
+
+//将事件交给ViewDragHelper处理，应为需要完整的接受到DOWN-&gt;MOVE-&gt;UP
+ @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mViewDragHelper.processTouchEvent(event);
+        //消费事件
+        return true;
+    }
+}
+</code></pre><p>目前代码应该非常简单，就是一个FrameLayout，里面两个子控件，其中mTopView是可以上下移动。</p>
 <p>效果如下</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/viewtouchdemo1.gif" alt="此处输入图片的描述"></p>
 <p>好像挺简单没什么问题，里面的两个子控件是TextView，TextView的CLICKABLE的属性和LOGNG_CLICKABLE默认都为false。</p>
@@ -417,10 +462,113 @@
 <p>而TextView是默认不消费事件的，所以FoldMenu中，onTouchEvent只需要返回true，就可以接收到全部事件了，但是如果我们将两个子View换成Button，或者设置TextView的CLICKABLE属性为true，你会发现滑动失效了。</p>
 <p>这是因为子控件消费了事件，mViewDragHelper接收不到Touch事件，从而导致失效。</p>
 <p>解决办法，父控件拦截事件，我们只需重写onInterceptTouchEvent即可。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">    public boolean onInterceptTouchEvent(MotionEvent ev) &#123;</div><div class="line">        return true;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>好了，继续写代码，看最终效果，首先我们的View需要有自动回弹，拉动的最大距离，还有不能划出顶部</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div></pre></td><td class="code"><pre><div class="line">public class FoldMenu extends FrameLayout &#123;</div><div class="line"></div><div class="line">    private ViewDragHelper mViewDragHelper;</div><div class="line">    private View mBottomView;</div><div class="line">    private View mTopView;</div><div class="line">    private int mBottomHeight;</div><div class="line">    boolean mMenuIsOpen=false;</div><div class="line">   </div><div class="line"></div><div class="line">    public FoldMenu(Context context) &#123;</div><div class="line">        this(context,null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public FoldMenu(Context context, AttributeSet attrs) &#123;</div><div class="line">        this(context, attrs,0);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public FoldMenu(Context context, AttributeSet attrs, int defStyleAttr) &#123;</div><div class="line">        super(context, attrs, defStyleAttr);</div><div class="line">        mViewDragHelper = ViewDragHelper.create(this,2f,mDragHelper);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private ViewDragHelper.Callback mDragHelper =new ViewDragHelper.Callback() &#123;</div><div class="line"></div><div class="line">        //捕获可滑动的View</div><div class="line">        @Override</div><div class="line">        public boolean tryCaptureView(View child, int pointerId) &#123;</div><div class="line">            //上面的可以滑动 返回true</div><div class="line">         </div><div class="line">            return child==mTopView;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        //固定View滑动的方向</div><div class="line">        @Override</div><div class="line">        public int clampViewPositionVertical(View child, int top, int dy) &#123;</div><div class="line">          </div><div class="line">            if(top&lt;=0)&#123;</div><div class="line">                top=0;</div><div class="line">            &#125;</div><div class="line">            if(top&gt;=mBottomHeight*1.3)&#123;</div><div class="line">                top= (int) (mBottomHeight*1.3);</div><div class="line">            &#125;</div><div class="line">            return top;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">         //抬起手指的回调</div><div class="line">        @Override</div><div class="line">        public void onViewReleased(View releasedChild, float xvel, float yvel) &#123;</div><div class="line">            //弹性滑动</div><div class="line">           if(mTopView.getTop()&lt;=mBottomHeight/2)&#123;</div><div class="line">               //关闭</div><div class="line">               mViewDragHelper.settleCapturedViewAt(0,0);</div><div class="line">               mMenuIsOpen=false;</div><div class="line">           &#125;else&#123;</div><div class="line">               //打开</div><div class="line">               mViewDragHelper.settleCapturedViewAt(0,mBottomHeight);</div><div class="line">               mMenuIsOpen=true;</div><div class="line">           &#125;</div><div class="line">            invalidate();</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 响应滚动</div><div class="line">     */</div><div class="line">    @Override</div><div class="line">    public void computeScroll() &#123;</div><div class="line">       if(mViewDragHelper.continueSettling(true))&#123;</div><div class="line">           invalidate();</div><div class="line">       &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onFinishInflate() &#123;</div><div class="line">        super.onFinishInflate();</div><div class="line">        int childCount = getChildCount();</div><div class="line">        if(childCount!=2)&#123;</div><div class="line">            throw new IllegalArgumentException(&quot;只能有两个子布局&quot;);</div><div class="line">        &#125;</div><div class="line">        mBottomView = getChildAt(0);</div><div class="line">        mTopView = getChildAt(1);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onLayout(boolean changed, int left, int top, int right, int bottom) &#123;</div><div class="line">        super.onLayout(changed, left, top, right, bottom);</div><div class="line">        mBottomHeight = mBottomView.getMeasuredHeight();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</div><div class="line">        mViewDragHelper.processTouchEvent(event);</div><div class="line">        //消费事件</div><div class="line">        return true;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public boolean onInterceptTouchEvent(MotionEvent ev) &#123;</div><div class="line">       return true;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>这里有几点需要注意下：</p>
+<pre><code>@Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return true;
+    }
+</code></pre><p>好了，继续写代码，看最终效果，首先我们的View需要有自动回弹，拉动的最大距离，还有不能划出顶部</p>
+<pre><code>public class FoldMenu extends FrameLayout {
+
+    private ViewDragHelper mViewDragHelper;
+    private View mBottomView;
+    private View mTopView;
+    private int mBottomHeight;
+    boolean mMenuIsOpen=false;
+
+
+    public FoldMenu(Context context) {
+        this(context,null);
+    }
+
+    public FoldMenu(Context context, AttributeSet attrs) {
+        this(context, attrs,0);
+    }
+
+    public FoldMenu(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        mViewDragHelper = ViewDragHelper.create(this,2f,mDragHelper);
+    }
+
+    private ViewDragHelper.Callback mDragHelper =new ViewDragHelper.Callback() {
+
+        //捕获可滑动的View
+        @Override
+        public boolean tryCaptureView(View child, int pointerId) {
+            //上面的可以滑动 返回true
+
+            return child==mTopView;
+        }
+
+        //固定View滑动的方向
+        @Override
+        public int clampViewPositionVertical(View child, int top, int dy) {
+
+            if(top&lt;=0){
+                top=0;
+            }
+            if(top&gt;=mBottomHeight*1.3){
+                top= (int) (mBottomHeight*1.3);
+            }
+            return top;
+        }
+
+         //抬起手指的回调
+        @Override
+        public void onViewReleased(View releasedChild, float xvel, float yvel) {
+            //弹性滑动
+           if(mTopView.getTop()&lt;=mBottomHeight/2){
+               //关闭
+               mViewDragHelper.settleCapturedViewAt(0,0);
+               mMenuIsOpen=false;
+           }else{
+               //打开
+               mViewDragHelper.settleCapturedViewAt(0,mBottomHeight);
+               mMenuIsOpen=true;
+           }
+            invalidate();
+        }
+    };
+
+    /**
+     * 响应滚动
+     */
+    @Override
+    public void computeScroll() {
+       if(mViewDragHelper.continueSettling(true)){
+           invalidate();
+       }
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        int childCount = getChildCount();
+        if(childCount!=2){
+            throw new IllegalArgumentException(&quot;只能有两个子布局&quot;);
+        }
+        mBottomView = getChildAt(0);
+        mTopView = getChildAt(1);
+
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        mBottomHeight = mBottomView.getMeasuredHeight();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mViewDragHelper.processTouchEvent(event);
+        //消费事件
+        return true;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+       return true;
+    }
+</code></pre><p>这里有几点需要注意下：</p>
 <ul>
 <li>mBottomHeight 高度的获取，必须在测量之后才能取到值，而onFinishInflate方法是在视图加载完毕，其实是在setContenView中的inflate方法中调用的，此时视图并没用走measure方法，所以这里我们需要在onLayout方法中获取到它的高度。</li>
 <li>onViewReleased方法中，调用ViewDragHelper的settleCapturedViewAt滑动方法，需要重写computeScroll方法。</li>
@@ -439,11 +587,73 @@
 <li>ListView滑到顶端时，向下滑动事件需要交由父控件，也就是拦截事件</li>
 <li>ListView不在顶端时，向下滑动则由ListView本身消费事件</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">   public boolean onInterceptTouchEvent(MotionEvent ev) &#123;</div><div class="line">       //如果打开状态下,拦截事件</div><div class="line">       if(mMenuIsOpen)&#123;</div><div class="line">           if(ev.getY()&lt;mBootomHeight)&#123;</div><div class="line">               return false;</div><div class="line">           &#125;</div><div class="line">           return true;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">             //关闭状态下</div><div class="line">           switch (ev.getAction())&#123;</div><div class="line">               case MotionEvent.ACTION_DOWN:</div><div class="line">                   mDownY = ev.getY();</div><div class="line">               //把down事件传给mViewDragHelper</div><div class="line">               //onInterceptTouchEvent DOWN--子view的onTouchEvent WOWN</div><div class="line">               //onInterceptTouchEvent MOVE --返回true 走本身的onTouchEvent 此时mViewDragHelper只有MOVE事件而没有DOWN事件</div><div class="line">                   mViewDragHelper.processTouchEvent(ev);</div><div class="line">                   intercept=false;</div><div class="line">                   break;</div><div class="line">               case MotionEvent.ACTION_MOVE:</div><div class="line">                   float moveY = ev.getY();</div><div class="line">                   //如果向下滑动，并且不是顶点</div><div class="line">                   if(moveY&gt;mDownY&amp;&amp;!canChildScrollUp())&#123;</div><div class="line">                       intercept=true;</div><div class="line"></div><div class="line">                   &#125;else&#123;</div><div class="line">                       intercept=false;</div><div class="line">                   &#125;</div><div class="line">                   break;</div><div class="line">       &#125;</div><div class="line">       return intercept;</div><div class="line">   &#125;</div><div class="line"></div><div class="line"> //判断所有滑动控件是否滚动到了最顶部</div><div class="line">   public boolean canChildScrollUp() &#123;</div><div class="line"></div><div class="line">       if (android.os.Build.VERSION.SDK_INT &lt; 14) &#123;</div><div class="line">           if (mListView instanceof AbsListView) &#123;</div><div class="line">               final AbsListView absListView = (AbsListView) mListView;</div><div class="line">               return absListView.getChildCount() &gt; 0</div><div class="line">                       &amp;&amp; (absListView.getFirstVisiblePosition() &gt; 0 || absListView.getChildAt(0)</div><div class="line">                       .getTop() &lt; absListView.getPaddingTop());</div><div class="line">           &#125; else &#123;</div><div class="line">               return ViewCompat.canScrollVertically(mListView, -1) || mListView.getScrollY() &gt; 0;</div><div class="line">           &#125;</div><div class="line">       &#125; else &#123;</div><div class="line">           return ViewCompat.canScrollVertically(mListView, -1);</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>这里要注意的是，在ACTION_DOWN中，我们需要调用mViewDragHelper.processTouchEvent(ev)方法，把DOWN事件传递给他，这是因为，ViewDragHelper需要完整的事件，而我们调用onInterceptTouchEvent，在DOWN事件的时候，我们并没有拦截事件，而是把它传递给了子控件，调用了child.onTouchEvent方法，这时，到下次MOVE事件，我们拦截了事件，走了本身的onTouchEvent方法，但是这时的事件只有MOVE和后续事件，DOWN事件已经交给了子控件，所以这里需要在调用mViewDragHelper.processTouchEvent(ev)方法，把DOWN事件传递给ViewDragHelper。</p>
-<p>为什么父容器不能拦截ACTION_DOWN事件呢？那是因为ACTION_DOWN事件，并不受FLAG_DISALLOW_INTERCEPT这个标记位的控制，所以一旦父容器拦截了ACTION_DOWN事件，那么所有的事件都无法传递到子元素中，这样内部拦截就无法起作用了。</p>
-<p>而且，拦截DOWN事件之后，后续MOVE UP事件都不会再经过onInterceptTouchEvent方法，那是因为mFirstTouchTarget 没有成功赋值，条件不成立，所以后续逻辑无法进行，也就无法判断滑动是否到顶点，是向下还是向上等逻辑，所以父控件的DOWN事件不能拦截。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">if (actionMasked == MotionEvent.ACTION_DOWN</div><div class="line">                   || mFirstTouchTarget != null) &#123;</div><div class="line">               final boolean disallowIntercept = (mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0;</div><div class="line">               if (!disallowIntercept) &#123;</div><div class="line">                   intercepted = onInterceptTouchEvent(ev);</div><div class="line">                   ev.setAction(action); </div><div class="line">               &#125; else &#123;</div><div class="line">                   intercepted = false;</div><div class="line">               &#125;</div><div class="line">           &#125; else &#123;</div><div class="line">              </div><div class="line">               intercepted = true;</div><div class="line">           &#125;</div></pre></td></tr></table></figure></p>
+<pre><code> @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        //如果打开状态下,拦截事件
+        if(mMenuIsOpen){
+            if(ev.getY()&lt;mBootomHeight){
+                return false;
+            }
+            return true;
+        }
 
+              //关闭状态下
+            switch (ev.getAction()){
+                case MotionEvent.ACTION_DOWN:
+                    mDownY = ev.getY();
+                //把down事件传给mViewDragHelper
+                //onInterceptTouchEvent DOWN--子view的onTouchEvent WOWN
+                //onInterceptTouchEvent MOVE --返回true 走本身的onTouchEvent 此时mViewDragHelper只有MOVE事件而没有DOWN事件
+                    mViewDragHelper.processTouchEvent(ev);
+                    intercept=false;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float moveY = ev.getY();
+                    //如果向下滑动，并且不是顶点
+                    if(moveY&gt;mDownY&amp;&amp;!canChildScrollUp()){
+                        intercept=true;
+
+                    }else{
+                        intercept=false;
+                    }
+                    break;
+        }
+        return intercept;
+    }
+
+  //判断所有滑动控件是否滚动到了最顶部
+    public boolean canChildScrollUp() {
+
+        if (android.os.Build.VERSION.SDK_INT &lt; 14) {
+            if (mListView instanceof AbsListView) {
+                final AbsListView absListView = (AbsListView) mListView;
+                return absListView.getChildCount() &gt; 0
+                        &amp;&amp; (absListView.getFirstVisiblePosition() &gt; 0 || absListView.getChildAt(0)
+                        .getTop() &lt; absListView.getPaddingTop());
+            } else {
+                return ViewCompat.canScrollVertically(mListView, -1) || mListView.getScrollY() &gt; 0;
+            }
+        } else {
+            return ViewCompat.canScrollVertically(mListView, -1);
+        }
+    }
+</code></pre><p>这里要注意的是，在ACTION_DOWN中，我们需要调用mViewDragHelper.processTouchEvent(ev)方法，把DOWN事件传递给他，这是因为，ViewDragHelper需要完整的事件，而我们调用onInterceptTouchEvent，在DOWN事件的时候，我们并没有拦截事件，而是把它传递给了子控件，调用了child.onTouchEvent方法，这时，到下次MOVE事件，我们拦截了事件，走了本身的onTouchEvent方法，但是这时的事件只有MOVE和后续事件，DOWN事件已经交给了子控件，所以这里需要在调用mViewDragHelper.processTouchEvent(ev)方法，把DOWN事件传递给ViewDragHelper。</p>
+<p>为什么父容器不能拦截ACTION_DOWN事件呢？那是因为ACTION_DOWN事件，并不受FLAG_DISALLOW_INTERCEPT这个标记位的控制，所以一旦父容器拦截了ACTION_DOWN事件，那么所有的事件都无法传递到子元素中，这样内部拦截就无法起作用了。</p>
+<p>而且，拦截DOWN事件之后，后续MOVE UP事件都不会再经过onInterceptTouchEvent方法，那是因为mFirstTouchTarget 没有成功赋值，条件不成立，所以后续逻辑无法进行，也就无法判断滑动是否到顶点，是向下还是向上等逻辑，所以父控件的DOWN事件不能拦截。</p>
+<pre><code> if (actionMasked == MotionEvent.ACTION_DOWN
+                    || mFirstTouchTarget != null) {
+                final boolean disallowIntercept = (mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0;
+                if (!disallowIntercept) {
+                    intercepted = onInterceptTouchEvent(ev);
+                    ev.setAction(action); 
+                } else {
+                    intercepted = false;
+                }
+            } else {
+
+                intercepted = true;
+            }
+</code></pre>
     
 
     

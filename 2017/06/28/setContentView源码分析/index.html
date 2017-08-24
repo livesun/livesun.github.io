@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -409,36 +405,250 @@
 <li>继承Activity和AppCompatActivity有什么不同？</li>
 </ul>
 <p>首先，我们以Activity为例。</p>
-<p>发现是调用的getWindow的setContentView方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public void setContentView(@LayoutRes int layoutResID) &#123;</div><div class="line">        getWindow().setContentView(layoutResID);</div><div class="line">        initWindowDecorActionBar();</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>而Window是abstract类,用来描述Activity视图最顶端的窗口显示和行为操作，通过代码发现，他的实现类是PhoneWidow</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mWindow = <span class="keyword">new</span> PhoneWindow(<span class="keyword">this</span>, window);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> Window <span class="title">getWindow</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mWindow;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>发现是调用的getWindow的setContentView方法</p>
+<pre><code>public void setContentView(@LayoutRes int layoutResID) {
+        getWindow().setContentView(layoutResID);
+        initWindowDecorActionBar();
+    }
+</code></pre><p>而Window是abstract类,用来描述Activity视图最顶端的窗口显示和行为操作，通过代码发现，他的实现类是PhoneWidow</p>
+<pre class="line-numbers language-java"><code class="language-java">mWindow <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PhoneWindow</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> Window <span class="token function">getWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> mWindow<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>我们看PhoneWidow中的setContentView方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public void setContentView(int layoutResID) &#123;</div><div class="line">     </div><div class="line">      if (mContentParent == null) &#123;</div><div class="line">          installDecor();//创建DecorView--同时创建mContentParent</div><div class="line">          </div><div class="line">      &#125; else if (!hasFeature(FEATURE_CONTENT_TRANSITIONS)) &#123;</div><div class="line">          mContentParent.removeAllViews();</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      if (hasFeature(FEATURE_CONTENT_TRANSITIONS)) &#123;</div><div class="line">          final Scene newScene = Scene.getSceneForLayout(mContentParent, layoutResID,</div><div class="line">                  getContext());</div><div class="line">          transitionTo(newScene);</div><div class="line">      &#125; else &#123;</div><div class="line">          mLayoutInflater.inflate(layoutResID, mContentParent);//把我们的布局Id通过inflate添加到mContentParent中</div><div class="line">      &#125;</div><div class="line">      mContentParent.requestApplyInsets();</div><div class="line">      final Callback cb = getCallback();</div><div class="line">      if (cb != null &amp;&amp; !isDestroyed()) &#123;</div><div class="line">          cb.onContentChanged();</div><div class="line">      &#125;</div><div class="line">      mContentParentExplicitlySet = true;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p> 我们先看installDecor这个方法，这个方法是在mContentParent为null的情况下调用，这里我只抽取了其中两个重要的地方，一个是创建DecorView 一个是创建mContentParent<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">  private void installDecor() &#123;</div><div class="line">  </div><div class="line">        mForceDecorInstall = false;</div><div class="line">        if (mDecor == null) &#123;</div><div class="line">            mDecor = generateDecor(-1);</div><div class="line">        &#125;</div><div class="line">        ....</div><div class="line">        </div><div class="line">        if (mContentParent == null) &#123;</div><div class="line">            mContentParent = generateLayout(mDecor);</div><div class="line">            .....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>generateDecor(-1);方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">protected DecorView generateDecor(int featureId) &#123;</div><div class="line">    </div><div class="line">    .....</div><div class="line">    //new DecorView对象。</div><div class="line">     return new DecorView(context, featureId, this, getAttributes());</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<p>DecorView其实只是一个帧布局<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">class DecorView extends FrameLayout mplements RootViewSurfaceTaker, WindowCallbacks &#123;</div><div class="line">    ....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p> 这个方法把刚刚创建出来的DecorView传进去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">mContentParent = generateLayout(mDecor);</div><div class="line"></div><div class="line">protected ViewGroup generateLayout(DecorView decor) &#123;</div><div class="line">        ....</div><div class="line">        </div><div class="line">        int layoutResource;</div><div class="line">        int features = getLocalFeatures();</div><div class="line">      </div><div class="line">        if ((features &amp; (1 &lt;&lt; FEATURE_SWIPE_TO_DISMISS)) != 0) &#123;</div><div class="line">            layoutResource = R.layout.screen_swipe_dismiss;//根据一系列判断</div><div class="line">        &#125; else if ((features &amp; ((1 &lt;&lt; FEATURE_LEFT_ICON) | (1 &lt;&lt; FEATURE_RIGHT_ICON))) != 0) &#123;</div><div class="line">            if (mIsFloating) &#123;</div><div class="line">                TypedValue res = new TypedValue();</div><div class="line">                getContext().getTheme().resolveAttribute(</div><div class="line">                        R.attr.dialogTitleIconsDecorLayout, res, true);</div><div class="line">                layoutResource = res.resourceId;</div><div class="line">            &#125; else &#123;</div><div class="line">                layoutResource = R.layout.screen_title_icons;</div><div class="line">            &#125;</div><div class="line">           </div><div class="line">        &#125;</div><div class="line">        .....</div><div class="line">        </div><div class="line">//这里传入系统选中的一些布局，并把inflate出来的布局添加进decorViw中</div><div class="line">mDecor.onResourcesLoaded(mLayoutInflater, layoutResource);</div><div class="line"></div><div class="line">//ID_ANDROID_CONTENT --com.android.internal.R.id.content;</div><div class="line">//并通过findViewById查找出R.id.content的布局，作为contentParent返回出去。</div><div class="line">ViewGroup contentParent = (ViewGroup)findViewById(ID_ANDROID_CONTENT);</div><div class="line"></div><div class="line">return contentParent;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//DecorView中的方法。</div><div class="line"></div><div class="line">oid onResourcesLoaded(LayoutInflater inflater, int layoutResource) &#123;</div><div class="line">        ....</div><div class="line">          final View root = inflater.inflate(layoutResource, null);</div><div class="line">         //把系统布局添加到DecorView中</div><div class="line">        addView(root, 0, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));</div><div class="line">    </div><div class="line">        mContentRoot = (ViewGroup) root;</div><div class="line">        initializeElevation();</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>我们再回到刚开始的地方</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public void setContentView(int layoutResID) &#123;</div><div class="line">    </div><div class="line">      if (mContentParent == null) &#123;</div><div class="line">          installDecor();</div><div class="line">      &#125; </div><div class="line"></div><div class="line">      if (hasFeature(FEATURE_CONTENT_TRANSITIONS)) &#123;</div><div class="line">          final Scene newScene = Scene.getSceneForLayout(mContentParent, layoutResID,</div><div class="line">                  getContext());</div><div class="line">          transitionTo(newScene);</div><div class="line">      &#125; else &#123;</div><div class="line">          //把刚刚查找出来的R.id.content作为我们自己LayoutResID的根布局添加进去</div><div class="line">          mLayoutInflater.inflate(layoutResID, mContentParent);</div><div class="line">      &#125;</div></pre></td></tr></table></figure>
-<p>我们重新理理 调用phonewindow的setContentView方法–&gt;installDecor()–&gt;generateDecor()创建DecorView–&gt;generateLatout()把系统的布局添加进DecorView中，并查找R.id.content做为我们layout的根布局返回出去–&gt;mLayoutInflater.inflate(layoutResID, mContentParent);<br>经过这一系列工作之后，我们setContentView，成功的把我们的布局添加进一个id为R.id.content的ViewGroup中，同时这一部分又包含在DecorView中，而DeorView则在PhonWidow对象中。</p>
+<pre><code>  public void setContentView(int layoutResID) {
+
+        if (mContentParent == null) {
+            installDecor();//创建DecorView--同时创建mContentParent
+
+        } else if (!hasFeature(FEATURE_CONTENT_TRANSITIONS)) {
+            mContentParent.removeAllViews();
+        }
+
+        if (hasFeature(FEATURE_CONTENT_TRANSITIONS)) {
+            final Scene newScene = Scene.getSceneForLayout(mContentParent, layoutResID,
+                    getContext());
+            transitionTo(newScene);
+        } else {
+            mLayoutInflater.inflate(layoutResID, mContentParent);//把我们的布局Id通过inflate添加到mContentParent中
+        }
+        mContentParent.requestApplyInsets();
+        final Callback cb = getCallback();
+        if (cb != null &amp;&amp; !isDestroyed()) {
+            cb.onContentChanged();
+        }
+        mContentParentExplicitlySet = true;
+    }
+</code></pre><p> 我们先看installDecor这个方法，这个方法是在mContentParent为null的情况下调用，这里我只抽取了其中两个重要的地方，一个是创建DecorView 一个是创建mContentParent</p>
+<pre><code>  private void installDecor() {
+
+        mForceDecorInstall = false;
+        if (mDecor == null) {
+            mDecor = generateDecor(-1);
+        }
+        ....
+
+        if (mContentParent == null) {
+            mContentParent = generateLayout(mDecor);
+            .....
+}
+</code></pre><p>generateDecor(-1);方法</p>
+<pre><code>   protected DecorView generateDecor(int featureId) {
+
+       .....
+       //new DecorView对象。
+        return new DecorView(context, featureId, this, getAttributes());
+    }
+</code></pre><p>DecorView其实只是一个帧布局</p>
+<pre><code>class DecorView extends FrameLayout mplements RootViewSurfaceTaker, WindowCallbacks {
+    ....
+}
+</code></pre><p> 这个方法把刚刚创建出来的DecorView传进去</p>
+<pre><code>mContentParent = generateLayout(mDecor);
+
+protected ViewGroup generateLayout(DecorView decor) {
+        ....
+
+        int layoutResource;
+        int features = getLocalFeatures();
+
+        if ((features &amp; (1 &lt;&lt; FEATURE_SWIPE_TO_DISMISS)) != 0) {
+            layoutResource = R.layout.screen_swipe_dismiss;//根据一系列判断
+        } else if ((features &amp; ((1 &lt;&lt; FEATURE_LEFT_ICON) | (1 &lt;&lt; FEATURE_RIGHT_ICON))) != 0) {
+            if (mIsFloating) {
+                TypedValue res = new TypedValue();
+                getContext().getTheme().resolveAttribute(
+                        R.attr.dialogTitleIconsDecorLayout, res, true);
+                layoutResource = res.resourceId;
+            } else {
+                layoutResource = R.layout.screen_title_icons;
+            }
+
+        }
+        .....
+
+//这里传入系统选中的一些布局，并把inflate出来的布局添加进decorViw中
+mDecor.onResourcesLoaded(mLayoutInflater, layoutResource);
+
+//ID_ANDROID_CONTENT --com.android.internal.R.id.content;
+//并通过findViewById查找出R.id.content的布局，作为contentParent返回出去。
+ViewGroup contentParent = (ViewGroup)findViewById(ID_ANDROID_CONTENT);
+
+return contentParent;
+}
+</code></pre><pre><code>//DecorView中的方法。
+
+oid onResourcesLoaded(LayoutInflater inflater, int layoutResource) {
+        ....
+          final View root = inflater.inflate(layoutResource, null);
+         //把系统布局添加到DecorView中
+        addView(root, 0, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+
+        mContentRoot = (ViewGroup) root;
+        initializeElevation();
+    }
+</code></pre><p>我们再回到刚开始的地方</p>
+<pre><code>  public void setContentView(int layoutResID) {
+
+        if (mContentParent == null) {
+            installDecor();
+        } 
+
+        if (hasFeature(FEATURE_CONTENT_TRANSITIONS)) {
+            final Scene newScene = Scene.getSceneForLayout(mContentParent, layoutResID,
+                    getContext());
+            transitionTo(newScene);
+        } else {
+            //把刚刚查找出来的R.id.content作为我们自己LayoutResID的根布局添加进去
+            mLayoutInflater.inflate(layoutResID, mContentParent);
+        }
+</code></pre><p>我们重新理理 调用phonewindow的setContentView方法–&gt;installDecor()–&gt;generateDecor()创建DecorView–&gt;generateLatout()把系统的布局添加进DecorView中，并查找R.id.content做为我们layout的根布局返回出去–&gt;mLayoutInflater.inflate(layoutResID, mContentParent);<br>经过这一系列工作之后，我们setContentView，成功的把我们的布局添加进一个id为R.id.content的ViewGroup中，同时这一部分又包含在DecorView中，而DeorView则在PhonWidow对象中。</p>
 <p>如下图所示</p>
 <p><img src="http://img.blog.csdn.net/20151031174042065?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image"></p>
 <p>++图片来源网络++</p>
-<h4 id="在AppCompatActivity中setContentView"><a href="#在AppCompatActivity中setContentView" class="headerlink" title="在AppCompatActivity中setContentView"></a>在AppCompatActivity中setContentView</h4><p>调用的为AppCompatDelegate的setContentView<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public void setContentView(@LayoutRes int layoutResID) &#123;</div><div class="line">    getDelegate().setContentView(layoutResID);</div><div class="line">&#125;</div><div class="line"></div><div class="line"> public AppCompatDelegate getDelegate() &#123;</div><div class="line">    if (mDelegate == null) &#123;</div><div class="line">        mDelegate = AppCompatDelegate.create(this, this);</div><div class="line">    &#125;</div><div class="line">    return mDelegate;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>点进去可以看到原来经行了不同版本的判断</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">private static AppCompatDelegate create(Context context, Window window,</div><div class="line">          AppCompatCallback callback) &#123;</div><div class="line">      final int sdk = Build.VERSION.SDK_INT;</div><div class="line">      if (BuildCompat.isAtLeastN()) &#123;</div><div class="line">          return new AppCompatDelegateImplN(context, window, callback);</div><div class="line">      &#125; else if (sdk &gt;= 23) &#123;</div><div class="line">          return new AppCompatDelegateImplV23(context, window, callback);</div><div class="line">      &#125; else if (sdk &gt;= 14) &#123;</div><div class="line">          return new AppCompatDelegateImplV14(context, window, callback);</div><div class="line">      &#125; else if (sdk &gt;= 11) &#123;</div><div class="line">          return new AppCompatDelegateImplV11(context, window, callback);</div><div class="line">      &#125; else &#123;</div><div class="line">          return new AppCompatDelegateImplV9(context, window, callback);</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>可以看到一个有趣的现象</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class AppCompatDelegateImplN extends AppCompatDelegateImplV23 </div><div class="line"></div><div class="line">class AppCompatDelegateImplV23 extends AppCompatDelegateImplV14</div><div class="line">....</div></pre></td></tr></table></figure>
-<p>如图所示</p>
+<h4 id="在AppCompatActivity中setContentView"><a href="#在AppCompatActivity中setContentView" class="headerlink" title="在AppCompatActivity中setContentView"></a>在AppCompatActivity中setContentView</h4><p>调用的为AppCompatDelegate的setContentView</p>
+<pre><code>
+    public void setContentView(@LayoutRes int layoutResID) {
+        getDelegate().setContentView(layoutResID);
+    }
+
+     public AppCompatDelegate getDelegate() {
+        if (mDelegate == null) {
+            mDelegate = AppCompatDelegate.create(this, this);
+        }
+        return mDelegate;
+    }
+</code></pre><p>点进去可以看到原来经行了不同版本的判断</p>
+<pre><code>  private static AppCompatDelegate create(Context context, Window window,
+            AppCompatCallback callback) {
+        final int sdk = Build.VERSION.SDK_INT;
+        if (BuildCompat.isAtLeastN()) {
+            return new AppCompatDelegateImplN(context, window, callback);
+        } else if (sdk &gt;= 23) {
+            return new AppCompatDelegateImplV23(context, window, callback);
+        } else if (sdk &gt;= 14) {
+            return new AppCompatDelegateImplV14(context, window, callback);
+        } else if (sdk &gt;= 11) {
+            return new AppCompatDelegateImplV11(context, window, callback);
+        } else {
+            return new AppCompatDelegateImplV9(context, window, callback);
+        }
+    }
+</code></pre><p>可以看到一个有趣的现象</p>
+<pre><code>class AppCompatDelegateImplN extends AppCompatDelegateImplV23 
+
+class AppCompatDelegateImplV23 extends AppCompatDelegateImplV14
+....
+</code></pre><p>如图所示</p>
 <p><img src="http://img.blog.csdn.net/20170314164728213?watermark/2/text/aHR0cDovL3dleXllLm1l/font/5a6L5L2T/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="image"></p>
 <p>++图片取自网络++</p>
 <p>所以，我们直接看AppCompatDelegateImplV9的setContentView方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public void setContentView(View v) &#123;</div><div class="line">    public void setContentView(int resId) &#123;</div><div class="line">      ensureSubDecor();</div><div class="line">      //找到R.id.content作为我们的布局的根布局</div><div class="line">      ViewGroup contentParent = (ViewGroup) mSubDecor.findViewById(android.R.id.content);</div><div class="line">      contentParent.removeAllViews();</div><div class="line">      //把我们的布局添加进contenParent中</div><div class="line">      LayoutInflater.from(mContext).inflate(resId, contentParent);</div><div class="line">      mOriginalWindowCallback.onContentChanged();</div><div class="line">  &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>这部分看起来要比Activity清晰很多，我们看下ensureSubDecor()这个方法都做了什么</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div></pre></td><td class="code"><pre><div class="line"> private void ensureSubDecor() &#123;</div><div class="line">        if (!mSubDecorInstalled) &#123;</div><div class="line">            mSubDecor = createSubDecor();</div><div class="line">...</div><div class="line">&#125;</div><div class="line"></div><div class="line"> private ViewGroup createSubDecor() &#123;</div><div class="line">        TypedArray a = mContext.obtainStyledAttributes(R.styleable.AppCompatTheme);</div><div class="line"></div><div class="line">        if (!a.hasValue(R.styleable.AppCompatTheme_windowActionBar)) &#123;</div><div class="line">            a.recycle();</div><div class="line">            throw new IllegalStateException(</div><div class="line">                    &quot;You need to use a Theme.AppCompat theme (or descendant) with this activity.&quot;);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (a.getBoolean(R.styleable.AppCompatTheme_windowNoTitle, false)) &#123;</div><div class="line">            requestWindowFeature(Window.FEATURE_NO_TITLE);</div><div class="line">        &#125; else if (a.getBoolean(R.styleable.AppCompatTheme_windowActionBar, false)) &#123;</div><div class="line">            // Don&apos;t allow an action bar if there is no title.</div><div class="line">            requestWindowFeature(FEATURE_SUPPORT_ACTION_BAR);</div><div class="line">        &#125;</div><div class="line">        if (a.getBoolean(R.styleable.AppCompatTheme_windowActionBarOverlay, false)) &#123;</div><div class="line">            requestWindowFeature(FEATURE_SUPPORT_ACTION_BAR_OVERLAY);</div><div class="line">        &#125;</div><div class="line">        if (a.getBoolean(R.styleable.AppCompatTheme_windowActionModeOverlay, false)) &#123;</div><div class="line">            requestWindowFeature(FEATURE_ACTION_MODE_OVERLAY);</div><div class="line">        &#125;</div><div class="line">        mIsFloating = a.getBoolean(R.styleable.AppCompatTheme_android_windowIsFloating, false);</div><div class="line">        a.recycle();</div><div class="line"></div><div class="line">      </div><div class="line">        mWindow.getDecorView();</div><div class="line">        </div><div class="line">        ViewGroup subDecor = null;</div><div class="line"></div><div class="line"></div><div class="line">        if (!mWindowNoTitle) &#123;</div><div class="line">            if (mIsFloating) &#123;</div><div class="line">                subDecor = (ViewGroup) inflater.inflate(</div><div class="line">                        R.layout.abc_dialog_title_material, null);</div><div class="line">                mHasActionBar = mOverlayActionBar = false;</div><div class="line">            &#125; </div><div class="line">      subDecor = (ViewGroup) LayoutInflater.from(themedContext)</div><div class="line">                        .inflate(R.layout.abc_screen_toolbar, null);</div><div class="line">        </div><div class="line">        &#125;</div><div class="line">        </div><div class="line">         if (mOverlayActionMode) &#123;</div><div class="line">                subDecor = (ViewGroup) inflater.inflate(</div><div class="line">                        R.layout.abc_screen_simple_overlay_action_mode, null);</div><div class="line">            &#125; else &#123;</div><div class="line">                subDecor = (ViewGroup) inflater.inflate(R.layout.abc_screen_simple, null);</div><div class="line">            &#125;</div><div class="line">        ....</div><div class="line">        </div><div class="line">        final ViewGroup windowContentView = (ViewGroup) mWindow.findViewById(android.R.id.content);</div><div class="line">        </div><div class="line">            contentView.setId(android.R.id.content);</div><div class="line"></div><div class="line">           </div><div class="line">            if (windowContentView instanceof FrameLayout) &#123;</div><div class="line">                ((FrameLayout) windowContentView).setForeground(null);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // 最后还是调用decorView方法</div><div class="line">        mWindow.setContentView(subDecor);</div><div class="line"></div><div class="line"></div><div class="line">        return subDecor;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>经过一些列的判断设值，最终还是调用了PhoneWidow方法的setContentView方法，把视图添加到了DecorVIew中</p>
+<pre><code>  public void setContentView(View v) {
+      public void setContentView(int resId) {
+        ensureSubDecor();
+        //找到R.id.content作为我们的布局的根布局
+        ViewGroup contentParent = (ViewGroup) mSubDecor.findViewById(android.R.id.content);
+        contentParent.removeAllViews();
+        //把我们的布局添加进contenParent中
+        LayoutInflater.from(mContext).inflate(resId, contentParent);
+        mOriginalWindowCallback.onContentChanged();
+    }
+    }
+</code></pre><p>这部分看起来要比Activity清晰很多，我们看下ensureSubDecor()这个方法都做了什么</p>
+<pre><code> private void ensureSubDecor() {
+        if (!mSubDecorInstalled) {
+            mSubDecor = createSubDecor();
+...
+}
+
+ private ViewGroup createSubDecor() {
+        TypedArray a = mContext.obtainStyledAttributes(R.styleable.AppCompatTheme);
+
+        if (!a.hasValue(R.styleable.AppCompatTheme_windowActionBar)) {
+            a.recycle();
+            throw new IllegalStateException(
+                    &quot;You need to use a Theme.AppCompat theme (or descendant) with this activity.&quot;);
+        }
+
+        if (a.getBoolean(R.styleable.AppCompatTheme_windowNoTitle, false)) {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+        } else if (a.getBoolean(R.styleable.AppCompatTheme_windowActionBar, false)) {
+            // Don&#39;t allow an action bar if there is no title.
+            requestWindowFeature(FEATURE_SUPPORT_ACTION_BAR);
+        }
+        if (a.getBoolean(R.styleable.AppCompatTheme_windowActionBarOverlay, false)) {
+            requestWindowFeature(FEATURE_SUPPORT_ACTION_BAR_OVERLAY);
+        }
+        if (a.getBoolean(R.styleable.AppCompatTheme_windowActionModeOverlay, false)) {
+            requestWindowFeature(FEATURE_ACTION_MODE_OVERLAY);
+        }
+        mIsFloating = a.getBoolean(R.styleable.AppCompatTheme_android_windowIsFloating, false);
+        a.recycle();
+
+
+        mWindow.getDecorView();
+
+        ViewGroup subDecor = null;
+
+
+        if (!mWindowNoTitle) {
+            if (mIsFloating) {
+                subDecor = (ViewGroup) inflater.inflate(
+                        R.layout.abc_dialog_title_material, null);
+                mHasActionBar = mOverlayActionBar = false;
+            } 
+      subDecor = (ViewGroup) LayoutInflater.from(themedContext)
+                        .inflate(R.layout.abc_screen_toolbar, null);
+
+        }
+
+         if (mOverlayActionMode) {
+                subDecor = (ViewGroup) inflater.inflate(
+                        R.layout.abc_screen_simple_overlay_action_mode, null);
+            } else {
+                subDecor = (ViewGroup) inflater.inflate(R.layout.abc_screen_simple, null);
+            }
+        ....
+
+        final ViewGroup windowContentView = (ViewGroup) mWindow.findViewById(android.R.id.content);
+
+            contentView.setId(android.R.id.content);
+
+
+            if (windowContentView instanceof FrameLayout) {
+                ((FrameLayout) windowContentView).setForeground(null);
+            }
+        }
+
+        // 最后还是调用decorView方法
+        mWindow.setContentView(subDecor);
+
+
+        return subDecor;
+    }
+</code></pre><p>经过一些列的判断设值，最终还是调用了PhoneWidow方法的setContentView方法，把视图添加到了DecorVIew中</p>
 <p>未完待续…</p>
 
     

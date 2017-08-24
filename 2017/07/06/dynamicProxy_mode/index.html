@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -406,23 +402,195 @@
 <li>动态代理：刚刚相反，通过反射来动态生成代理对象，也就是说编码的时候不知道代理谁，只有执行的时候才知道。</li>
 </ul>
 <p>我们还用上个月静态代理的例子来说明</p>
-<p>地址：<a href="https://livesun.github.io/2017/06/19/Proxy_Mode/">https://livesun.github.io/2017/06/19/Proxy_Mode/</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Created by 29028 on 2017/6/19.</div><div class="line"> *</div><div class="line"> * 自己的接口</div><div class="line"> */</div><div class="line"></div><div class="line">public interface ISlef &#123;</div><div class="line"></div><div class="line">    //我能干什么</div><div class="line"></div><div class="line">    //吃</div><div class="line">    public void eat();</div><div class="line"></div><div class="line">    //工作</div><div class="line">    public void doWork();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>创建被代理类，我们自己。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Created by 29028 on 2017/6/19.</div><div class="line"> * 真的自己</div><div class="line"> */</div><div class="line">public class TrueSelf implements ISlef &#123;</div><div class="line">    private ISlef slef;</div><div class="line">    //默认让一号来</div><div class="line">    public TrueSelf()&#123;</div><div class="line">        slef =new ProxyRobot1();</div><div class="line">    &#125;</div><div class="line">    //设置替身 我想谁几号替我就让几号来</div><div class="line">    public void setProxy(ISlef slef)&#123;</div><div class="line">        this.slef = slef;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    //吃东西这事还是我们自己来比较好</div><div class="line">    public void eat() &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;我悠哉悠哉的吃肉&quot;);</div><div class="line">    &#125;</div><div class="line">    public void doWork() &#123;</div><div class="line">        slef.doWork();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>如果按照静态代理，我们必须写这个替身一号的代理类<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Created by 29028 on 2017/6/19.</div><div class="line"> * 机器人替身1号 我会的他也会</div><div class="line"> */</div><div class="line">public class ProxyRobot1 implements ISlef &#123;</div><div class="line">    public void eat() &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;机器人替身1号吃电&quot;);</div><div class="line">    &#125;</div><div class="line">    public void doWork() &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;机器人替身1号帮我做工作&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>然后这样，让代理类帮我们做事情</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private void doThings() &#123;</div><div class="line">       TrueSelf self=new TrueSelf();</div><div class="line">       self.doWork();</div><div class="line">       self.eat();</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>这里面可以看到，其实我们必须要创建ProxyRobot1机器人一号，来代理我们做事情，如果有很多方法，那会很麻烦，尤其是如果运用在MVP架构中，我们每个方法基本都要判断ISlef为不为空，基于如此，所以动态代理应运而生。</p>
+<p>地址：<a href="https://livesun.github.io/2017/06/19/Proxy_Mode/">https://livesun.github.io/2017/06/19/Proxy_Mode/</a></p>
+<pre><code>/**
+ * Created by 29028 on 2017/6/19.
+ *
+ * 自己的接口
+ */
+
+public interface ISlef {
+
+    //我能干什么
+
+    //吃
+    public void eat();
+
+    //工作
+    public void doWork();
+}
+</code></pre><p>创建被代理类，我们自己。</p>
+<pre><code>/**
+ * Created by 29028 on 2017/6/19.
+ * 真的自己
+ */
+public class TrueSelf implements ISlef {
+    private ISlef slef;
+    //默认让一号来
+    public TrueSelf(){
+        slef =new ProxyRobot1();
+    }
+    //设置替身 我想谁几号替我就让几号来
+    public void setProxy(ISlef slef){
+        this.slef = slef;
+    }
+
+    //吃东西这事还是我们自己来比较好
+    public void eat() {
+        Log.d(&quot;AAA&quot;,&quot;我悠哉悠哉的吃肉&quot;);
+    }
+    public void doWork() {
+        slef.doWork();
+    }
+}
+</code></pre><p>如果按照静态代理，我们必须写这个替身一号的代理类</p>
+<pre><code>/**
+ * Created by 29028 on 2017/6/19.
+ * 机器人替身1号 我会的他也会
+ */
+public class ProxyRobot1 implements ISlef {
+    public void eat() {
+        Log.d(&quot;AAA&quot;,&quot;机器人替身1号吃电&quot;);
+    }
+    public void doWork() {
+        Log.d(&quot;AAA&quot;,&quot;机器人替身1号帮我做工作&quot;);
+    }
+}
+</code></pre><p>然后这样，让代理类帮我们做事情</p>
+<pre><code>private void doThings() {
+       TrueSelf self=new TrueSelf();
+       self.doWork();
+       self.eat();
+   }
+</code></pre><p>这里面可以看到，其实我们必须要创建ProxyRobot1机器人一号，来代理我们做事情，如果有很多方法，那会很麻烦，尤其是如果运用在MVP架构中，我们每个方法基本都要判断ISlef为不为空，基于如此，所以动态代理应运而生。</p>
 <p>Java其实已经帮我们封装了动态代理的方法，我们只需要Proxy这个类，以及实现InvocationHandler接口，并调用invoke即可。</p>
 <p>代码如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 真的自己</div><div class="line"> */</div><div class="line">public class TrueSelf implements ISlef &#123;</div><div class="line">   </div><div class="line">    //吃东西这事还是我们自己来比较好</div><div class="line">    public void eat() &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;我悠哉悠哉的吃肉&quot;);</div><div class="line">    &#125;</div><div class="line">    public void doWork() &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;我的工作做完了&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">private void doThings() &#123;</div><div class="line">       TrueSelf self=new TrueSelf();</div><div class="line">       ISlef proxy = (ISlef) Proxy.newProxyInstance(</div><div class="line">                self.getClass().getClassLoader(),</div><div class="line">                self.getClass().getInterfaces(),</div><div class="line">                new MyInvocationHandler(self)</div><div class="line">        );</div><div class="line">        proxy.eat();</div><div class="line">        proxy.doWork()；</div><div class="line">   &#125;</div><div class="line">   </div><div class="line">public  class  MyInvocationHandler implements InvocationHandler&#123;</div><div class="line"></div><div class="line">        private ISlef man;</div><div class="line"></div><div class="line">        public MyInvocationHandler(ISlef man) &#123;</div><div class="line"></div><div class="line">            this.man = man;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</div><div class="line">             Log.d(&quot;AAA&quot;,&quot;机器人帮我干货&quot;);</div><div class="line">            Object obj=method.invoke(man,args);</div><div class="line">            return obj;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>可以看到，我们并没有创建ProxyRobot1代理类，但同样完成了之前的工作。</p>
+<pre><code>/**
+ * 真的自己
+ */
+public class TrueSelf implements ISlef {
+
+    //吃东西这事还是我们自己来比较好
+    public void eat() {
+        Log.d(&quot;AAA&quot;,&quot;我悠哉悠哉的吃肉&quot;);
+    }
+    public void doWork() {
+        Log.d(&quot;AAA&quot;,&quot;我的工作做完了&quot;);
+    }
+}
+
+private void doThings() {
+       TrueSelf self=new TrueSelf();
+       ISlef proxy = (ISlef) Proxy.newProxyInstance(
+                self.getClass().getClassLoader(),
+                self.getClass().getInterfaces(),
+                new MyInvocationHandler(self)
+        );
+        proxy.eat();
+        proxy.doWork()；
+   }
+
+public  class  MyInvocationHandler implements InvocationHandler{
+
+        private ISlef man;
+
+        public MyInvocationHandler(ISlef man) {
+
+            this.man = man;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+             Log.d(&quot;AAA&quot;,&quot;机器人帮我干货&quot;);
+            Object obj=method.invoke(man,args);
+            return obj;
+        }
+    }
+</code></pre><p>可以看到，我们并没有创建ProxyRobot1代理类，但同样完成了之前的工作。</p>
 <p>使用是非常简单的</p>
 <p>接着粗略的看下Proxy的源码是如何实现动态代理的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public static Object newProxyInstance(ClassLoader loader,</div><div class="line">                                         Class&lt;?&gt;[] interface,InvocationHandler h)</div><div class="line">       throws IllegalArgumentException</div><div class="line">   &#123;</div><div class="line">      </div><div class="line">       Class&lt;?&gt; cl = getProxyClass0(loader, interfaces);</div><div class="line">       //调用InvocationHandler的构造函数，其实就是每次调用newProxyInstance，就去执行了InvocationHandler里面的那个invoke方法。</div><div class="line">      final Constructor&lt;?&gt; cons = cl.getConstructor(constructorParams);</div><div class="line">           return newInstance(cons, h);</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"> private static Class&lt;?&gt; getProxyClass0(ClassLoader loader,</div><div class="line">                                           Class&lt;?&gt;... interfaces) &#123;</div><div class="line">      </div><div class="line">        Class&lt;?&gt; proxyClass = null;</div><div class="line">        String[] interfaceNames = new String[interfaces.length];</div><div class="line">        Set&lt;Class&lt;?&gt;&gt; interfaceSet = new HashSet&lt;&gt;();</div><div class="line"></div><div class="line">        for (int i = 0; i &lt; interfaces.length; i++) &#123;</div><div class="line">            //获取所有接口的名字</div><div class="line">            String interfaceName = interfaces[i].getName();</div><div class="line">            Class&lt;?&gt; interfaceClass = null;</div><div class="line">            try &#123;</div><div class="line">            //获取所有接口</div><div class="line">                interfaceClass = Class.forName(interfaceName, false, loader);</div><div class="line">            &#125; catch (ClassNotFoundException e) &#123;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            interfaceSet.add(interfaceClass);</div><div class="line"></div><div class="line">            interfaceNames[i] = interfaceName;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">          try &#123;</div><div class="line">            String proxyPkg = null;     </div><div class="line">            for (int i = 0; i &lt; interfaces.length; i++) &#123;</div><div class="line">                int flags = interfaces[i].getModifiers();</div><div class="line">                if (!Modifier.isPublic(flags)) &#123;</div><div class="line">                //获取完整的比如 livesun.proxy.test.Iself</div><div class="line">                    String name = interfaces[i].getName();</div><div class="line">                    </div><div class="line">                    int n = name.lastIndexOf(&apos;.&apos;);</div><div class="line">                    //pak=livesun.proxy.test. 获取包名</div><div class="line">                    String pkg = ((n == -1) ? &quot;&quot; : name.substring(0, n + 1));</div><div class="line">                    if (proxyPkg == null) &#123;</div><div class="line">                        proxyPkg = pkg;</div><div class="line">                    &#125; else if (!pkg.equals(proxyPkg)) &#123;</div><div class="line">                        throw new IllegalArgumentException(</div><div class="line">                            &quot;non-public interfaces from different packages&quot;);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">           //获取接口里面所有的方法</div><div class="line">                List&lt;Method&gt; methods = getMethods(interfaces);</div><div class="line">                //把这些方法经行排序</div><div class="line">                Collections.sort(methods, ORDER_BY_SIGNATURE_AND_SUBTYPE);</div><div class="line">                validateReturnTypes(methods);</div><div class="line">                //抛异常的方法</div><div class="line">                List&lt;Class&lt;?&gt;[]&gt; exceptions = deduplicateAndGetExceptions(methods);</div><div class="line"></div><div class="line">                Method[] methodsArray = methods.toArray(new Method[methods.size()]);</div><div class="line">                Class&lt;?&gt;[][] exceptionsArray = exceptions.toArray(new Class&lt;?&gt;[exceptions.size()][]);</div><div class="line"></div><div class="line">              </div><div class="line">                final long num;</div><div class="line">                synchronized (nextUniqueNumberLock) &#123;</div><div class="line">                    num = nextUniqueNumber++;</div><div class="line">                &#125;</div><div class="line">//private final static String proxyClassNamePrefix = &quot;$Proxy&quot;; 解析interface所有的方法，新建一个class，这个类的名字为，包名+$Proxy。livesun.proxy.test.$Proxy</div><div class="line">                String proxyName = proxyPkg + proxyClassNamePrefix + num;</div><div class="line"></div><div class="line">                proxyClass = generateProxy(proxyName, interfaces, loader, methodsArray,</div><div class="line">                        exceptionsArray);</div><div class="line">        </div><div class="line">        &#125;</div><div class="line">        //proxyClass类</div><div class="line">        return proxyClass;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>//native方法，其实就是生成proxyClass类（具体内部的实现，其实并不懂。。。）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">private static native Class&lt;?&gt; generateProxy(String name, Class&lt;?&gt;[] interfaces,</div><div class="line">                                                 ClassLoader loader, Method[] methods,</div><div class="line">                                                 Class&lt;?&gt;[][] exceptions);</div></pre></td></tr></table></figure></p>
+<pre><code> public static Object newProxyInstance(ClassLoader loader,
+                                          Class&lt;?&gt;[] interface,InvocationHandler h)
+        throws IllegalArgumentException
+    {
 
+        Class&lt;?&gt; cl = getProxyClass0(loader, interfaces);
+        //调用InvocationHandler的构造函数，其实就是每次调用newProxyInstance，就去执行了InvocationHandler里面的那个invoke方法。
+       final Constructor&lt;?&gt; cons = cl.getConstructor(constructorParams);
+            return newInstance(cons, h);
+    }
+</code></pre><pre><code> private static Class&lt;?&gt; getProxyClass0(ClassLoader loader,
+                                           Class&lt;?&gt;... interfaces) {
+
+        Class&lt;?&gt; proxyClass = null;
+        String[] interfaceNames = new String[interfaces.length];
+        Set&lt;Class&lt;?&gt;&gt; interfaceSet = new HashSet&lt;&gt;();
+
+        for (int i = 0; i &lt; interfaces.length; i++) {
+            //获取所有接口的名字
+            String interfaceName = interfaces[i].getName();
+            Class&lt;?&gt; interfaceClass = null;
+            try {
+            //获取所有接口
+                interfaceClass = Class.forName(interfaceName, false, loader);
+            } catch (ClassNotFoundException e) {
+            }
+
+            interfaceSet.add(interfaceClass);
+
+            interfaceNames[i] = interfaceName;
+        }
+
+          try {
+            String proxyPkg = null;     
+            for (int i = 0; i &lt; interfaces.length; i++) {
+                int flags = interfaces[i].getModifiers();
+                if (!Modifier.isPublic(flags)) {
+                //获取完整的比如 livesun.proxy.test.Iself
+                    String name = interfaces[i].getName();
+
+                    int n = name.lastIndexOf(&#39;.&#39;);
+                    //pak=livesun.proxy.test. 获取包名
+                    String pkg = ((n == -1) ? &quot;&quot; : name.substring(0, n + 1));
+                    if (proxyPkg == null) {
+                        proxyPkg = pkg;
+                    } else if (!pkg.equals(proxyPkg)) {
+                        throw new IllegalArgumentException(
+                            &quot;non-public interfaces from different packages&quot;);
+                    }
+                }
+            }
+           //获取接口里面所有的方法
+                List&lt;Method&gt; methods = getMethods(interfaces);
+                //把这些方法经行排序
+                Collections.sort(methods, ORDER_BY_SIGNATURE_AND_SUBTYPE);
+                validateReturnTypes(methods);
+                //抛异常的方法
+                List&lt;Class&lt;?&gt;[]&gt; exceptions = deduplicateAndGetExceptions(methods);
+
+                Method[] methodsArray = methods.toArray(new Method[methods.size()]);
+                Class&lt;?&gt;[][] exceptionsArray = exceptions.toArray(new Class&lt;?&gt;[exceptions.size()][]);
+
+
+                final long num;
+                synchronized (nextUniqueNumberLock) {
+                    num = nextUniqueNumber++;
+                }
+//private final static String proxyClassNamePrefix = &quot;$Proxy&quot;; 解析interface所有的方法，新建一个class，这个类的名字为，包名+$Proxy。livesun.proxy.test.$Proxy
+                String proxyName = proxyPkg + proxyClassNamePrefix + num;
+
+                proxyClass = generateProxy(proxyName, interfaces, loader, methodsArray,
+                        exceptionsArray);
+
+        }
+        //proxyClass类
+        return proxyClass;
+    }
+</code></pre><p>//native方法，其实就是生成proxyClass类（具体内部的实现，其实并不懂。。。）</p>
+<pre><code>private static native Class&lt;?&gt; generateProxy(String name, Class&lt;?&gt;[] interfaces,
+                                                 ClassLoader loader, Method[] methods,
+                                                 Class&lt;?&gt;[][] exceptions);
+</code></pre>
     
 
     

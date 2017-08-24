@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -406,12 +402,145 @@
 <p>先看个图</p>
 <p><img src="http://img.blog.csdn.net/20150723095636567" alt="image"></p>
 <p>可以看到Client向Server发送一条消息，由服务端的Hanlder来接收，服务端接收到消息再发送给客户端，由客户端的Hanlder接收处理，从而形成一个通信流程。</p>
-<h3 id="来个例子"><a href="#来个例子" class="headerlink" title="来个例子"></a>来个例子</h3><h4 id="app1客户端–ServerA"><a href="#app1客户端–ServerA" class="headerlink" title="app1客户端–ServerA"></a>app1客户端–ServerA</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">public class MessengerService extends Service &#123;</div><div class="line">    private final int SMS_FORM_CLINET=1111;</div><div class="line"></div><div class="line">    @Nullable</div><div class="line">    @Override</div><div class="line">    public IBinder onBind(Intent intent) &#123;</div><div class="line">        return mMessenger.getBinder();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private Messenger mMessenger=new Messenger(new MessageHandler());</div><div class="line"></div><div class="line">    private class MessageHandler extends Handler&#123;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            switch (msg.what)&#123;</div><div class="line"></div><div class="line">                //来自客户端</div><div class="line">                case SMS_FORM_CLINET:</div><div class="line">                    int arg2 = msg.arg2;</div><div class="line">                    String serverMsg=&quot;你好,&quot;+arg2+&quot;号&quot;;</div><div class="line">                    Message message = Message.obtain(null, SMS_FORM_CLINET);</div><div class="line">                    message.arg1=msg.arg1;</div><div class="line">                    Bundle bundle=new Bundle();</div><div class="line">                    bundle.putString(&quot;msg&quot;,serverMsg);</div><div class="line">                    message.setData(bundle);</div><div class="line">                    Messenger client = msg.replyTo;</div><div class="line">                    try &#123;</div><div class="line">                        Thread.sleep(2000);</div><div class="line">                        client.send(message);</div><div class="line">                    &#125; catch (Exception e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                    break;</div><div class="line">            &#125;</div><div class="line"></div><div class="line"></div><div class="line">            super.handleMessage(msg);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>清单文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;service</div><div class="line">           android:name=&quot;.MessengerService&quot;</div><div class="line">           android:enabled=&quot;true&quot;</div><div class="line">           android:exported=&quot;true&quot;</div><div class="line">           &gt;</div><div class="line">           &lt;intent-filter&gt;</div><div class="line">               &lt;action android:name=&quot;com.liv.aidl.calc&quot;&gt;&lt;/action&gt;</div><div class="line">               &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;</div><div class="line">           &lt;/intent-filter&gt;</div><div class="line">       &lt;/service&gt;</div></pre></td></tr></table></figure></p>
-<h4 id="app2客户端–ClientB"><a href="#app2客户端–ClientB" class="headerlink" title="app2客户端–ClientB"></a>app2客户端–ClientB</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div></pre></td><td class="code"><pre><div class="line">public class MainActivity extends AppCompatActivity &#123;</div><div class="line"></div><div class="line">    private ServiceConnection mConnection=new ServiceConnection() &#123;</div><div class="line">        @Override</div><div class="line">        public void onServiceConnected(ComponentName name, IBinder service) &#123;</div><div class="line">            Toast.makeText(MainActivity.this,&quot;成功&quot;,Toast.LENGTH_LONG).show();</div><div class="line">            mServer = new Messenger(service);</div><div class="line">            isConn = true;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void onServiceDisconnected(ComponentName name) &#123;</div><div class="line">            Toast.makeText(MainActivity.this,&quot;失败&quot;,Toast.LENGTH_LONG).show();</div><div class="line">            mServer=null;</div><div class="line">            isConn = false;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    Messenger messenger=new Messenger(new Handler()&#123;</div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            super.handleMessage(msg);</div><div class="line">            switch (msg.what)&#123;</div><div class="line"></div><div class="line">                case SMS_FORM_CLINET:</div><div class="line">                    TextView tv = (TextView) rootView.findViewById(msg.arg1);</div><div class="line">                    String msg1 = msg.getData().getString(&quot;msg&quot;);</div><div class="line">                    tv.setText(tv.getText()+&quot;--&gt;&quot;+msg1);</div><div class="line">                    break;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    private final int SMS_FORM_CLINET=1111;</div><div class="line">    private Messenger mServer;</div><div class="line">    private boolean isConn;</div><div class="line">    private int id=100;</div><div class="line">    private LinearLayout rootView;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        Intent intent=new Intent();</div><div class="line">        intent.setAction(&quot;com.liv.aidl.calc&quot;);</div><div class="line">        intent.setPackage(&quot;livesun.servera&quot;);</div><div class="line">        bindService(intent,mConnection,Context.BIND_AUTO_CREATE);</div><div class="line">        rootView = (LinearLayout) findViewById(R.id.root);</div><div class="line">        findViewById(R.id.binder).setOnClickListener(new View.OnClickListener() &#123;</div><div class="line">            @Override</div><div class="line">            public void onClick(View v) &#123;</div><div class="line">                int textId=id++;</div><div class="line">                int count=(int) (Math.random() * 100);</div><div class="line">                TextView tv = new TextView(MainActivity.this);</div><div class="line">                tv.setText( &quot;服务端,我是&quot;+count+&quot;号...&quot;);</div><div class="line">                tv.setId(textId);</div><div class="line">                rootView.addView(tv);</div><div class="line">                Message message = Message.obtain(null, SMS_FORM_CLINET,textId,count);</div><div class="line">                message.replyTo=messenger;</div><div class="line"></div><div class="line">                if(isConn)&#123;</div><div class="line">                    try &#123;</div><div class="line">                        mServer.send(message);</div><div class="line">                    &#125; catch (RemoteException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onDestroy() &#123;</div><div class="line">        super.onDestroy();</div><div class="line">        unbindService(mConnection);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="效果如下"><a href="#效果如下" class="headerlink" title="效果如下"></a>效果如下</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/messgener_drawab.gif" alt="image"></p>
-<p>点击看下Messenger的构造方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public Messenger(IBinder target) &#123;</div><div class="line">        mTarget = IMessenger.Stub.asInterface(target);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">public Messenger(Handler target) &#123;</div><div class="line">        mTarget = target.getIMessenger();</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>怎么样，是不是感觉特别熟悉，我们可以很明显看出是AIDL的封装，其实仔细看下源码，Messenger确实是根据AIDL来做的，同时Messenger是以串行的方式处理客户端发送来的消息，不能像AIDL一样处理并发请求，而且就像信使这个名字一样，Messenger只负责传递信息，如果想跨进程调用服务端的某个方法，Messenger是做不到的。</p>
+<h3 id="来个例子"><a href="#来个例子" class="headerlink" title="来个例子"></a>来个例子</h3><h4 id="app1客户端–ServerA"><a href="#app1客户端–ServerA" class="headerlink" title="app1客户端–ServerA"></a>app1客户端–ServerA</h4><pre><code>public class MessengerService extends Service {
+    private final int SMS_FORM_CLINET=1111;
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mMessenger.getBinder();
+    }
+
+    private Messenger mMessenger=new Messenger(new MessageHandler());
+
+    private class MessageHandler extends Handler{
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+
+                //来自客户端
+                case SMS_FORM_CLINET:
+                    int arg2 = msg.arg2;
+                    String serverMsg=&quot;你好,&quot;+arg2+&quot;号&quot;;
+                    Message message = Message.obtain(null, SMS_FORM_CLINET);
+                    message.arg1=msg.arg1;
+                    Bundle bundle=new Bundle();
+                    bundle.putString(&quot;msg&quot;,serverMsg);
+                    message.setData(bundle);
+                    Messenger client = msg.replyTo;
+                    try {
+                        Thread.sleep(2000);
+                        client.send(message);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+
+
+            super.handleMessage(msg);
+        }
+    }
+}
+</code></pre><p>清单文件</p>
+<pre><code> &lt;service
+            android:name=&quot;.MessengerService&quot;
+            android:enabled=&quot;true&quot;
+            android:exported=&quot;true&quot;
+            &gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;com.liv.aidl.calc&quot;&gt;&lt;/action&gt;
+                &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/service&gt;
+</code></pre><h4 id="app2客户端–ClientB"><a href="#app2客户端–ClientB" class="headerlink" title="app2客户端–ClientB"></a>app2客户端–ClientB</h4><pre><code>public class MainActivity extends AppCompatActivity {
+
+    private ServiceConnection mConnection=new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Toast.makeText(MainActivity.this,&quot;成功&quot;,Toast.LENGTH_LONG).show();
+            mServer = new Messenger(service);
+            isConn = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Toast.makeText(MainActivity.this,&quot;失败&quot;,Toast.LENGTH_LONG).show();
+            mServer=null;
+            isConn = false;
+        }
+    };
+    Messenger messenger=new Messenger(new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+
+                case SMS_FORM_CLINET:
+                    TextView tv = (TextView) rootView.findViewById(msg.arg1);
+                    String msg1 = msg.getData().getString(&quot;msg&quot;);
+                    tv.setText(tv.getText()+&quot;--&gt;&quot;+msg1);
+                    break;
+
+            }
+        }
+    });
+
+    private final int SMS_FORM_CLINET=1111;
+    private Messenger mServer;
+    private boolean isConn;
+    private int id=100;
+    private LinearLayout rootView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Intent intent=new Intent();
+        intent.setAction(&quot;com.liv.aidl.calc&quot;);
+        intent.setPackage(&quot;livesun.servera&quot;);
+        bindService(intent,mConnection,Context.BIND_AUTO_CREATE);
+        rootView = (LinearLayout) findViewById(R.id.root);
+        findViewById(R.id.binder).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int textId=id++;
+                int count=(int) (Math.random() * 100);
+                TextView tv = new TextView(MainActivity.this);
+                tv.setText( &quot;服务端,我是&quot;+count+&quot;号...&quot;);
+                tv.setId(textId);
+                rootView.addView(tv);
+                Message message = Message.obtain(null, SMS_FORM_CLINET,textId,count);
+                message.replyTo=messenger;
+
+                if(isConn){
+                    try {
+                        mServer.send(message);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mConnection);
+    }
+}
+</code></pre><h3 id="效果如下"><a href="#效果如下" class="headerlink" title="效果如下"></a>效果如下</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/messgener_drawab.gif" alt="image"></p>
+<p>点击看下Messenger的构造方法</p>
+<pre><code>public Messenger(IBinder target) {
+        mTarget = IMessenger.Stub.asInterface(target);
+    }
+
+public Messenger(Handler target) {
+        mTarget = target.getIMessenger();
+    }
+</code></pre><p>怎么样，是不是感觉特别熟悉，我们可以很明显看出是AIDL的封装，其实仔细看下源码，Messenger确实是根据AIDL来做的，同时Messenger是以串行的方式处理客户端发送来的消息，不能像AIDL一样处理并发请求，而且就像信使这个名字一样，Messenger只负责传递信息，如果想跨进程调用服务端的某个方法，Messenger是做不到的。</p>
 
     
 

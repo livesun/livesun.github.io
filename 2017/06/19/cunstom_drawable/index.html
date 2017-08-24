@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -405,11 +401,131 @@
 <p>简单的drawable都是静态的图形，当然也有其他的，比如StateListDrawable，可以根据不同的触摸来变换不同的图形。也是通常我们在drawable文件中创建的selector.xml</p>
 <p>我们通过简单三个例子来了解一下自定义drawable</p>
 <h3 id="效果图如下"><a href="#效果图如下" class="headerlink" title="效果图如下"></a>效果图如下</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/mydrawable.gif" alt="image"></p>
-<h3 id="圆形图像的实现方式。"><a href="#圆形图像的实现方式。" class="headerlink" title="圆形图像的实现方式。"></a>圆形图像的实现方式。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Created by gesangdianzi on 2017/6/18.</div><div class="line"> */</div><div class="line"></div><div class="line">public class CircleDrawable extends BitmapDrawable &#123;</div><div class="line"></div><div class="line">    private final Paint mPaint;</div><div class="line"></div><div class="line">    public CircleDrawable(Resources resources, Bitmap bitmap)&#123;</div><div class="line">        super(resources,bitmap);</div><div class="line">        BitmapShader shader=new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);</div><div class="line">        mPaint = new Paint();</div><div class="line">        mPaint.setAntiAlias(true);</div><div class="line">        mPaint.setShader(shader);</div><div class="line">        mPaint.setColor(Color.RED);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void draw(Canvas canvas) &#123;</div><div class="line">        int width = getBitmap().getWidth();</div><div class="line">        int height = getBitmap().getHeight();</div><div class="line">        int radius = Math.min(width/2, height/2);</div><div class="line">        int x = (width&gt;radius+radius)?width/2:radius;</div><div class="line">        int y = (height&gt;radius+radius)?height/2:radius;</div><div class="line">        canvas.drawCircle(x,y,radius,mPaint);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 这两个方法可以获取到drawable绘制的区域，不过ImageView的源码中调用的是下面的</div><div class="line">     * @param bounds</div><div class="line">     */</div><div class="line">    @Override</div><div class="line">    public void setBounds(Rect bounds) &#123;</div><div class="line">        super.setBounds(bounds);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 这两个方法可以获取到drawable绘制的区域 Imagview中会调用该方法，设置宽高</div><div class="line">     */</div><div class="line">    @Override</div><div class="line">    public void setBounds(int left, int top, int right, int bottom) &#123;</div><div class="line">        super.setBounds(left, top, right, bottom);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="圆角图像的实现方式。"><a href="#圆角图像的实现方式。" class="headerlink" title="圆角图像的实现方式。"></a>圆角图像的实现方式。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">public class RoundDrawable extends BitmapDrawable &#123;</div><div class="line"></div><div class="line"></div><div class="line">    private final Paint paint;</div><div class="line">    private float radisu;</div><div class="line">    private RectF rectF;</div><div class="line"></div><div class="line">    public RoundDrawable(Resources resources, Bitmap bitmap)&#123;</div><div class="line">        super(resources,bitmap);</div><div class="line">        BitmapShader shader=new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);</div><div class="line">        paint = new Paint();</div><div class="line">        paint.setAntiAlias(true);</div><div class="line">        paint.setShader(shader);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void draw(Canvas canvas) &#123;</div><div class="line">        canvas.drawRoundRect(rectF,radisu,radisu,paint);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setRadius(float radisu)&#123;</div><div class="line"></div><div class="line">        this.radisu = radisu;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void setBounds(int left, int top, int right, int bottom) &#123;</div><div class="line">        rectF = new RectF(left,top,right,bottom);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="椭圆图像的实现方式。"><a href="#椭圆图像的实现方式。" class="headerlink" title="椭圆图像的实现方式。"></a>椭圆图像的实现方式。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">public class OvalDrawable extends BitmapDrawable &#123;</div><div class="line"></div><div class="line">    private final Paint mPaint;</div><div class="line">    private RectF rectF;</div><div class="line"></div><div class="line">    public OvalDrawable(Resources res, Bitmap bitmap)&#123;</div><div class="line">        super(res,bitmap);</div><div class="line">        BitmapShader shader=new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);</div><div class="line">        mPaint = new Paint();</div><div class="line">        mPaint.setAntiAlias(true);</div><div class="line">        mPaint.setDither(true);</div><div class="line">        mPaint.setShader(shader);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void draw(Canvas canvas) &#123;</div><div class="line">        canvas.drawOval(rectF,mPaint);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void setBounds(int left, int top, int right, int bottom) &#123;</div><div class="line">        super.setBounds(left, top, right, bottom);</div><div class="line">        rectF = new RectF(left,top,right,bottom);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">public void onClick(View v) &#123;</div><div class="line">        switch (v.getId())&#123;</div><div class="line"></div><div class="line">            case R.id.circle:</div><div class="line">                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.demobg);</div><div class="line">                CircleDrawable drawable=new CircleDrawable(getResources(),bitmap);</div><div class="line">                imageView.setImageDrawable(drawable);</div><div class="line">                break;</div><div class="line"></div><div class="line">            case R.id.oval:</div><div class="line">                Bitmap ovalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.demobg);</div><div class="line">                OvalDrawable ovalDrawable=new OvalDrawable(getResources(),ovalBitmap);</div><div class="line">                imageView.setImageDrawable(ovalDrawable);</div><div class="line">                break;</div><div class="line"></div><div class="line">            case R.id.round:</div><div class="line">                Bitmap roundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.demobg);</div><div class="line">                RoundDrawable roundDrawable=new RoundDrawable(getResources(),roundBitmap);</div><div class="line">                roundDrawable.setRadius(dp2px(30));</div><div class="line">                imageView.setImageDrawable(roundDrawable);</div><div class="line">                break;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>以上三个例子非常简单，作为对自定义drawable的理解是够了</p>
+<h3 id="圆形图像的实现方式。"><a href="#圆形图像的实现方式。" class="headerlink" title="圆形图像的实现方式。"></a>圆形图像的实现方式。</h3><pre><code>/**
+ * Created by gesangdianzi on 2017/6/18.
+ */
+
+public class CircleDrawable extends BitmapDrawable {
+
+    private final Paint mPaint;
+
+    public CircleDrawable(Resources resources, Bitmap bitmap){
+        super(resources,bitmap);
+        BitmapShader shader=new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+        mPaint.setShader(shader);
+        mPaint.setColor(Color.RED);
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        int width = getBitmap().getWidth();
+        int height = getBitmap().getHeight();
+        int radius = Math.min(width/2, height/2);
+        int x = (width&gt;radius+radius)?width/2:radius;
+        int y = (height&gt;radius+radius)?height/2:radius;
+        canvas.drawCircle(x,y,radius,mPaint);
+    }
+
+    /**
+     * 这两个方法可以获取到drawable绘制的区域，不过ImageView的源码中调用的是下面的
+     * @param bounds
+     */
+    @Override
+    public void setBounds(Rect bounds) {
+        super.setBounds(bounds);
+    }
+
+    /**
+     * 这两个方法可以获取到drawable绘制的区域 Imagview中会调用该方法，设置宽高
+     */
+    @Override
+    public void setBounds(int left, int top, int right, int bottom) {
+        super.setBounds(left, top, right, bottom);
+    }
+}
+</code></pre><h3 id="圆角图像的实现方式。"><a href="#圆角图像的实现方式。" class="headerlink" title="圆角图像的实现方式。"></a>圆角图像的实现方式。</h3><pre><code>public class RoundDrawable extends BitmapDrawable {
+
+
+    private final Paint paint;
+    private float radisu;
+    private RectF rectF;
+
+    public RoundDrawable(Resources resources, Bitmap bitmap){
+        super(resources,bitmap);
+        BitmapShader shader=new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setShader(shader);
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.drawRoundRect(rectF,radisu,radisu,paint);
+    }
+
+    public void setRadius(float radisu){
+
+        this.radisu = radisu;
+    }
+
+
+    @Override
+    public void setBounds(int left, int top, int right, int bottom) {
+        rectF = new RectF(left,top,right,bottom);
+    }
+}
+</code></pre><h3 id="椭圆图像的实现方式。"><a href="#椭圆图像的实现方式。" class="headerlink" title="椭圆图像的实现方式。"></a>椭圆图像的实现方式。</h3><pre><code>public class OvalDrawable extends BitmapDrawable {
+
+    private final Paint mPaint;
+    private RectF rectF;
+
+    public OvalDrawable(Resources res, Bitmap bitmap){
+        super(res,bitmap);
+        BitmapShader shader=new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+        mPaint.setDither(true);
+        mPaint.setShader(shader);
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.drawOval(rectF,mPaint);
+    }
+
+    @Override
+    public void setBounds(int left, int top, int right, int bottom) {
+        super.setBounds(left, top, right, bottom);
+        rectF = new RectF(left,top,right,bottom);
+    }
+}
+</code></pre><h3 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h3><pre><code>public void onClick(View v) {
+        switch (v.getId()){
+
+            case R.id.circle:
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.demobg);
+                CircleDrawable drawable=new CircleDrawable(getResources(),bitmap);
+                imageView.setImageDrawable(drawable);
+                break;
+
+            case R.id.oval:
+                Bitmap ovalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.demobg);
+                OvalDrawable ovalDrawable=new OvalDrawable(getResources(),ovalBitmap);
+                imageView.setImageDrawable(ovalDrawable);
+                break;
+
+            case R.id.round:
+                Bitmap roundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.demobg);
+                RoundDrawable roundDrawable=new RoundDrawable(getResources(),roundBitmap);
+                roundDrawable.setRadius(dp2px(30));
+                imageView.setImageDrawable(roundDrawable);
+                break;
+
+        }
+    }
+</code></pre><p>以上三个例子非常简单，作为对自定义drawable的理解是够了</p>
 
     
 

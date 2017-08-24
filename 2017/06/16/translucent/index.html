@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -430,26 +426,62 @@
 <p>5.0+可以自动实现了沉浸式效果，状态栏的颜色跟随你的主题里面的colorPrimaryDark属性，相对来说非常简单，我们这里有三种方法：</p>
 </blockquote>
 <p>在此之前，我们需要把样式设为NoActionBar</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;</div><div class="line">   </div><div class="line">    &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;</div><div class="line">    &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;</div><div class="line">    &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;</div><div class="line">&lt;/style&gt;</div></pre></td></tr></table></figure>
-<h4 id="一、状态栏"><a href="#一、状态栏" class="headerlink" title="一、状态栏"></a>一、状态栏</h4><p>1、设置style 文件中 colorPrimary 和 colorPrimaryDark的颜色值一样</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;</div><div class="line">       &lt;!-- Customize your theme here. --&gt;</div><div class="line">       &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;</div><div class="line">       &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimary&lt;/item&gt;</div><div class="line">       &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;</div><div class="line">      </div><div class="line">   &lt;/style&gt;</div></pre></td></tr></table></figure>
-<p>2、设置style 文件中 属性样式 android:statusBarColor 的颜色值</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;</div><div class="line">        &lt;!-- Customize your theme here. --&gt;</div><div class="line">        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;</div><div class="line">        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;</div><div class="line">        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;</div><div class="line">       &lt;item name=&quot;android:statusBarColor&quot;&gt;@color/colorAccent&lt;/item&gt;</div><div class="line">    &lt;/style&gt;</div></pre></td></tr></table></figure>
-<p>3、通过代码设置，在setContentView之 后。getWindow().setStatusBarColor();</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line"></div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        getWindow().setNavigationBarColor(Color.GREEN);</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>4、如果像设置图片在状态栏中</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">View decorView = getWindow().getDecorView();</div><div class="line">int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN| View.SYSTEM_UI_FLAG_LAYOUT_STABLE;</div><div class="line">decorView.setSystemUiVisibility(option);</div><div class="line"></div><div class="line">//并且，需要动态计算statusbar的高度，设置进去。</div><div class="line">这里下面再讲</div></pre></td></tr></table></figure>
-<h4 id="二、底部导航栏"><a href="#二、底部导航栏" class="headerlink" title="二、底部导航栏"></a>二、底部导航栏</h4><p>1、在属性文件中，设置android:navigationBarColor的颜色值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;</div><div class="line">        &lt;!-- Customize your theme here. --&gt;</div><div class="line">        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;</div><div class="line">        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;</div><div class="line">        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;</div><div class="line">       &lt;item name=&quot;android:navigationBarColor&quot;&gt;@color/colorAccent&lt;/item&gt;</div><div class="line">    &lt;/style&gt;</div></pre></td></tr></table></figure>
-<p>2、通过代码设置，同样是在setContentView之后</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">getWindow().setNavigationBarColor(int color);</div></pre></td></tr></table></figure>
-<p>5.0以上，都有专门提供的api,所以没什么难度，大家看看就行，选一种自己觉得方便的方法就行，我们着重讲一下，如何兼容4.4版本。</p>
+<pre><code>    &lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
+
+        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
+        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;
+        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;
+    &lt;/style&gt;
+</code></pre><h4 id="一、状态栏"><a href="#一、状态栏" class="headerlink" title="一、状态栏"></a>一、状态栏</h4><p>1、设置style 文件中 colorPrimary 和 colorPrimaryDark的颜色值一样</p>
+<pre><code> &lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
+        &lt;!-- Customize your theme here. --&gt;
+        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
+        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimary&lt;/item&gt;
+        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;
+
+    &lt;/style&gt;
+</code></pre><p>2、设置style 文件中 属性样式 android:statusBarColor 的颜色值</p>
+<pre><code>&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
+        &lt;!-- Customize your theme here. --&gt;
+        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
+        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;
+        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;
+       &lt;item name=&quot;android:statusBarColor&quot;&gt;@color/colorAccent&lt;/item&gt;
+    &lt;/style&gt;
+</code></pre><p>3、通过代码设置，在setContentView之 后。getWindow().setStatusBarColor();</p>
+<pre><code>protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        getWindow().setNavigationBarColor(Color.GREEN);
+
+    }
+</code></pre><p>4、如果像设置图片在状态栏中</p>
+<pre><code> View decorView = getWindow().getDecorView();
+ int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN| View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+ decorView.setSystemUiVisibility(option);
+
+ //并且，需要动态计算statusbar的高度，设置进去。
+ 这里下面再讲
+</code></pre><h4 id="二、底部导航栏"><a href="#二、底部导航栏" class="headerlink" title="二、底部导航栏"></a>二、底部导航栏</h4><p>1、在属性文件中，设置android:navigationBarColor的颜色值。</p>
+<pre><code>&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
+        &lt;!-- Customize your theme here. --&gt;
+        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
+        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;
+        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;
+       &lt;item name=&quot;android:navigationBarColor&quot;&gt;@color/colorAccent&lt;/item&gt;
+    &lt;/style&gt;
+</code></pre><p>2、通过代码设置，同样是在setContentView之后</p>
+<pre><code> getWindow().setNavigationBarColor(int color);
+</code></pre><p>5.0以上，都有专门提供的api,所以没什么难度，大家看看就行，选一种自己觉得方便的方法就行，我们着重讲一下，如何兼容4.4版本。</p>
 <h3 id="4-4-版本"><a href="#4-4-版本" class="headerlink" title="4.4+版本"></a>4.4+版本</h3><h2 id="首先，状态栏，我们可以分别在属性样式和代码中进行设置。"><a href="#首先，状态栏，我们可以分别在属性样式和代码中进行设置。" class="headerlink" title="首先，状态栏，我们可以分别在属性样式和代码中进行设置。"></a>首先，状态栏，我们可以分别在属性样式和代码中进行设置。</h2><p>1、在属性样式里（不推荐，需要建values-v19）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;item name=&quot;android:windowTranslucentStatus&quot;&gt;true&lt;/item&gt;</div></pre></td></tr></table></figure>
-<p>2、在代码中</p>
+<pre><code>&lt;item name=&quot;android:windowTranslucentStatus&quot;&gt;true&lt;/item&gt;
+</code></pre><p>2、在代码中</p>
 <p>记住在 <strong>setContentView</strong> 之前设置。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);</div><div class="line"></div><div class="line">setContentView(R.layout.activity_main);</div></pre></td></tr></table></figure>
-<p>然后发现会出现了副作用。</p>
+<pre><code>getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+setContentView(R.layout.activity_main);
+</code></pre><p>然后发现会出现了副作用。</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_title_no.png" alt="image"></p>
 <h4 id="解决方法一："><a href="#解决方法一：" class="headerlink" title="解决方法一："></a>解决方法一：</h4><p>app的内容顶到最上面了，即状态栏遮挡一部分界面。</p>
 <p>这是因为，把状态栏掩藏掉，那部分高度被app顶上去了，如何解决？，我们只需要在布局文件中，这里以toolbar为例，设置android：fitsSystemWindows=”true” 。</p>
@@ -457,35 +489,341 @@
 <p>解决。</p>
 <p>fitsSystemWindows这是什么意思呢？，他的意思是说，让view可以根据系统窗口(如statusBar)来调整自己的布局，如果值为true,就会调整view的paingding属性来给systemWindows留出空间。</p>
 <p>我们看看第二个解决办法。</p>
-<h4 id="解决方法二："><a href="#解决方法二：" class="headerlink" title="解决方法二："></a>解决方法二：</h4><p>系统文件的状态栏高度在sdk\platforms\android-23\data\res\values\demins.xml中我们可以找到系统文件中的状态栏高度。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;!-- Height of the status bar --&gt;</div><div class="line"></div><div class="line"></div><div class="line">&lt;dimen name=&quot;status_bar_height&quot;&gt;24dp&lt;/dimen&gt;</div><div class="line"></div><div class="line">&lt;!-- Height of the bottom navigation / system bar. --&gt;</div><div class="line"></div><div class="line"></div><div class="line">&lt;dimen name=&quot;navigation_bar_height&quot;&gt;48dp&lt;/dimen</div></pre></td></tr></table></figure></p>
-<p>默认为24dp，当然不同的手机厂商可能高度不一样，我们不能写死，需要动态获取这个值。</p>
+<h4 id="解决方法二："><a href="#解决方法二：" class="headerlink" title="解决方法二："></a>解决方法二：</h4><p>系统文件的状态栏高度在sdk\platforms\android-23\data\res\values\demins.xml中我们可以找到系统文件中的状态栏高度。</p>
+<pre><code>&lt;!-- Height of the status bar --&gt;
+
+
+&lt;dimen name=&quot;status_bar_height&quot;&gt;24dp&lt;/dimen&gt;
+
+&lt;!-- Height of the bottom navigation / system bar. --&gt;
+
+
+&lt;dimen name=&quot;navigation_bar_height&quot;&gt;48dp&lt;/dimen
+</code></pre><p>默认为24dp，当然不同的手机厂商可能高度不一样，我们不能写死，需要动态获取这个值。</p>
 <p>这里有两种思路，一个是反射，一个是通过getResources.getIdentifier()。</p>
 <p>这里都写一遍出来。</p>
-<h4 id="通过反射"><a href="#通过反射" class="headerlink" title="通过反射"></a>通过反射</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">public int getStatusBarHeight()&#123;</div><div class="line">    int statusHeight=-1;</div><div class="line">try &#123;</div><div class="line">            Class&lt;?&gt; aClass = Class.forName(&quot;com.android.internal.R$dimen&quot;);</div><div class="line">            Object o = aClass.newInstance();</div><div class="line">            Field status_bar_height = aClass.getField(&quot;status_bar_height&quot;);</div><div class="line">            int statusBarHeightId = (int) status_bar_height.get(o);</div><div class="line">//          获取的其实是资源id 需要转换成px</div><div class="line">            statusHeight = getResources().getDimensionPixelSize(statusBarHeightId);</div><div class="line">           </div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    return statusHeight==-1?dp2px(24):statusHeight;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<h4 id="通过getResources-getIdentifier"><a href="#通过getResources-getIdentifier" class="headerlink" title="通过getResources.getIdentifier()"></a>通过getResources.getIdentifier()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public int getStatusBarHeight()&#123;</div><div class="line"></div><div class="line">       int statusBarId = getResources().getIdentifier(&quot;status_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);</div><div class="line">       int statusBarHeight=-1;</div><div class="line">       if(statusBarId&gt;0)&#123;</div><div class="line">            statusBarHeight = getResources().getDimensionPixelSize(statusBarId);</div><div class="line">       &#125;</div><div class="line">       //代码默认为24dp</div><div class="line">       return statusBarHeight==-1?dp2px(24):statusBarHeight;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>获取到状态栏的高度之后，我们是不是可以把Toolbar的高度增加相同的高度，app顶到状态的问题不就可以轻松解决了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">ViewGroup.LayoutParams params = toolbar.getLayoutParams();</div><div class="line"> params.height+=getStatusBarHeight();</div><div class="line"> titleBar.setLayoutParams(params);</div><div class="line"> titleBar.setPadding(toolbar.getPaddingLeft(),</div><div class="line">                     toolbar.getPaddingRight(),</div><div class="line">                     toolbar.getPaddingTop()+getStatusBarHeight(),</div><div class="line">                     toolbar.getPaddingBottom()</div><div class="line">                   );</div></pre></td></tr></table></figure>
-<h2 id="接着，4-4版本的导航条"><a href="#接着，4-4版本的导航条" class="headerlink" title="接着，4.4版本的导航条"></a>接着，4.4版本的导航条</h2><p>1、显示导航条，并且自定义颜色。</p>
+<h4 id="通过反射"><a href="#通过反射" class="headerlink" title="通过反射"></a>通过反射</h4><pre><code>public int getStatusBarHeight(){
+    int statusHeight=-1;
+try {
+            Class&lt;?&gt; aClass = Class.forName(&quot;com.android.internal.R$dimen&quot;);
+            Object o = aClass.newInstance();
+            Field status_bar_height = aClass.getField(&quot;status_bar_height&quot;);
+            int statusBarHeightId = (int) status_bar_height.get(o);
+//          获取的其实是资源id 需要转换成px
+            statusHeight = getResources().getDimensionPixelSize(statusBarHeightId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    return statusHeight==-1?dp2px(24):statusHeight;
+    }
+</code></pre><h4 id="通过getResources-getIdentifier"><a href="#通过getResources-getIdentifier" class="headerlink" title="通过getResources.getIdentifier()"></a>通过getResources.getIdentifier()</h4><pre><code> public int getStatusBarHeight(){
+
+        int statusBarId = getResources().getIdentifier(&quot;status_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);
+        int statusBarHeight=-1;
+        if(statusBarId&gt;0){
+             statusBarHeight = getResources().getDimensionPixelSize(statusBarId);
+        }
+        //代码默认为24dp
+        return statusBarHeight==-1?dp2px(24):statusBarHeight;
+    }
+</code></pre><p>获取到状态栏的高度之后，我们是不是可以把Toolbar的高度增加相同的高度，app顶到状态的问题不就可以轻松解决了。</p>
+<pre><code>  ViewGroup.LayoutParams params = toolbar.getLayoutParams();
+   params.height+=getStatusBarHeight();
+   titleBar.setLayoutParams(params);
+   titleBar.setPadding(toolbar.getPaddingLeft(),
+                       toolbar.getPaddingRight(),
+                       toolbar.getPaddingTop()+getStatusBarHeight(),
+                       toolbar.getPaddingBottom()
+                     );
+</code></pre><h2 id="接着，4-4版本的导航条"><a href="#接着，4-4版本的导航条" class="headerlink" title="接着，4.4版本的导航条"></a>接着，4.4版本的导航条</h2><p>1、显示导航条，并且自定义颜色。</p>
 <p>因为4.4并没有提供对应的方法，这里的思路是，让它透明，然后再布局中写一个高度一样的view，置底，重合navigationBar的位置。</p>
 <p>首先，计算navigationBar的高度，这个和状态栏statusBar是一样的。</p>
-<h4 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">public int getNavigationBarHeight()&#123;</div><div class="line">    int navigationHeight=-1;</div><div class="line">try &#123;</div><div class="line">            Class&lt;?&gt; aClass = Class.forName(&quot;com.android.internal.R$dimen&quot;);</div><div class="line">            Object o = aClass.newInstance();</div><div class="line">            Field status_bar_height = aClass.getField(&quot;navigation_bar_height&quot;);</div><div class="line">            int statusBarHeightId = (int) status_bar_height.get(o);</div><div class="line">//          获取的其实是资源id 需要转换成px</div><div class="line">            navigationHeight = getResources().getDimensionPixelSize(statusBarHeightId);</div><div class="line">           </div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    return navigationHeight==-1?dp2px(24):navigationHeight;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<h4 id="getResources-getIdentifier"><a href="#getResources-getIdentifier" class="headerlink" title="getResources.getIdentifier()"></a>getResources.getIdentifier()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">//获取底部的导航条的高度</div><div class="line">public int getNavigationBarHeight()&#123;</div><div class="line">    int navigationId = getResources().getIdentifier(&quot;navigation_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);</div><div class="line">    int navigationBaHeight=-1;</div><div class="line">    if(navigationId&gt;0)&#123;</div><div class="line">        navigationBaHeight = getResources().getDimensionPixelSize(navigationId);</div><div class="line">    &#125;</div><div class="line">    //代码默认为48dp</div><div class="line">    return navigationBaHeight==-1?dp2px(48):navigationBaHeight;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>我们的xml布局</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;RelativeLayout </div><div class="line">    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</div><div class="line">    android:id=&quot;@+id/activity_main&quot;</div><div class="line">    android:orientation=&quot;vertical&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;</div><div class="line">    &gt;</div><div class="line"></div><div class="line">   &lt;android.support.v7.widget.Toolbar</div><div class="line">       android:id=&quot;@+id/toolbar&quot;</div><div class="line">       android:fitsSystemWindows=&quot;true&quot;</div><div class="line">       android:layout_width=&quot;match_parent&quot;</div><div class="line">       android:layout_height=&quot;?actionBarSize&quot;</div><div class="line">       app:title=&quot;测试&quot;</div><div class="line">       app:titleTextColor=&quot;#fff&quot;</div><div class="line">       android:background=&quot;@color/colorAccent&quot;</div><div class="line">       &gt;&lt;/android.support.v7.widget.Toolbar&gt;</div><div class="line">   </div><div class="line">   &lt;View</div><div class="line">       android:layout_alignParentBottom=&quot;true&quot;</div><div class="line">       android:id=&quot;@+id/nivagtion&quot;</div><div class="line">       android:layout_width=&quot;match_parent&quot;</div><div class="line">       android:layout_height=&quot;0dp&quot;/&gt;</div><div class="line">&lt;/RelativeLayout&gt;</div></pre></td></tr></table></figure>
-<p>View是关键，这里我们把它置底，并且让他的高度尽可能的小，接着我们重设他的高度</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">View nivagtionBar = findViewById(R.id.nivagtion);</div><div class="line">nivagtionBar.getLayoutParams();</div><div class="line"></div><div class="line">  ViewGroup.LayoutParams bootomParams = nivagtionBar.getLayoutParams();</div><div class="line">  //这里需要 判断是否存在，不存在，4.4设置会报错，同时，设置nivagtionBar的高度为0</div><div class="line">        if(isBootomBarShow())&#123;</div><div class="line">            bootomParams.height+=getNavigationBarHeight();</div><div class="line">            bootomBar.setBackgroundColor(primaryColor);</div><div class="line">            bootomBar.setLayoutParams(bootomParams);</div><div class="line">        &#125;else&#123;</div><div class="line">            bootomParams.height=0;</div><div class="line">            nivagtionBar.setLayoutParams(bootomParams);</div><div class="line">         &#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">//判断是否打开底部导航条 5.1以上没有导航栏也可以设置颜色。</div><div class="line">   public    boolean isBootomBarShow()&#123;</div><div class="line">       Display display = getWindowManager().getDefaultDisplay();</div><div class="line">       DisplayMetrics outMetrics=new DisplayMetrics();</div><div class="line">       //获取整个屏幕的高度</div><div class="line">       display.getRealMetrics(outMetrics);</div><div class="line">       int realHeight = outMetrics.heightPixels;</div><div class="line">       int realWidth = outMetrics.widthPixels;</div><div class="line">       //获取内容展示的高度</div><div class="line">       outMetrics=new DisplayMetrics();</div><div class="line">       display.getMetrics(outMetrics);</div><div class="line">       int contentHeight = outMetrics.heightPixels;</div><div class="line">       int contentWidth = outMetrics.widthPixels;</div><div class="line"></div><div class="line">       int h = realHeight - contentHeight;</div><div class="line">       int w = realWidth - contentWidth;</div><div class="line"></div><div class="line">       return h&gt;0||w&gt;0;//竖屏情况和横屏情况。</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>上效果图：</p>
+<h4 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h4><pre><code>public int getNavigationBarHeight(){
+    int navigationHeight=-1;
+try {
+            Class&lt;?&gt; aClass = Class.forName(&quot;com.android.internal.R$dimen&quot;);
+            Object o = aClass.newInstance();
+            Field status_bar_height = aClass.getField(&quot;navigation_bar_height&quot;);
+            int statusBarHeightId = (int) status_bar_height.get(o);
+//          获取的其实是资源id 需要转换成px
+            navigationHeight = getResources().getDimensionPixelSize(statusBarHeightId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    return navigationHeight==-1?dp2px(24):navigationHeight;
+    }
+</code></pre><h4 id="getResources-getIdentifier"><a href="#getResources-getIdentifier" class="headerlink" title="getResources.getIdentifier()"></a>getResources.getIdentifier()</h4><pre><code>    //获取底部的导航条的高度
+    public int getNavigationBarHeight(){
+        int navigationId = getResources().getIdentifier(&quot;navigation_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);
+        int navigationBaHeight=-1;
+        if(navigationId&gt;0){
+            navigationBaHeight = getResources().getDimensionPixelSize(navigationId);
+        }
+        //代码默认为48dp
+        return navigationBaHeight==-1?dp2px(48):navigationBaHeight;
+    }
+</code></pre><p>我们的xml布局</p>
+<pre><code>
+&lt;RelativeLayout 
+    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    android:id=&quot;@+id/activity_main&quot;
+    android:orientation=&quot;vertical&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    &gt;
+
+   &lt;android.support.v7.widget.Toolbar
+       android:id=&quot;@+id/toolbar&quot;
+       android:fitsSystemWindows=&quot;true&quot;
+       android:layout_width=&quot;match_parent&quot;
+       android:layout_height=&quot;?actionBarSize&quot;
+       app:title=&quot;测试&quot;
+       app:titleTextColor=&quot;#fff&quot;
+       android:background=&quot;@color/colorAccent&quot;
+       &gt;&lt;/android.support.v7.widget.Toolbar&gt;
+
+   &lt;View
+       android:layout_alignParentBottom=&quot;true&quot;
+       android:id=&quot;@+id/nivagtion&quot;
+       android:layout_width=&quot;match_parent&quot;
+       android:layout_height=&quot;0dp&quot;/&gt;
+&lt;/RelativeLayout&gt;
+</code></pre><p>View是关键，这里我们把它置底，并且让他的高度尽可能的小，接着我们重设他的高度</p>
+<pre><code>View nivagtionBar = findViewById(R.id.nivagtion);
+nivagtionBar.getLayoutParams();
+
+  ViewGroup.LayoutParams bootomParams = nivagtionBar.getLayoutParams();
+  //这里需要 判断是否存在，不存在，4.4设置会报错，同时，设置nivagtionBar的高度为0
+        if(isBootomBarShow()){
+            bootomParams.height+=getNavigationBarHeight();
+            bootomBar.setBackgroundColor(primaryColor);
+            bootomBar.setLayoutParams(bootomParams);
+        }else{
+            bootomParams.height=0;
+            nivagtionBar.setLayoutParams(bootomParams);
+         }
+</code></pre><pre><code> //判断是否打开底部导航条 5.1以上没有导航栏也可以设置颜色。
+    public    boolean isBootomBarShow(){
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics=new DisplayMetrics();
+        //获取整个屏幕的高度
+        display.getRealMetrics(outMetrics);
+        int realHeight = outMetrics.heightPixels;
+        int realWidth = outMetrics.widthPixels;
+        //获取内容展示的高度
+        outMetrics=new DisplayMetrics();
+        display.getMetrics(outMetrics);
+        int contentHeight = outMetrics.heightPixels;
+        int contentWidth = outMetrics.widthPixels;
+
+        int h = realHeight - contentHeight;
+        int w = realWidth - contentWidth;
+
+        return h&gt;0||w&gt;0;//竖屏情况和横屏情况。
+    }
+</code></pre><p>上效果图：</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_navigation.png" alt="image"></p>
 <p>2、不显示导航条。</p>
 <p>这个比较简单，直接上代码，这是一个可以藏显示导航条的开关方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">public void toggleHideyBar() &#123;</div><div class="line"></div><div class="line">       int uiOptions = getWindow().getDecorView().getSystemUiVisibility();</div><div class="line">       int newUiOptions = uiOptions;</div><div class="line">       boolean isImmersiveModeEnabled =</div><div class="line">               ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);</div><div class="line">       if (isImmersiveModeEnabled) &#123;</div><div class="line">           Log.d(TAG,&quot;打开&quot;);</div><div class="line">       &#125; else &#123;</div><div class="line">           Log.d(TAG,&quot;关闭&quot;);</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       if (Build.VERSION.SDK_INT &gt;= 14) &#123;</div><div class="line">           newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       if (Build.VERSION.SDK_INT &gt;= 16) &#123;</div><div class="line">           newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       if (Build.VERSION.SDK_INT &gt;= 18) &#123;</div><div class="line">           newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       getWindow().getDecorView().setSystemUiVisibility(newUiOptions);</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>效果图：</p>
+<pre><code> public void toggleHideyBar() {
+
+        int uiOptions = getWindow().getDecorView().getSystemUiVisibility();
+        int newUiOptions = uiOptions;
+        boolean isImmersiveModeEnabled =
+                ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
+        if (isImmersiveModeEnabled) {
+            Log.d(TAG,&quot;打开&quot;);
+        } else {
+            Log.d(TAG,&quot;关闭&quot;);
+        }
+
+        if (Build.VERSION.SDK_INT &gt;= 14) {
+            newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        }
+
+        if (Build.VERSION.SDK_INT &gt;= 16) {
+            newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        }
+
+        if (Build.VERSION.SDK_INT &gt;= 18) {
+            newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        }
+
+        getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
+    }
+</code></pre><p>效果图：</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_toggel2.gif" alt="image"></p>
 <p>稍后我会把代码封装好的上传到github。</p>
 <p>github已更新，地址：<a href="https://github.com/livesun/translucent" target="_blank" rel="external">https://github.com/livesun/translucent</a></p>
-<h2 id="比较凌乱的代码分享"><a href="#比较凌乱的代码分享" class="headerlink" title="比较凌乱的代码分享:"></a>比较凌乱的代码分享:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div></pre></td><td class="code"><pre><div class="line">public class BaseTranslucentActivity extends AppCompatActivity &#123;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line"></div><div class="line">        //判断当前版本如果大于4.4 并且小于5.0</div><div class="line">        if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.KITKAT</div><div class="line">                &amp;&amp;Build.VERSION.SDK_INT&lt;Build.VERSION_CODES.LOLLIPOP</div><div class="line">                )&#123;</div><div class="line">            //设置状态栏透明</div><div class="line">            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);</div><div class="line">            //设置导航栏透明</div><div class="line">            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     *</div><div class="line">     * @param titleBar 顶布局</div><div class="line">     * @param bootomBar 导航条</div><div class="line">     * @param primaryColor 背景颜色</div><div class="line">     * @param resId 图片</div><div class="line">     */</div><div class="line">    public void setOrChangeTranslucentColor(View titleBar,@Nullable View bootomBar,int primaryColor,int resId)&#123;</div><div class="line">        if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.KITKAT</div><div class="line">                &amp;&amp;Build.VERSION.SDK_INT&lt;Build.VERSION_CODES.LOLLIPOP</div><div class="line">                )&#123;</div><div class="line">            //顶部</div><div class="line">                if(titleBar!=null)&#123;</div><div class="line">                    ViewGroup.LayoutParams params = titleBar.getLayoutParams();</div><div class="line">                    params.height+=getStatusBarHeight();</div><div class="line">                    titleBar.setLayoutParams(params);</div><div class="line">                    titleBar.setPadding(titleBar.getPaddingLeft(),</div><div class="line">                                        titleBar.getPaddingRight(),</div><div class="line">                                        titleBar.getPaddingTop()+getStatusBarHeight(),</div><div class="line">                                        titleBar.getPaddingBottom()</div><div class="line">                                        );</div><div class="line">                    if(primaryColor!=Color.TRANSPARENT)&#123;</div><div class="line">                        titleBar.setBackgroundColor(primaryColor);</div><div class="line">                    &#125;else&#123;</div><div class="line">                        titleBar.setBackground(getResources().getDrawable(resId));</div><div class="line">                    &#125;</div><div class="line"></div><div class="line"></div><div class="line">                &#125;</div><div class="line">            //底部</div><div class="line">                if(bootomBar!=null)&#123;</div><div class="line">                    ViewGroup.LayoutParams bootomParams = bootomBar.getLayoutParams();</div><div class="line">                    if(isBootomBarShow())&#123;</div><div class="line">                        bootomParams.height+=getNavigationBarHeight();</div><div class="line">                        bootomBar.setBackgroundColor(primaryColor);</div><div class="line">                        bootomBar.setLayoutParams(bootomParams);</div><div class="line">                    &#125;else&#123;</div><div class="line">                        bootomParams.height=0;</div><div class="line">                        bootomBar.setLayoutParams(bootomParams);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            toggleHideyBar();</div><div class="line">            //5.0</div><div class="line">        &#125;else if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.LOLLIPOP)&#123;</div><div class="line">            //如果颜色为透明，则用图片</div><div class="line">            if(primaryColor== Color.TRANSPARENT)&#123;</div><div class="line">                View decorView = getWindow().getDecorView();</div><div class="line">                int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN</div><div class="line">                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;</div><div class="line">                decorView.setSystemUiVisibility(option);</div><div class="line"></div><div class="line">                ViewGroup.LayoutParams params = titleBar.getLayoutParams();</div><div class="line">                params.height+=getStatusBarHeight();</div><div class="line">                titleBar.setLayoutParams(params);</div><div class="line">                titleBar.setPadding(titleBar.getPaddingLeft(),</div><div class="line">                        titleBar.getPaddingRight(),</div><div class="line">                        titleBar.getPaddingTop()+getStatusBarHeight(),</div><div class="line">                        titleBar.getPaddingBottom()</div><div class="line">                );</div><div class="line">            &#125;</div><div class="line">            if(bootomBar!=null)&#123;</div><div class="line">                getWindow().setNavigationBarColor(primaryColor);</div><div class="line">            &#125;</div><div class="line">            getWindow().setStatusBarColor(primaryColor);</div><div class="line">            toggleHideyBar();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //获取顶部状态栏的高度</div><div class="line">    public int getStatusBarHeight()&#123;</div><div class="line">        int statusBarId = getResources().getIdentifier(&quot;status_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);</div><div class="line">        int statusBarHeight=-1;</div><div class="line">        if(statusBarId&gt;0)&#123;</div><div class="line">             statusBarHeight = getResources().getDimensionPixelSize(statusBarId);</div><div class="line">        &#125;</div><div class="line">        //代码默认为24dp</div><div class="line">        return statusBarHeight==-1?dp2px(24):statusBarHeight;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //获取底部的导航条的高度</div><div class="line">    public int getNavigationBarHeight()&#123;</div><div class="line">        int navigationId = getResources().getIdentifier(&quot;navigation_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);</div><div class="line">        int navigationBaHeight=-1;</div><div class="line">        if(navigationId&gt;0)&#123;</div><div class="line">            navigationBaHeight = getResources().getDimensionPixelSize(navigationId);</div><div class="line">        &#125;</div><div class="line">        //代码默认为48dp</div><div class="line">        return navigationBaHeight==-1?dp2px(48):navigationBaHeight;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //判断是否打开底部导航条 5.1以上没有导航栏也可以设置颜色。</div><div class="line">    public    boolean isBootomBarShow()&#123;</div><div class="line">        Display display = getWindowManager().getDefaultDisplay();</div><div class="line">        DisplayMetrics outMetrics=new DisplayMetrics();</div><div class="line">        //获取整个屏幕的高度</div><div class="line">        display.getRealMetrics(outMetrics);</div><div class="line">        int realHeight = outMetrics.heightPixels;</div><div class="line">        int realWidth = outMetrics.widthPixels;</div><div class="line">        //获取内容展示的高度</div><div class="line">        outMetrics=new DisplayMetrics();</div><div class="line">        display.getMetrics(outMetrics);</div><div class="line">        int contentHeight = outMetrics.heightPixels;</div><div class="line">        int contentWidth = outMetrics.widthPixels;</div><div class="line"></div><div class="line">        int h = realHeight - contentHeight;</div><div class="line">        int w = realWidth - contentWidth;</div><div class="line"></div><div class="line">        return h&gt;0||w&gt;0;//竖屏情况和横屏情况。</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    private int dp2px(int dp) &#123;</div><div class="line">        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dp,getResources().getDisplayMetrics());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void toggleHideyBar() &#123;</div><div class="line"></div><div class="line">        int uiOptions = getWindow().getDecorView().getSystemUiVisibility();</div><div class="line">        int newUiOptions = uiOptions;</div><div class="line">        boolean isImmersiveModeEnabled =</div><div class="line">                ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);</div><div class="line">        if (isImmersiveModeEnabled) &#123;</div><div class="line"></div><div class="line">        &#125; else &#123;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (Build.VERSION.SDK_INT &gt;= 14) &#123;</div><div class="line">            newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (Build.VERSION.SDK_INT &gt;= 16) &#123;</div><div class="line">            newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (Build.VERSION.SDK_INT &gt;= 18) &#123;</div><div class="line">            newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        getWindow().getDecorView().setSystemUiVisibility(newUiOptions);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="比较凌乱的代码分享"><a href="#比较凌乱的代码分享" class="headerlink" title="比较凌乱的代码分享:"></a>比较凌乱的代码分享:</h2><pre><code>public class BaseTranslucentActivity extends AppCompatActivity {
 
+
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //判断当前版本如果大于4.4 并且小于5.0
+        if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.KITKAT
+                &amp;&amp;Build.VERSION.SDK_INT&lt;Build.VERSION_CODES.LOLLIPOP
+                ){
+            //设置状态栏透明
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //设置导航栏透明
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
+    }
+
+    /**
+     *
+     * @param titleBar 顶布局
+     * @param bootomBar 导航条
+     * @param primaryColor 背景颜色
+     * @param resId 图片
+     */
+    public void setOrChangeTranslucentColor(View titleBar,@Nullable View bootomBar,int primaryColor,int resId){
+        if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.KITKAT
+                &amp;&amp;Build.VERSION.SDK_INT&lt;Build.VERSION_CODES.LOLLIPOP
+                ){
+            //顶部
+                if(titleBar!=null){
+                    ViewGroup.LayoutParams params = titleBar.getLayoutParams();
+                    params.height+=getStatusBarHeight();
+                    titleBar.setLayoutParams(params);
+                    titleBar.setPadding(titleBar.getPaddingLeft(),
+                                        titleBar.getPaddingRight(),
+                                        titleBar.getPaddingTop()+getStatusBarHeight(),
+                                        titleBar.getPaddingBottom()
+                                        );
+                    if(primaryColor!=Color.TRANSPARENT){
+                        titleBar.setBackgroundColor(primaryColor);
+                    }else{
+                        titleBar.setBackground(getResources().getDrawable(resId));
+                    }
+
+
+                }
+            //底部
+                if(bootomBar!=null){
+                    ViewGroup.LayoutParams bootomParams = bootomBar.getLayoutParams();
+                    if(isBootomBarShow()){
+                        bootomParams.height+=getNavigationBarHeight();
+                        bootomBar.setBackgroundColor(primaryColor);
+                        bootomBar.setLayoutParams(bootomParams);
+                    }else{
+                        bootomParams.height=0;
+                        bootomBar.setLayoutParams(bootomParams);
+                    }
+                }
+            toggleHideyBar();
+            //5.0
+        }else if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.LOLLIPOP){
+            //如果颜色为透明，则用图片
+            if(primaryColor== Color.TRANSPARENT){
+                View decorView = getWindow().getDecorView();
+                int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+                decorView.setSystemUiVisibility(option);
+
+                ViewGroup.LayoutParams params = titleBar.getLayoutParams();
+                params.height+=getStatusBarHeight();
+                titleBar.setLayoutParams(params);
+                titleBar.setPadding(titleBar.getPaddingLeft(),
+                        titleBar.getPaddingRight(),
+                        titleBar.getPaddingTop()+getStatusBarHeight(),
+                        titleBar.getPaddingBottom()
+                );
+            }
+            if(bootomBar!=null){
+                getWindow().setNavigationBarColor(primaryColor);
+            }
+            getWindow().setStatusBarColor(primaryColor);
+            toggleHideyBar();
+        }
+    }
+
+    //获取顶部状态栏的高度
+    public int getStatusBarHeight(){
+        int statusBarId = getResources().getIdentifier(&quot;status_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);
+        int statusBarHeight=-1;
+        if(statusBarId&gt;0){
+             statusBarHeight = getResources().getDimensionPixelSize(statusBarId);
+        }
+        //代码默认为24dp
+        return statusBarHeight==-1?dp2px(24):statusBarHeight;
+    }
+
+    //获取底部的导航条的高度
+    public int getNavigationBarHeight(){
+        int navigationId = getResources().getIdentifier(&quot;navigation_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);
+        int navigationBaHeight=-1;
+        if(navigationId&gt;0){
+            navigationBaHeight = getResources().getDimensionPixelSize(navigationId);
+        }
+        //代码默认为48dp
+        return navigationBaHeight==-1?dp2px(48):navigationBaHeight;
+    }
+
+    //判断是否打开底部导航条 5.1以上没有导航栏也可以设置颜色。
+    public    boolean isBootomBarShow(){
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics=new DisplayMetrics();
+        //获取整个屏幕的高度
+        display.getRealMetrics(outMetrics);
+        int realHeight = outMetrics.heightPixels;
+        int realWidth = outMetrics.widthPixels;
+        //获取内容展示的高度
+        outMetrics=new DisplayMetrics();
+        display.getMetrics(outMetrics);
+        int contentHeight = outMetrics.heightPixels;
+        int contentWidth = outMetrics.widthPixels;
+
+        int h = realHeight - contentHeight;
+        int w = realWidth - contentWidth;
+
+        return h&gt;0||w&gt;0;//竖屏情况和横屏情况。
+    }
+
+
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dp,getResources().getDisplayMetrics());
+    }
+
+    public void toggleHideyBar() {
+
+        int uiOptions = getWindow().getDecorView().getSystemUiVisibility();
+        int newUiOptions = uiOptions;
+        boolean isImmersiveModeEnabled =
+                ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
+        if (isImmersiveModeEnabled) {
+
+        } else {
+        }
+
+        if (Build.VERSION.SDK_INT &gt;= 14) {
+            newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        }
+
+        if (Build.VERSION.SDK_INT &gt;= 16) {
+            newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        }
+
+        if (Build.VERSION.SDK_INT &gt;= 18) {
+            newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        }
+
+        getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
+    }
+
+}
+</code></pre>
     
 
     

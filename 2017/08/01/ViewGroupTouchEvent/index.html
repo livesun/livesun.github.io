@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -402,10 +398,56 @@
                 <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
     
         <p>上一次我们创建了TouchView，这次我们创建一个TouchViewGroup</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">public class TouchViewGroup extends LinearLayout &#123;</div><div class="line">    public TouchViewGroup(Context context) &#123;</div><div class="line">        this(context,null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public TouchViewGroup(Context context, AttributeSet attrs, int defStyleAttr) &#123;</div><div class="line">        super(context, attrs, defStyleAttr);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public TouchViewGroup(Context context, AttributeSet attrs) &#123;</div><div class="line">        this(context, attrs,0);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"> //事件分发</div><div class="line">    @Override</div><div class="line">    public boolean dispatchTouchEvent(MotionEvent ev) &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;ViewGroup + dispatchTouchEvent--&gt;&quot;+ev.getAction());</div><div class="line">        return super.dispatchTouchEvent(ev);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //事件触摸</div><div class="line">    @Override</div><div class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;ViewGroup + onTouchEvent--&gt;&quot;+event.getAction());</div><div class="line">        return super.onTouchEvent(event);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //事件拦截</div><div class="line">    @Override</div><div class="line">    public boolean onInterceptTouchEvent(MotionEvent ev) &#123;</div><div class="line">        Log.d(&quot;AAA&quot;,&quot;ViewGroup + onInterceptTouchEvent--&gt;&quot;+ev.getAction());</div><div class="line">        return super.onInterceptTouchEvent(ev);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>接着我们把之前的LinearLayout替换掉，xml布局为这样</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;livesun.clientb.TouchViewGroup</div><div class="line">    android:id=&quot;@+id/root&quot;</div><div class="line">    android:orientation=&quot;vertical&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;</div><div class="line">    &gt;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;livesun.clientb.TouchView</div><div class="line">        android:id=&quot;@+id/touch&quot;</div><div class="line">        android:layout_width=&quot;200dp&quot;</div><div class="line">        android:layout_height=&quot;150dp&quot;</div><div class="line">        android:background=&quot;@color/colorAccent&quot;</div><div class="line">        /&gt;</div></pre></td></tr></table></figure>
-<h3 id="正常情况下"><a href="#正常情况下" class="headerlink" title="正常情况下"></a>正常情况下</h3><p>我们运行点击 打印台输出结果</p>
+<pre><code>public class TouchViewGroup extends LinearLayout {
+    public TouchViewGroup(Context context) {
+        this(context,null);
+    }
+
+    public TouchViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public TouchViewGroup(Context context, AttributeSet attrs) {
+        this(context, attrs,0);
+    }
+
+ //事件分发
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        Log.d(&quot;AAA&quot;,&quot;ViewGroup + dispatchTouchEvent--&gt;&quot;+ev.getAction());
+        return super.dispatchTouchEvent(ev);
+    }
+
+    //事件触摸
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Log.d(&quot;AAA&quot;,&quot;ViewGroup + onTouchEvent--&gt;&quot;+event.getAction());
+        return super.onTouchEvent(event);
+    }
+
+    //事件拦截
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        Log.d(&quot;AAA&quot;,&quot;ViewGroup + onInterceptTouchEvent--&gt;&quot;+ev.getAction());
+        return super.onInterceptTouchEvent(ev);
+    }
+}
+</code></pre><p>接着我们把之前的LinearLayout替换掉，xml布局为这样</p>
+<pre><code>&lt;livesun.clientb.TouchViewGroup
+    android:id=&quot;@+id/root&quot;
+    android:orientation=&quot;vertical&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    &gt;
+
+
+    &lt;livesun.clientb.TouchView
+        android:id=&quot;@+id/touch&quot;
+        android:layout_width=&quot;200dp&quot;
+        android:layout_height=&quot;150dp&quot;
+        android:background=&quot;@color/colorAccent&quot;
+        /&gt;
+</code></pre><h3 id="正常情况下"><a href="#正常情况下" class="headerlink" title="正常情况下"></a>正常情况下</h3><p>我们运行点击 打印台输出结果</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/viewGropu_touch2.png" alt="image"></p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/viewGropu_touch1.png" alt="image"></p>
 <p>ViewGroup dispatchTouchEvent DOWN -&gt; ViewGroup onInterceptTouchEvent DOWN -&gt; View dispatchTouchEvent DOWN -&gt; View OnTouchListener DOWN -&gt; View onTouchEvent DOWN -&gt; ViewGroup dispatchTouchEvent MOVE<br>-&gt; ViewGroup onInterceptTouchEvent MOVE -&gt; View dispatchTouchEvent MOVE -&gt; View OnTouchListener MOVE -&gt; View onTouchEvent MOVE -&gt; ViewGroup dispatchTouchEvent UP<br>-&gt; ViewGroup onInterceptTouchEvent UP -&gt; View dispatchTouchEvent UP -&gt; View OnTouchListener UP -&gt; View onTouchEvent UP -&gt; onClickListener。</p>
@@ -420,31 +462,501 @@
 <p>ViewGroup dispatchTouchEvent DOWN -&gt; ViewGroup onInterceptTouchEvent DOWN -&gt; ViewGroup OnTouchListener DOWN -&gt; ViewGroup onTouchEvent DOWN -&gt; ViewGroup dispatchTouchEvent MOVE<br>-&gt; ViewGroup onInterceptTouchEvent MOVE -&gt; ViewGroup OnTouchListener MOVE -&gt; ViewGroup onTouchEvent MOVE -&gt; ViewGroup dispatchTouchEvent UP<br>-&gt; ViewGroup onInterceptTouchEvent UP -&gt; ViewGroup OnTouchListener UP -&gt; ViewGroup onTouchEvent UP -&gt;<br> ViewGroup OnClickListener。</p>
 <p> 跟view的Touch极其相似，只不过多了一个onInterceptTouchEvent方法。</p>
 <p> 下面，我们源码分析一波</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">   public boolean dispatchTouchEvent(MotionEvent ev) &#123;</div><div class="line">  //....</div><div class="line">  //这个值是dispatchTouchEvent的返回值，默认为false。</div><div class="line">       boolean handled = false;</div><div class="line">       if (onFilterTouchEventForSecurity(ev)) &#123;</div><div class="line">           final int action = ev.getAction();</div><div class="line">           final int actionMasked = action &amp; MotionEvent.ACTION_MASK;</div><div class="line">         </div><div class="line">         //ACTION_DOWN时进行一些初始化操作</div><div class="line">           if (actionMasked == MotionEvent.ACTION_DOWN) &#123;</div><div class="line">             //清除以往的Touch状态并且设置mFirstTouchTarget==null</div><div class="line">               cancelAndClearTouchTargets(ev);</div><div class="line">               resetTouchState();</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           </div><div class="line">           final boolean intercepted;</div><div class="line">           if (actionMasked == MotionEvent.ACTION_DOWN</div><div class="line">                   || mFirstTouchTarget != null) &#123;</div><div class="line">               final boolean disallowIntercept = (mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0;</div><div class="line">               if (!disallowIntercept) &#123;</div><div class="line">                   intercepted = onInterceptTouchEvent(ev);</div><div class="line">                   ev.setAction(action); // restore action in case it was changed</div><div class="line">               &#125; else &#123;</div><div class="line">                   intercepted = false;</div><div class="line">               &#125;</div><div class="line">           &#125; else &#123;</div><div class="line">              </div><div class="line">               intercepted = true;</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           </div><div class="line">           if (intercepted || mFirstTouchTarget != null) &#123;</div><div class="line">               ev.setTargetAccessibilityFocus(false);</div><div class="line">           &#125;</div><div class="line"></div><div class="line">          </div><div class="line">           final boolean canceled = resetCancelNextUpFlag(this)</div><div class="line">                   || actionMasked == MotionEvent.ACTION_CANCEL;</div><div class="line"></div><div class="line">          </div><div class="line">           final boolean split = (mGroupFlags &amp; FLAG_SPLIT_MOTION_EVENTS) != 0;</div><div class="line">           TouchTarget newTouchTarget = null;</div><div class="line">           boolean alreadyDispatchedToNewTouchTarget = false;</div><div class="line">           if (!canceled &amp;&amp; !intercepted) &#123;</div><div class="line"></div><div class="line">               </div><div class="line">               View childWithAccessibilityFocus = ev.isTargetAccessibilityFocus()</div><div class="line">                       ? findChildWithAccessibilityFocus() : null;</div><div class="line"></div><div class="line">               if (actionMasked == MotionEvent.ACTION_DOWN</div><div class="line">                       || (split &amp;&amp; actionMasked == MotionEvent.ACTION_POINTER_DOWN)</div><div class="line">                       || actionMasked == MotionEvent.ACTION_HOVER_MOVE) &#123;</div><div class="line">                   final int actionIndex = ev.getActionIndex(); // always 0 for down</div><div class="line">                   final int idBitsToAssign = split ? 1 &lt;&lt; ev.getPointerId(actionIndex)</div><div class="line">                           : TouchTarget.ALL_POINTER_IDS;</div><div class="line"></div><div class="line">                   </div><div class="line">                   removePointersFromTouchTargets(idBitsToAssign);</div><div class="line"></div><div class="line">                   final int childrenCount = mChildrenCount;</div><div class="line">                   if (newTouchTarget == null &amp;&amp; childrenCount != 0) &#123;</div><div class="line">                       final float x = ev.getX(actionIndex);</div><div class="line">                       final float y = ev.getY(actionIndex);</div><div class="line">                       </div><div class="line">                       final ArrayList&lt;View&gt; preorderedList = buildTouchDispatchChildList();</div><div class="line">                       final boolean customOrder = preorderedList == null</div><div class="line">                               &amp;&amp; isChildrenDrawingOrderEnabled();</div><div class="line">                       final View[] children = mChildren;</div><div class="line">                       for (int i = childrenCount - 1; i &gt;= 0; i--) &#123;</div><div class="line">                           final int childIndex = getAndVerifyPreorderedIndex(</div><div class="line">                                   childrenCount, i, customOrder);</div><div class="line">                           final View child = getAndVerifyPreorderedView(</div><div class="line">                                   preorderedList, children, childIndex);</div><div class="line"></div><div class="line">                          </div><div class="line">                           if (childWithAccessibilityFocus != null) &#123;</div><div class="line">                               if (childWithAccessibilityFocus != child) &#123;</div><div class="line">                                   continue;</div><div class="line">                               &#125;</div><div class="line">                               childWithAccessibilityFocus = null;</div><div class="line">                               i = childrenCount - 1;</div><div class="line">                           &#125;</div><div class="line"></div><div class="line">                           if (!canViewReceivePointerEvents(child)</div><div class="line">                                   || !isTransformedTouchPointInView(x, y, child, null)) &#123;</div><div class="line">                               ev.setTargetAccessibilityFocus(false);</div><div class="line">                               continue;</div><div class="line">                           &#125;</div><div class="line"></div><div class="line">                           newTouchTarget = getTouchTarget(child);</div><div class="line">                           if (newTouchTarget != null) &#123;</div><div class="line">                               </div><div class="line">                               newTouchTarget.pointerIdBits |= idBitsToAssign;</div><div class="line">                               break;</div><div class="line">                           &#125;</div><div class="line"></div><div class="line">                           resetCancelNextUpFlag(child);</div><div class="line">                           if (dispatchTransformedTouchEvent(ev, false, child, idBitsToAssign)) &#123;</div><div class="line">                             </div><div class="line">                               mLastTouchDownTime = ev.getDownTime();</div><div class="line">                               if (preorderedList != null) &#123;</div><div class="line">                                   </div><div class="line">                                   for (int j = 0; j &lt; childrenCount; j++) &#123;</div><div class="line">                                       if (children[childIndex] == mChildren[j]) &#123;</div><div class="line">                                           mLastTouchDownIndex = j;</div><div class="line">                                           break;</div><div class="line">                                       &#125;</div><div class="line">                                   &#125;</div><div class="line">                               &#125; else &#123;</div><div class="line">                                   mLastTouchDownIndex = childIndex;</div><div class="line">                               &#125;</div><div class="line">                               mLastTouchDownX = ev.getX();</div><div class="line">                               mLastTouchDownY = ev.getY();</div><div class="line">                               newTouchTarget = addTouchTarget(child, idBitsToAssign);</div><div class="line">                               alreadyDispatchedToNewTouchTarget = true;</div><div class="line">                               break;</div><div class="line">                           &#125;</div><div class="line"></div><div class="line">                          </div><div class="line">                           ev.setTargetAccessibilityFocus(false);</div><div class="line">                       &#125;</div><div class="line">                       if (preorderedList != null) preorderedList.clear();</div><div class="line">                   &#125;</div><div class="line"></div><div class="line">                   if (newTouchTarget == null &amp;&amp; mFirstTouchTarget != null) &#123;</div><div class="line">                     </div><div class="line">                       newTouchTarget = mFirstTouchTarget;</div><div class="line">                       while (newTouchTarget.next != null) &#123;</div><div class="line">                           newTouchTarget = newTouchTarget.next;</div><div class="line">                       &#125;</div><div class="line">                       newTouchTarget.pointerIdBits |= idBitsToAssign;</div><div class="line">                   &#125;</div><div class="line">               &#125;</div><div class="line">           &#125;</div><div class="line"></div><div class="line">          </div><div class="line">           if (mFirstTouchTarget == null) &#123;</div><div class="line">               </div><div class="line">               handled = dispatchTransformedTouchEvent(ev, canceled, null,</div><div class="line">                       TouchTarget.ALL_POINTER_IDS);</div><div class="line">           &#125; else &#123;</div><div class="line">               </div><div class="line">               TouchTarget predecessor = null;</div><div class="line">               TouchTarget target = mFirstTouchTarget;</div><div class="line">               while (target != null) &#123;</div><div class="line">                   final TouchTarget next = target.next;</div><div class="line">                   if (alreadyDispatchedToNewTouchTarget &amp;&amp; target == newTouchTarget) &#123;</div><div class="line">                       handled = true;</div><div class="line">                   &#125; else &#123;</div><div class="line">                       final boolean cancelChild = resetCancelNextUpFlag(target.child)</div><div class="line">                               || intercepted;</div><div class="line">                       if (dispatchTransformedTouchEvent(ev, cancelChild,</div><div class="line">                               target.child, target.pointerIdBits)) &#123;</div><div class="line">                           handled = true;</div><div class="line">                       &#125;</div><div class="line">                       if (cancelChild) &#123;</div><div class="line">                           if (predecessor == null) &#123;</div><div class="line">                               mFirstTouchTarget = next;</div><div class="line">                           &#125; else &#123;</div><div class="line">                               predecessor.next = next;</div><div class="line">                           &#125;</div><div class="line">                           target.recycle();</div><div class="line">                           target = next;</div><div class="line">                           continue;</div><div class="line">                       &#125;</div><div class="line">                   &#125;</div><div class="line">                   predecessor = target;</div><div class="line">                   target = next;</div><div class="line">               &#125;</div><div class="line">           &#125;</div><div class="line"></div><div class="line">          </div><div class="line">           if (canceled</div><div class="line">                   || actionMasked == MotionEvent.ACTION_UP</div><div class="line">                   || actionMasked == MotionEvent.ACTION_HOVER_MOVE) &#123;</div><div class="line">               resetTouchState();</div><div class="line">           &#125; else if (split &amp;&amp; actionMasked == MotionEvent.ACTION_POINTER_UP) &#123;</div><div class="line">               final int actionIndex = ev.getActionIndex();</div><div class="line">               final int idBitsToRemove = 1 &lt;&lt; ev.getPointerId(actionIndex);</div><div class="line">               removePointersFromTouchTargets(idBitsToRemove);</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       if (!handled &amp;&amp; mInputEventConsistencyVerifier != null) &#123;</div><div class="line">           mInputEventConsistencyVerifier.onUnhandledEvent(ev, 1);</div><div class="line">       &#125;</div><div class="line">       return handled;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><p>有一处关键的地方</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//ACTION_DOWN时进行一些初始化操作 进行一系列初始化操作</div><div class="line">if (actionMasked == MotionEvent.ACTION_DOWN) &#123;</div><div class="line">                //清除以往的Touch状态，并且设置mFirstTouchTarget为null </div><div class="line">                cancelAndClearTouchTargets(ev);</div><div class="line">                resetTouchState();</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
-<p>我们看看cancelAndClearTouchTargets方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">private void cancelAndClearTouchTargets(MotionEvent event) &#123;</div><div class="line">//  如果mFirstTouchTarget不为null 就会执行clearTouchTargets方法</div><div class="line">        if (mFirstTouchTarget != null) &#123;</div><div class="line">            boolean syntheticEvent = false;</div><div class="line">            if (event == null) &#123;</div><div class="line">                final long now = SystemClock.uptimeMillis();</div><div class="line">                event = MotionEvent.obtain(now, now,</div><div class="line">                        MotionEvent.ACTION_CANCEL, 0.0f, 0.0f, 0);</div><div class="line">                event.setSource(InputDevice.SOURCE_TOUCHSCREEN);</div><div class="line">                syntheticEvent = true;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            for (TouchTarget target = mFirstTouchTarget; target != null; target = target.next) &#123;</div><div class="line">                resetCancelNextUpFlag(target.child);</div><div class="line">                //通过递归来调用子控件的dispatchTouchEvent</div><div class="line">                dispatchTransformedTouchEvent(event, true, target.child, target.pointerIdBits);</div><div class="line">            &#125;</div><div class="line">            clearTouchTargets();</div><div class="line"></div><div class="line">            if (syntheticEvent) &#123;</div><div class="line">                event.recycle();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    // mFirstTouchTarget = null;</div><div class="line">    private void clearTouchTargets() &#123;</div><div class="line">        TouchTarget target = mFirstTouchTarget;</div><div class="line">        if (target != null) &#123;</div><div class="line">            do &#123;</div><div class="line">                TouchTarget next = target.next;</div><div class="line">                target.recycle();</div><div class="line">                target = next;</div><div class="line">            &#125; while (target != null);</div><div class="line">            mFirstTouchTarget = null;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<h4 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">// intercepted 默认为false</div><div class="line">        final boolean intercepted;</div><div class="line">        如果actionMasked为DOWN事件 或者mFirstTouchTarget不为null</div><div class="line">            if (actionMasked == MotionEvent.ACTION_DOWN</div><div class="line">                    || mFirstTouchTarget != null) &#123;</div><div class="line">                    //是否允许父控件拦截</div><div class="line">                final boolean disallowIntercept = (mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0;</div><div class="line">                if (!disallowIntercept) &#123;</div><div class="line">                //调用了onInterceptTouchEvent方法</div><div class="line">                    intercepted = onInterceptTouchEvent(ev);</div><div class="line">                    ev.setAction(action);</div><div class="line">                &#125; else &#123;</div><div class="line">                    intercepted = false;</div><div class="line">                &#125;</div><div class="line">            &#125; else &#123;</div><div class="line">               </div><div class="line">                intercepted = true;</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
-<p>以上代码，使用变量intercepted来标记ViewGroup是否拦截Touch事件的传递，if (actionMasked == MotionEvent.ACTION_DOWN<br>                    || mFirstTouchTarget != null) ，第一次进来时，是down事件，所以会走该方法，注意此处的mFirstTouchTarget为null,但会在下面接着赋值。非常关键的变量。</p>
+<pre><code> @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+   //....
+   //这个值是dispatchTouchEvent的返回值，默认为false。
+        boolean handled = false;
+        if (onFilterTouchEventForSecurity(ev)) {
+            final int action = ev.getAction();
+            final int actionMasked = action &amp; MotionEvent.ACTION_MASK;
+
+          //ACTION_DOWN时进行一些初始化操作
+            if (actionMasked == MotionEvent.ACTION_DOWN) {
+              //清除以往的Touch状态并且设置mFirstTouchTarget==null
+                cancelAndClearTouchTargets(ev);
+                resetTouchState();
+            }
+
+
+            final boolean intercepted;
+            if (actionMasked == MotionEvent.ACTION_DOWN
+                    || mFirstTouchTarget != null) {
+                final boolean disallowIntercept = (mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0;
+                if (!disallowIntercept) {
+                    intercepted = onInterceptTouchEvent(ev);
+                    ev.setAction(action); // restore action in case it was changed
+                } else {
+                    intercepted = false;
+                }
+            } else {
+
+                intercepted = true;
+            }
+
+
+            if (intercepted || mFirstTouchTarget != null) {
+                ev.setTargetAccessibilityFocus(false);
+            }
+
+
+            final boolean canceled = resetCancelNextUpFlag(this)
+                    || actionMasked == MotionEvent.ACTION_CANCEL;
+
+
+            final boolean split = (mGroupFlags &amp; FLAG_SPLIT_MOTION_EVENTS) != 0;
+            TouchTarget newTouchTarget = null;
+            boolean alreadyDispatchedToNewTouchTarget = false;
+            if (!canceled &amp;&amp; !intercepted) {
+
+
+                View childWithAccessibilityFocus = ev.isTargetAccessibilityFocus()
+                        ? findChildWithAccessibilityFocus() : null;
+
+                if (actionMasked == MotionEvent.ACTION_DOWN
+                        || (split &amp;&amp; actionMasked == MotionEvent.ACTION_POINTER_DOWN)
+                        || actionMasked == MotionEvent.ACTION_HOVER_MOVE) {
+                    final int actionIndex = ev.getActionIndex(); // always 0 for down
+                    final int idBitsToAssign = split ? 1 &lt;&lt; ev.getPointerId(actionIndex)
+                            : TouchTarget.ALL_POINTER_IDS;
+
+
+                    removePointersFromTouchTargets(idBitsToAssign);
+
+                    final int childrenCount = mChildrenCount;
+                    if (newTouchTarget == null &amp;&amp; childrenCount != 0) {
+                        final float x = ev.getX(actionIndex);
+                        final float y = ev.getY(actionIndex);
+
+                        final ArrayList&lt;View&gt; preorderedList = buildTouchDispatchChildList();
+                        final boolean customOrder = preorderedList == null
+                                &amp;&amp; isChildrenDrawingOrderEnabled();
+                        final View[] children = mChildren;
+                        for (int i = childrenCount - 1; i &gt;= 0; i--) {
+                            final int childIndex = getAndVerifyPreorderedIndex(
+                                    childrenCount, i, customOrder);
+                            final View child = getAndVerifyPreorderedView(
+                                    preorderedList, children, childIndex);
+
+
+                            if (childWithAccessibilityFocus != null) {
+                                if (childWithAccessibilityFocus != child) {
+                                    continue;
+                                }
+                                childWithAccessibilityFocus = null;
+                                i = childrenCount - 1;
+                            }
+
+                            if (!canViewReceivePointerEvents(child)
+                                    || !isTransformedTouchPointInView(x, y, child, null)) {
+                                ev.setTargetAccessibilityFocus(false);
+                                continue;
+                            }
+
+                            newTouchTarget = getTouchTarget(child);
+                            if (newTouchTarget != null) {
+
+                                newTouchTarget.pointerIdBits |= idBitsToAssign;
+                                break;
+                            }
+
+                            resetCancelNextUpFlag(child);
+                            if (dispatchTransformedTouchEvent(ev, false, child, idBitsToAssign)) {
+
+                                mLastTouchDownTime = ev.getDownTime();
+                                if (preorderedList != null) {
+
+                                    for (int j = 0; j &lt; childrenCount; j++) {
+                                        if (children[childIndex] == mChildren[j]) {
+                                            mLastTouchDownIndex = j;
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    mLastTouchDownIndex = childIndex;
+                                }
+                                mLastTouchDownX = ev.getX();
+                                mLastTouchDownY = ev.getY();
+                                newTouchTarget = addTouchTarget(child, idBitsToAssign);
+                                alreadyDispatchedToNewTouchTarget = true;
+                                break;
+                            }
+
+
+                            ev.setTargetAccessibilityFocus(false);
+                        }
+                        if (preorderedList != null) preorderedList.clear();
+                    }
+
+                    if (newTouchTarget == null &amp;&amp; mFirstTouchTarget != null) {
+
+                        newTouchTarget = mFirstTouchTarget;
+                        while (newTouchTarget.next != null) {
+                            newTouchTarget = newTouchTarget.next;
+                        }
+                        newTouchTarget.pointerIdBits |= idBitsToAssign;
+                    }
+                }
+            }
+
+
+            if (mFirstTouchTarget == null) {
+
+                handled = dispatchTransformedTouchEvent(ev, canceled, null,
+                        TouchTarget.ALL_POINTER_IDS);
+            } else {
+
+                TouchTarget predecessor = null;
+                TouchTarget target = mFirstTouchTarget;
+                while (target != null) {
+                    final TouchTarget next = target.next;
+                    if (alreadyDispatchedToNewTouchTarget &amp;&amp; target == newTouchTarget) {
+                        handled = true;
+                    } else {
+                        final boolean cancelChild = resetCancelNextUpFlag(target.child)
+                                || intercepted;
+                        if (dispatchTransformedTouchEvent(ev, cancelChild,
+                                target.child, target.pointerIdBits)) {
+                            handled = true;
+                        }
+                        if (cancelChild) {
+                            if (predecessor == null) {
+                                mFirstTouchTarget = next;
+                            } else {
+                                predecessor.next = next;
+                            }
+                            target.recycle();
+                            target = next;
+                            continue;
+                        }
+                    }
+                    predecessor = target;
+                    target = next;
+                }
+            }
+
+
+            if (canceled
+                    || actionMasked == MotionEvent.ACTION_UP
+                    || actionMasked == MotionEvent.ACTION_HOVER_MOVE) {
+                resetTouchState();
+            } else if (split &amp;&amp; actionMasked == MotionEvent.ACTION_POINTER_UP) {
+                final int actionIndex = ev.getActionIndex();
+                final int idBitsToRemove = 1 &lt;&lt; ev.getPointerId(actionIndex);
+                removePointersFromTouchTargets(idBitsToRemove);
+            }
+        }
+
+        if (!handled &amp;&amp; mInputEventConsistencyVerifier != null) {
+            mInputEventConsistencyVerifier.onUnhandledEvent(ev, 1);
+        }
+        return handled;
+    }
+</code></pre><h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><p>有一处关键的地方</p>
+<pre><code>//ACTION_DOWN时进行一些初始化操作 进行一系列初始化操作
+if (actionMasked == MotionEvent.ACTION_DOWN) {
+                //清除以往的Touch状态，并且设置mFirstTouchTarget为null 
+                cancelAndClearTouchTargets(ev);
+                resetTouchState();
+            }
+</code></pre><p>我们看看cancelAndClearTouchTargets方法</p>
+<pre><code>private void cancelAndClearTouchTargets(MotionEvent event) {
+//  如果mFirstTouchTarget不为null 就会执行clearTouchTargets方法
+        if (mFirstTouchTarget != null) {
+            boolean syntheticEvent = false;
+            if (event == null) {
+                final long now = SystemClock.uptimeMillis();
+                event = MotionEvent.obtain(now, now,
+                        MotionEvent.ACTION_CANCEL, 0.0f, 0.0f, 0);
+                event.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+                syntheticEvent = true;
+            }
+
+            for (TouchTarget target = mFirstTouchTarget; target != null; target = target.next) {
+                resetCancelNextUpFlag(target.child);
+                //通过递归来调用子控件的dispatchTouchEvent
+                dispatchTransformedTouchEvent(event, true, target.child, target.pointerIdBits);
+            }
+            clearTouchTargets();
+
+            if (syntheticEvent) {
+                event.recycle();
+            }
+        }
+    }
+    // mFirstTouchTarget = null;
+    private void clearTouchTargets() {
+        TouchTarget target = mFirstTouchTarget;
+        if (target != null) {
+            do {
+                TouchTarget next = target.next;
+                target.recycle();
+                target = next;
+            } while (target != null);
+            mFirstTouchTarget = null;
+        }
+    }
+</code></pre><h4 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h4><pre><code>// intercepted 默认为false
+        final boolean intercepted;
+        如果actionMasked为DOWN事件 或者mFirstTouchTarget不为null
+            if (actionMasked == MotionEvent.ACTION_DOWN
+                    || mFirstTouchTarget != null) {
+                    //是否允许父控件拦截
+                final boolean disallowIntercept = (mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0;
+                if (!disallowIntercept) {
+                //调用了onInterceptTouchEvent方法
+                    intercepted = onInterceptTouchEvent(ev);
+                    ev.setAction(action);
+                } else {
+                    intercepted = false;
+                }
+            } else {
+
+                intercepted = true;
+            }
+</code></pre><p>以上代码，使用变量intercepted来标记ViewGroup是否拦截Touch事件的传递，if (actionMasked == MotionEvent.ACTION_DOWN<br>                    || mFirstTouchTarget != null) ，第一次进来时，是down事件，所以会走该方法，注意此处的mFirstTouchTarget为null,但会在下面接着赋值。非常关键的变量。</p>
 <p>判断disallowIntercept标志位，而这个标记在ViewGroup中提供了public的设置方法 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) &#123;</div><div class="line"></div><div class="line">        if (disallowIntercept == ((mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0)) &#123;</div><div class="line">            // We&apos;re already in this state, assume our ancestors are too</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (disallowIntercept) &#123;</div><div class="line">            mGroupFlags |= FLAG_DISALLOW_INTERCEPT;</div><div class="line">        &#125; else &#123;</div><div class="line">            mGroupFlags &amp;= ~FLAG_DISALLOW_INTERCEPT;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // Pass it up to our parent</div><div class="line">        if (mParent != null) &#123;</div><div class="line">            mParent.requestDisallowInterceptTouchEvent(disallowIntercept);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>通过在子控件getParent.requestDisallowInterceptTouchEvent(true/false);默认为false，如果false 则调用onInterceptTouchEvent，而onInterceptTouchEvent默认为false，此时，intercepted为false<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public boolean onInterceptTouchEvent(MotionEvent ev) &#123;</div><div class="line">        return false;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<h4 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h4><p>检查cancel。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">final boolean canceled = resetCancelNextUpFlag(this)</div><div class="line">                   || actionMasked == MotionEvent.ACTION_CANCEL;</div></pre></td></tr></table></figure></p>
-<h4 id="第四步"><a href="#第四步" class="headerlink" title="第四步"></a>第四步</h4><p>boolean变量split，默认是true，是否把事件分发给多个子view，同样提供了方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">final boolean split = (mGroupFlags &amp; FLAG_SPLIT_MOTION_EVENTS) != 0;</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public void setMotionEventSplittingEnabled(boolean split) &#123;</div><div class="line">      </div><div class="line">      if (split) &#123;</div><div class="line">          mGroupFlags |= FLAG_SPLIT_MOTION_EVENTS;</div><div class="line">      &#125; else &#123;</div><div class="line">          mGroupFlags &amp;= ~FLAG_SPLIT_MOTION_EVENTS;</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<h4 id="第五步"><a href="#第五步" class="headerlink" title="第五步"></a>第五步</h4><p>事件不是ACTION_CANCEL并且ViewGroup的拦截标志位intercepted为false，就会进入下面这段代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div></pre></td><td class="code"><pre><div class="line">if (!canceled &amp;&amp; !intercepted) &#123;</div><div class="line">       </div><div class="line">       //ACTION_DOWN的特殊处理</div><div class="line">    if (actionMasked == MotionEvent.ACTION_DOWN</div><div class="line">                       || (split &amp;&amp; actionMasked == MotionEvent.ACTION_POINTER_DOWN)</div><div class="line">                       || actionMasked == MotionEvent.ACTION_HOVER_MOVE) </div><div class="line">                       </div><div class="line">           &#123;</div><div class="line">                       </div><div class="line">                   final int actionIndex = ev.getActionIndex(); </div><div class="line">                   final int idBitsToAssign = split ? 1 &lt;&lt; ev.getPointerId(actionIndex)</div><div class="line">                           : TouchTarget.ALL_POINTER_IDS;</div><div class="line"></div><div class="line">               </div><div class="line">                   removePointersFromTouchTargets(idBitsToAssign);</div><div class="line"></div><div class="line">                   final int childrenCount = mChildrenCount;</div><div class="line">                   if (newTouchTarget == null &amp;&amp; childrenCount != 0) &#123;</div><div class="line">                       final float x = ev.getX(actionIndex);</div><div class="line">                       final float y = ev.getY(actionIndex);</div><div class="line">                      </div><div class="line">                       final ArrayList&lt;View&gt; preorderedList = buildTouchDispatchChildList();</div><div class="line">                       final boolean customOrder = preorderedList == null</div><div class="line">                               &amp;&amp; isChildrenDrawingOrderEnabled();</div><div class="line">                       final View[] children = mChildren;</div><div class="line">                       反序的for循环，如在frameLayout 或者 RelativeLayout中，最后面的子控件会覆盖在前面的子控件上面。</div><div class="line">                       for (int i = childrenCount - 1; i &gt;= 0; i--) &#123;</div><div class="line">                           final int childIndex = getAndVerifyPreorderedIndex(</div><div class="line">                                   childrenCount, i, customOrder);</div><div class="line">                           final View child = getAndVerifyPreorderedView(</div><div class="line">                                   preorderedList, children, childIndex);</div><div class="line"></div><div class="line">                          </div><div class="line">                           if (childWithAccessibilityFocus != null) &#123;</div><div class="line">                               if (childWithAccessibilityFocus != child) &#123;</div><div class="line">                                   continue;</div><div class="line">                               &#125;</div><div class="line">                               childWithAccessibilityFocus = null;</div><div class="line">                               i = childrenCount - 1;</div><div class="line">                           &#125;</div><div class="line"></div><div class="line">                           if (!canViewReceivePointerEvents(child)</div><div class="line">                                   || !isTransformedTouchPointInView(x, y, child, null)) &#123;</div><div class="line">                               ev.setTargetAccessibilityFocus(false);</div><div class="line">                               continue;</div><div class="line">                           &#125;</div><div class="line"></div><div class="line">                           newTouchTarget = getTouchTarget(child);</div><div class="line">                           if (newTouchTarget != null) &#123;</div><div class="line">                             </div><div class="line">                               newTouchTarget.pointerIdBits |= idBitsToAssign;</div><div class="line">                               break;</div><div class="line">                           &#125;</div><div class="line"></div><div class="line">                           resetCancelNextUpFlag(child);</div><div class="line">                           if (dispatchTransformedTouchEvent(ev, false, child, idBitsToAssign)) &#123;</div><div class="line">                              </div><div class="line">                               mLastTouchDownTime = ev.getDownTime();</div><div class="line">                               if (preorderedList != null) &#123;</div><div class="line">                               </div><div class="line">                                   for (int j = 0; j &lt; childrenCount; j++) &#123;</div><div class="line">                                       if (children[childIndex] == mChildren[j]) &#123;</div><div class="line">                                           mLastTouchDownIndex = j;</div><div class="line">                                           break;</div><div class="line">                                       &#125;</div><div class="line">                                   &#125;</div><div class="line">                               &#125; else &#123;</div><div class="line">                                   mLastTouchDownIndex = childIndex;</div><div class="line">                               &#125;</div><div class="line">                               mLastTouchDownX = ev.getX();</div><div class="line">                               mLastTouchDownY = ev.getY();</div><div class="line">                               newTouchTarget = addTouchTarget(child, idBitsToAssign);</div><div class="line">                               alreadyDispatchedToNewTouchTarget = true;</div><div class="line">                               break;</div><div class="line">                           &#125;</div><div class="line"></div><div class="line">                           ev.setTargetAccessibilityFocus(false);</div><div class="line">                       &#125;</div><div class="line">                       if (preorderedList != null) preorderedList.clear();</div><div class="line">                   &#125;</div><div class="line"></div><div class="line">                   if (newTouchTarget == null &amp;&amp; mFirstTouchTarget != null) &#123;</div><div class="line">                      </div><div class="line">                       newTouchTarget = mFirstTouchTarget;</div><div class="line">                       while (newTouchTarget.next != null) &#123;</div><div class="line">                           newTouchTarget = newTouchTarget.next;</div><div class="line">                       &#125;</div><div class="line">                       newTouchTarget.pointerIdBits |= idBitsToAssign;</div><div class="line">                   &#125;</div><div class="line">               &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>注意看上面代码，如果找到newTouchTarget，就会跳出循环，如果没有，就会执行dispatchTransformedTouchEvent方法。这个方法很重要<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">  newTouchTarget = getTouchTarget(child);</div><div class="line">                            if (newTouchTarget != null) &#123;</div><div class="line">                              </div><div class="line">                                newTouchTarget.pointerIdBits |= idBitsToAssign;</div><div class="line">                                break;</div><div class="line">                            &#125;</div><div class="line">    </div><div class="line">                            </div><div class="line">    if (dispatchTransformedTouchEvent(ev, false, child, idBitsToAssign)) &#123;</div><div class="line">                                </div><div class="line">                                mLastTouchDownTime = ev.getDownTime();</div><div class="line">                                if (preorderedList != null) &#123;</div><div class="line">                                     original index</div><div class="line">                                    for (int j = 0; j &lt; childrenCount; j++) &#123;</div><div class="line">                                        if (children[childIndex] == mChildren[j]) &#123;</div><div class="line">                                            mLastTouchDownIndex = j;</div><div class="line">                                            break;</div><div class="line">                                        &#125;</div><div class="line">                                    &#125;</div><div class="line">                                &#125; else &#123;</div><div class="line">                                    mLastTouchDownIndex = childIndex;</div><div class="line">                                &#125;</div><div class="line">                                mLastTouchDownX = ev.getX();</div><div class="line">                                mLastTouchDownY = ev.getY();</div><div class="line">                                newTouchTarget = addTouchTarget(child, idBitsToAssign);</div><div class="line">                                alreadyDispatchedToNewTouchTarget = true;</div><div class="line">                                break;</div><div class="line">                            &#125;</div><div class="line"></div><div class="line">//当前子View是否在mFirstTouchTarget.next这条target链中</div><div class="line">private TouchTarget getTouchTarget(@NonNull View child) &#123;</div><div class="line">        for (TouchTarget target = mFirstTouchTarget; target != null; target = target.next) &#123;</div><div class="line">            if (target.child == child) &#123;</div><div class="line">                return target;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>我们看下dispatchTransformedTouchEvent这个方法，通过这个方法，把Touch事件往下传递给子view，如果没有子控件，会调用super.dispatchTouchEvent(event)，也就是View的dispatchTouchEvent方法，接着会调用onTouchEvent方法，这也是为什么在拦截子控件为true，会调用VIewGoup方法。</p>
+<pre><code>public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+        if (disallowIntercept == ((mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0)) {
+            // We&#39;re already in this state, assume our ancestors are too
+            return;
+        }
+
+        if (disallowIntercept) {
+            mGroupFlags |= FLAG_DISALLOW_INTERCEPT;
+        } else {
+            mGroupFlags &amp;= ~FLAG_DISALLOW_INTERCEPT;
+        }
+
+        // Pass it up to our parent
+        if (mParent != null) {
+            mParent.requestDisallowInterceptTouchEvent(disallowIntercept);
+        }
+    }
+</code></pre><p>通过在子控件getParent.requestDisallowInterceptTouchEvent(true/false);默认为false，如果false 则调用onInterceptTouchEvent，而onInterceptTouchEvent默认为false，此时，intercepted为false</p>
+<pre><code>public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return false;
+    }
+</code></pre><h4 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h4><p>检查cancel。</p>
+<pre><code> final boolean canceled = resetCancelNextUpFlag(this)
+                    || actionMasked == MotionEvent.ACTION_CANCEL;
+</code></pre><h4 id="第四步"><a href="#第四步" class="headerlink" title="第四步"></a>第四步</h4><p>boolean变量split，默认是true，是否把事件分发给多个子view，同样提供了方法</p>
+<pre><code>final boolean split = (mGroupFlags &amp; FLAG_SPLIT_MOTION_EVENTS) != 0;
+</code></pre><pre><code>  public void setMotionEventSplittingEnabled(boolean split) {
+
+        if (split) {
+            mGroupFlags |= FLAG_SPLIT_MOTION_EVENTS;
+        } else {
+            mGroupFlags &amp;= ~FLAG_SPLIT_MOTION_EVENTS;
+        }
+    }
+</code></pre><h4 id="第五步"><a href="#第五步" class="headerlink" title="第五步"></a>第五步</h4><p>事件不是ACTION_CANCEL并且ViewGroup的拦截标志位intercepted为false，就会进入下面这段代码</p>
+<pre><code> if (!canceled &amp;&amp; !intercepted) {
+
+        //ACTION_DOWN的特殊处理
+     if (actionMasked == MotionEvent.ACTION_DOWN
+                        || (split &amp;&amp; actionMasked == MotionEvent.ACTION_POINTER_DOWN)
+                        || actionMasked == MotionEvent.ACTION_HOVER_MOVE) 
+
+            {
+
+                    final int actionIndex = ev.getActionIndex(); 
+                    final int idBitsToAssign = split ? 1 &lt;&lt; ev.getPointerId(actionIndex)
+                            : TouchTarget.ALL_POINTER_IDS;
+
+
+                    removePointersFromTouchTargets(idBitsToAssign);
+
+                    final int childrenCount = mChildrenCount;
+                    if (newTouchTarget == null &amp;&amp; childrenCount != 0) {
+                        final float x = ev.getX(actionIndex);
+                        final float y = ev.getY(actionIndex);
+
+                        final ArrayList&lt;View&gt; preorderedList = buildTouchDispatchChildList();
+                        final boolean customOrder = preorderedList == null
+                                &amp;&amp; isChildrenDrawingOrderEnabled();
+                        final View[] children = mChildren;
+                        反序的for循环，如在frameLayout 或者 RelativeLayout中，最后面的子控件会覆盖在前面的子控件上面。
+                        for (int i = childrenCount - 1; i &gt;= 0; i--) {
+                            final int childIndex = getAndVerifyPreorderedIndex(
+                                    childrenCount, i, customOrder);
+                            final View child = getAndVerifyPreorderedView(
+                                    preorderedList, children, childIndex);
+
+
+                            if (childWithAccessibilityFocus != null) {
+                                if (childWithAccessibilityFocus != child) {
+                                    continue;
+                                }
+                                childWithAccessibilityFocus = null;
+                                i = childrenCount - 1;
+                            }
+
+                            if (!canViewReceivePointerEvents(child)
+                                    || !isTransformedTouchPointInView(x, y, child, null)) {
+                                ev.setTargetAccessibilityFocus(false);
+                                continue;
+                            }
+
+                            newTouchTarget = getTouchTarget(child);
+                            if (newTouchTarget != null) {
+
+                                newTouchTarget.pointerIdBits |= idBitsToAssign;
+                                break;
+                            }
+
+                            resetCancelNextUpFlag(child);
+                            if (dispatchTransformedTouchEvent(ev, false, child, idBitsToAssign)) {
+
+                                mLastTouchDownTime = ev.getDownTime();
+                                if (preorderedList != null) {
+
+                                    for (int j = 0; j &lt; childrenCount; j++) {
+                                        if (children[childIndex] == mChildren[j]) {
+                                            mLastTouchDownIndex = j;
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    mLastTouchDownIndex = childIndex;
+                                }
+                                mLastTouchDownX = ev.getX();
+                                mLastTouchDownY = ev.getY();
+                                newTouchTarget = addTouchTarget(child, idBitsToAssign);
+                                alreadyDispatchedToNewTouchTarget = true;
+                                break;
+                            }
+
+                            ev.setTargetAccessibilityFocus(false);
+                        }
+                        if (preorderedList != null) preorderedList.clear();
+                    }
+
+                    if (newTouchTarget == null &amp;&amp; mFirstTouchTarget != null) {
+
+                        newTouchTarget = mFirstTouchTarget;
+                        while (newTouchTarget.next != null) {
+                            newTouchTarget = newTouchTarget.next;
+                        }
+                        newTouchTarget.pointerIdBits |= idBitsToAssign;
+                    }
+                }
+ }
+</code></pre><p>注意看上面代码，如果找到newTouchTarget，就会跳出循环，如果没有，就会执行dispatchTransformedTouchEvent方法。这个方法很重要</p>
+<pre><code>
+  newTouchTarget = getTouchTarget(child);
+                            if (newTouchTarget != null) {
+
+                                newTouchTarget.pointerIdBits |= idBitsToAssign;
+                                break;
+                            }
+
+
+    if (dispatchTransformedTouchEvent(ev, false, child, idBitsToAssign)) {
+
+                                mLastTouchDownTime = ev.getDownTime();
+                                if (preorderedList != null) {
+                                     original index
+                                    for (int j = 0; j &lt; childrenCount; j++) {
+                                        if (children[childIndex] == mChildren[j]) {
+                                            mLastTouchDownIndex = j;
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    mLastTouchDownIndex = childIndex;
+                                }
+                                mLastTouchDownX = ev.getX();
+                                mLastTouchDownY = ev.getY();
+                                newTouchTarget = addTouchTarget(child, idBitsToAssign);
+                                alreadyDispatchedToNewTouchTarget = true;
+                                break;
+                            }
+
+//当前子View是否在mFirstTouchTarget.next这条target链中
+private TouchTarget getTouchTarget(@NonNull View child) {
+        for (TouchTarget target = mFirstTouchTarget; target != null; target = target.next) {
+            if (target.child == child) {
+                return target;
+            }
+        }
+        return null;
+    }
+</code></pre><p>我们看下dispatchTransformedTouchEvent这个方法，通过这个方法，把Touch事件往下传递给子view，如果没有子控件，会调用super.dispatchTouchEvent(event)，也就是View的dispatchTouchEvent方法，接着会调用onTouchEvent方法，这也是为什么在拦截子控件为true，会调用VIewGoup方法。</p>
 <p>如果子view不为null，会调用child.dispatchTouchEvent(event)，如果该方法返回true，则代表了子view消费了该事件。</p>
 <p>此时，给newTouchTarget赋值，alreadyDispatchedToNewTouchTarget=true</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">//给newTouchTarget赋值；</div><div class="line"> newTouchTarget = addTouchTarget(child, idBitsToAssign);</div><div class="line"> alreadyDispatchedToNewTouchTarget = true;</div></pre></td></tr></table></figure>
-<p>如果，dispatchTransformedTouchEvent为false，即子View的onTouchEvent返回false(即Touch事件未被消费)，那么就不满足该if条件，也就无法执行addTouchTarget()，从而导致mFirstTouchTarget为null，接着MOVE 和UP事件就进不来。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">if (actionMasked == MotionEvent.ACTION_DOWN</div><div class="line">                   || mFirstTouchTarget != null)</div></pre></td></tr></table></figure>
-<p>之后的一系列判断无法通过。。这也解释了<strong>现象２</strong>中，不设置点击事件就不走的情况，因为不设置点击事件，相当于没有消费事件，从而导致dispatchTransformedTouchEvent为false，而<strong>现象３</strong>中，让view的onTouchEvent返回true，就一切正常，是因为消费了事件，dispatchTransformedTouchEvent为true。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line">private boolean dispatchTransformedTouchEvent(MotionEvent event, boolean cancel,</div><div class="line">            View child, int desiredPointerIdBits) &#123;</div><div class="line">        final boolean handled;</div><div class="line"></div><div class="line">        //以上面代码结合分析，cancle为false，事件为ACTION_DOWN</div><div class="line">        final int oldAction = event.getAction();</div><div class="line">        </div><div class="line">        if (cancel || oldAction == MotionEvent.ACTION_CANCEL) &#123;</div><div class="line">            event.setAction(MotionEvent.ACTION_CANCEL);</div><div class="line">            if (child == null) &#123;</div><div class="line">                handled = super.dispatchTouchEvent(event);</div><div class="line">            &#125; else &#123;</div><div class="line">                handled = child.dispatchTouchEvent(event);</div><div class="line">            &#125;</div><div class="line">            event.setAction(oldAction);</div><div class="line">            return handled;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">       </div><div class="line">        if (newPointerIdBits == 0) &#123;</div><div class="line">            return false;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">       </div><div class="line">        final MotionEvent transformedEvent;</div><div class="line">        if (newPointerIdBits == oldPointerIdBits) &#123;</div><div class="line">            if (child == null || child.hasIdentityMatrix()) &#123;</div><div class="line">                if (child == null) &#123;</div><div class="line">                    handled = super.dispatchTouchEvent(event);</div><div class="line">                &#125; else &#123;</div><div class="line">                    final float offsetX = mScrollX - child.mLeft;</div><div class="line">                    final float offsetY = mScrollY - child.mTop;</div><div class="line">                    event.offsetLocation(offsetX, offsetY);</div><div class="line"></div><div class="line">                    handled = child.dispatchTouchEvent(event);</div><div class="line"></div><div class="line">                    event.offsetLocation(-offsetX, -offsetY);</div><div class="line">                &#125;</div><div class="line">                return handled;</div><div class="line">            &#125;</div><div class="line">            transformedEvent = MotionEvent.obtain(event);</div><div class="line">        &#125; else &#123;</div><div class="line">            transformedEvent = event.split(newPointerIdBits);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        </div><div class="line">        if (child == null) &#123;</div><div class="line">            handled = super.dispatchTouchEvent(transformedEvent);</div><div class="line">        &#125; else &#123;</div><div class="line">            final float offsetX = mScrollX - child.mLeft;</div><div class="line">            final float offsetY = mScrollY - child.mTop;</div><div class="line">            transformedEvent.offsetLocation(offsetX, offsetY);</div><div class="line">            if (! child.hasIdentityMatrix()) &#123;</div><div class="line">                transformedEvent.transform(child.getInverseMatrix());</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            handled = child.dispatchTouchEvent(transformedEvent);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // Done.</div><div class="line">        transformedEvent.recycle();</div><div class="line">        return handled;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<h4 id="第六步"><a href="#第六步" class="headerlink" title="第六步"></a>第六步</h4><p>根据上述代码中，对ACTION_DOWN的特殊处理可以发现：</p>
+<pre><code>//给newTouchTarget赋值；
+ newTouchTarget = addTouchTarget(child, idBitsToAssign);
+ alreadyDispatchedToNewTouchTarget = true;
+</code></pre><p>如果，dispatchTransformedTouchEvent为false，即子View的onTouchEvent返回false(即Touch事件未被消费)，那么就不满足该if条件，也就无法执行addTouchTarget()，从而导致mFirstTouchTarget为null，接着MOVE 和UP事件就进不来。</p>
+<pre><code> if (actionMasked == MotionEvent.ACTION_DOWN
+                    || mFirstTouchTarget != null)
+</code></pre><p>之后的一系列判断无法通过。。这也解释了<strong>现象２</strong>中，不设置点击事件就不走的情况，因为不设置点击事件，相当于没有消费事件，从而导致dispatchTransformedTouchEvent为false，而<strong>现象３</strong>中，让view的onTouchEvent返回true，就一切正常，是因为消费了事件，dispatchTransformedTouchEvent为true。</p>
+<pre><code>private boolean dispatchTransformedTouchEvent(MotionEvent event, boolean cancel,
+            View child, int desiredPointerIdBits) {
+        final boolean handled;
+
+        //以上面代码结合分析，cancle为false，事件为ACTION_DOWN
+        final int oldAction = event.getAction();
+
+        if (cancel || oldAction == MotionEvent.ACTION_CANCEL) {
+            event.setAction(MotionEvent.ACTION_CANCEL);
+            if (child == null) {
+                handled = super.dispatchTouchEvent(event);
+            } else {
+                handled = child.dispatchTouchEvent(event);
+            }
+            event.setAction(oldAction);
+            return handled;
+        }
+
+
+        if (newPointerIdBits == 0) {
+            return false;
+        }
+
+
+        final MotionEvent transformedEvent;
+        if (newPointerIdBits == oldPointerIdBits) {
+            if (child == null || child.hasIdentityMatrix()) {
+                if (child == null) {
+                    handled = super.dispatchTouchEvent(event);
+                } else {
+                    final float offsetX = mScrollX - child.mLeft;
+                    final float offsetY = mScrollY - child.mTop;
+                    event.offsetLocation(offsetX, offsetY);
+
+                    handled = child.dispatchTouchEvent(event);
+
+                    event.offsetLocation(-offsetX, -offsetY);
+                }
+                return handled;
+            }
+            transformedEvent = MotionEvent.obtain(event);
+        } else {
+            transformedEvent = event.split(newPointerIdBits);
+        }
+
+
+        if (child == null) {
+            handled = super.dispatchTouchEvent(transformedEvent);
+        } else {
+            final float offsetX = mScrollX - child.mLeft;
+            final float offsetY = mScrollY - child.mTop;
+            transformedEvent.offsetLocation(offsetX, offsetY);
+            if (! child.hasIdentityMatrix()) {
+                transformedEvent.transform(child.getInverseMatrix());
+            }
+
+            handled = child.dispatchTouchEvent(transformedEvent);
+        }
+
+        // Done.
+        transformedEvent.recycle();
+        return handled;
+    }
+</code></pre><h4 id="第六步"><a href="#第六步" class="headerlink" title="第六步"></a>第六步</h4><p>根据上述代码中，对ACTION_DOWN的特殊处理可以发现：</p>
 <ul>
 <li><p>如果dispatchTransformedTouchEvent返回true　代表消费了事件，此时mFirstTouchTarget！＝null　</p>
 </li>
@@ -452,14 +964,51 @@
 </li>
 </ul>
 <h4 id="第七步"><a href="#第七步" class="headerlink" title="第七步"></a>第七步</h4><p>ACTION_DOWN 之后的 MOVE和UP 不会走上面的流程，而是直接从这里开始</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">if (mFirstTouchTarget == null) &#123;</div><div class="line">               </div><div class="line">               handled = dispatchTransformedTouchEvent(ev, canceled, null,</div><div class="line">                       TouchTarget.ALL_POINTER_IDS);</div><div class="line">           &#125; else &#123;</div><div class="line">              </div><div class="line">               TouchTarget predecessor = null;</div><div class="line">               TouchTarget target = mFirstTouchTarget;</div><div class="line">               while (target != null) &#123;</div><div class="line">                   final TouchTarget next = target.next;</div><div class="line">                   if (alreadyDispatchedToNewTouchTarget &amp;&amp; target == newTouchTarget) &#123;</div><div class="line">                       handled = true;</div><div class="line">                   &#125; else &#123;</div><div class="line">                       final boolean cancelChild = resetCancelNextUpFlag(target.child)</div><div class="line">                               || intercepted;</div><div class="line">                       if (dispatchTransformedTouchEvent(ev, cancelChild,</div><div class="line">                               target.child, target.pointerIdBits)) &#123;</div><div class="line">                           handled = true;</div><div class="line">                       &#125;</div><div class="line">                       if (cancelChild) &#123;</div><div class="line">                           if (predecessor == null) &#123;</div><div class="line">                               mFirstTouchTarget = next;</div><div class="line">                           &#125; else &#123;</div><div class="line">                               predecessor.next = next;</div><div class="line">                           &#125;</div><div class="line">                           target.recycle();</div><div class="line">                           target = next;</div><div class="line">                           continue;</div><div class="line">                       &#125;</div><div class="line">                   &#125;</div><div class="line">                   predecessor = target;</div><div class="line">                   target = next;</div><div class="line">               &#125;</div><div class="line">           &#125;</div></pre></td></tr></table></figure>
-<p>如果按照上述流程走完，mFirstTouchTarget或者为null 或者不为null。</p>
+<pre><code> if (mFirstTouchTarget == null) {
+
+                handled = dispatchTransformedTouchEvent(ev, canceled, null,
+                        TouchTarget.ALL_POINTER_IDS);
+            } else {
+
+                TouchTarget predecessor = null;
+                TouchTarget target = mFirstTouchTarget;
+                while (target != null) {
+                    final TouchTarget next = target.next;
+                    if (alreadyDispatchedToNewTouchTarget &amp;&amp; target == newTouchTarget) {
+                        handled = true;
+                    } else {
+                        final boolean cancelChild = resetCancelNextUpFlag(target.child)
+                                || intercepted;
+                        if (dispatchTransformedTouchEvent(ev, cancelChild,
+                                target.child, target.pointerIdBits)) {
+                            handled = true;
+                        }
+                        if (cancelChild) {
+                            if (predecessor == null) {
+                                mFirstTouchTarget = next;
+                            } else {
+                                predecessor.next = next;
+                            }
+                            target.recycle();
+                            target = next;
+                            continue;
+                        }
+                    }
+                    predecessor = target;
+                    target = next;
+                }
+            }
+</code></pre><p>如果按照上述流程走完，mFirstTouchTarget或者为null 或者不为null。</p>
 <p>代码也做了判断，如果为null，说明Touch事件未被消费，找不到消费Touch事件的子控件，或者该子控件的Touch事件被拦截了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">第三个参数为null</div><div class="line"> dispatchTransformedTouchEvent(ev, canceled, null,</div><div class="line">                        TouchTarget.ALL_POINTER_IDS)</div></pre></td></tr></table></figure>
-<p>他就会调用super.dispatchTouchEvent(event)，然后调用其本身的onTouchEvent方法处理Touch事件。</p>
+<pre><code>第三个参数为null
+ dispatchTransformedTouchEvent(ev, canceled, null,
+                        TouchTarget.ALL_POINTER_IDS)
+</code></pre><p>他就会调用super.dispatchTouchEvent(event)，然后调用其本身的onTouchEvent方法处理Touch事件。</p>
 <p>所以正常现象中，不会走TouchViewGroup的onTouchEvent方法也是因为如此，我们给TouchView设置了点击事件，代表有消费事件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">第三个参数不为null</div><div class="line">dispatchTransformedTouchEvent(ev, cancelChild,</div><div class="line">                                target.child, target.pointerIdBits)</div></pre></td></tr></table></figure>
-<p>不会调用super.dispatchTouchEvent(event)，而是调用了child.dispatchTouchEvent(event)方法，走了TouchView的一系列事件。</p>
+<pre><code>第三个参数不为null
+dispatchTransformedTouchEvent(ev, cancelChild,
+                                target.child, target.pointerIdBits)
+</code></pre><p>不会调用super.dispatchTouchEvent(event)，而是调用了child.dispatchTouchEvent(event)方法，走了TouchView的一系列事件。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>1、事件分发，会先传递给ViewGroup，然后在通过ViewGroup递归传递到一下一层的view（或者ViewGroup）中，这样一层层传递下来，而我们app中最顶级的View，DecorView，想必派发事件就是由此开始。</p>
 <p>2、如果子view消费了事件，那么ViewGroup的onToucheEvent将不会执行，也就是说接收不到任何事件，原因就是在dispatchTransformedTouchEvent方法中。</p>
 <p>3、如果设置setOnClickListener,就代表了消费事件，如果不设置setOnClickListener，通常情况下，我们会在View的onTouchEvent中返回true，来消费事件，从而执行MOVE UP　DOWN事件</p>

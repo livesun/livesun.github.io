@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -406,46 +402,150 @@
 <p>如何获取另一个apk中的资源？</p>
 </blockquote>
 <p>在这之前，我们先看看系统是怎么加载资源文件的，以ImageView为例。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;ImageView</div><div class="line"></div><div class="line">    android:layout_width=&quot;wrap_content&quot;</div><div class="line">    android:layout_height=&quot;wrap_content&quot; </div><div class="line">    android:src=&quot;@drawable/ic_back&quot;</div><div class="line">    /&gt;</div></pre></td></tr></table></figure>
-<p>通过配置ImageView的src，我们可以获取不同的图片，但是他是怎么加载进来的呢？我们点击ImageView源码可以看到：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"> final TypedArray a = context.obtainStyledAttributes</div><div class="line">     (attrs, R.styleable.ImageView, defStyleAttr, defStyleRes);</div><div class="line"></div><div class="line">final Drawable d = a.getDrawable(R.styleable.ImageView_src);</div></pre></td></tr></table></figure>
-<p>可以看到，是调用了TypedArray的getDrawable方法，我们接着点进去看看。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public Drawable getDrawable(@StyleableRes int index) &#123;</div><div class="line">       if (mRecycled) &#123;</div><div class="line">           throw new RuntimeException(&quot;Cannot make calls to a recycled instance!&quot;);</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       final TypedValue value = mValue;</div><div class="line">       if (getValueAt(index*AssetManager.STYLE_NUM_ENTRIES, value)) &#123;</div><div class="line">           if (value.type == TypedValue.TYPE_ATTRIBUTE) &#123;</div><div class="line">               throw new UnsupportedOperationException(</div><div class="line">                       &quot;Failed to resolve attribute at index &quot; + index + &quot;: &quot; + value);</div><div class="line">           &#125;</div><div class="line">           return mResources.loadDrawable(value, value.resourceId, mTheme);</div><div class="line">       &#125;</div><div class="line">       return null;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>最终调用了Resources.loadDrawable方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mResources.loadDrawable(value, value.resourceId, mTheme);</div></pre></td></tr></table></figure>
-<p>还有颜色的获取也是，都是通过Resources来获取的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Resources.loadColorStateList(value, value.resourceId, mTheme);</div></pre></td></tr></table></figure>
-<p>还记得平常我们在activity自己获取资源文件是怎么写的，是不是也是通过最终调用了Resources<br>(两个api在api22过时，其实没什么影响，只是多传了theme,防止当传递的资源ID是另一个Drawable资源的别名，造成获取对象不正确的问)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">getResources().getDrawable(R.drawable.ic_back);</div><div class="line">getResources().getColor(R.color.colorAccent);</div></pre></td></tr></table></figure></p>
-<p>他们最终分别调用了上面Resources的方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">loadDrawable(value, value.resourceId, mTheme);</div><div class="line">loadColorStateList(value, value.resourceId, mTheme);</div></pre></td></tr></table></figure>
-<h4 id="猜想："><a href="#猜想：" class="headerlink" title="猜想："></a>猜想：</h4><blockquote>
+<pre><code>&lt;ImageView
+
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot; 
+    android:src=&quot;@drawable/ic_back&quot;
+    /&gt;
+</code></pre><p>通过配置ImageView的src，我们可以获取不同的图片，但是他是怎么加载进来的呢？我们点击ImageView源码可以看到：</p>
+<pre><code> final TypedArray a = context.obtainStyledAttributes
+     (attrs, R.styleable.ImageView, defStyleAttr, defStyleRes);
+
+final Drawable d = a.getDrawable(R.styleable.ImageView_src);
+</code></pre><p>可以看到，是调用了TypedArray的getDrawable方法，我们接着点进去看看。</p>
+<pre><code> public Drawable getDrawable(@StyleableRes int index) {
+        if (mRecycled) {
+            throw new RuntimeException(&quot;Cannot make calls to a recycled instance!&quot;);
+        }
+
+        final TypedValue value = mValue;
+        if (getValueAt(index*AssetManager.STYLE_NUM_ENTRIES, value)) {
+            if (value.type == TypedValue.TYPE_ATTRIBUTE) {
+                throw new UnsupportedOperationException(
+                        &quot;Failed to resolve attribute at index &quot; + index + &quot;: &quot; + value);
+            }
+            return mResources.loadDrawable(value, value.resourceId, mTheme);
+        }
+        return null;
+    }
+</code></pre><p>最终调用了Resources.loadDrawable方法。</p>
+<pre><code>mResources.loadDrawable(value, value.resourceId, mTheme);
+</code></pre><p>还有颜色的获取也是，都是通过Resources来获取的。</p>
+<pre><code>Resources.loadColorStateList(value, value.resourceId, mTheme);
+</code></pre><p>还记得平常我们在activity自己获取资源文件是怎么写的，是不是也是通过最终调用了Resources<br>(两个api在api22过时，其实没什么影响，只是多传了theme,防止当传递的资源ID是另一个Drawable资源的别名，造成获取对象不正确的问)</p>
+<pre><code>getResources().getDrawable(R.drawable.ic_back);
+getResources().getColor(R.color.colorAccent);
+</code></pre><p>他们最终分别调用了上面Resources的方法。</p>
+<pre><code>loadDrawable(value, value.resourceId, mTheme);
+loadColorStateList(value, value.resourceId, mTheme);
+</code></pre><h4 id="猜想："><a href="#猜想：" class="headerlink" title="猜想："></a>猜想：</h4><blockquote>
 <p>既然资源的加载都是通过Resources类，那如果我们想获取别的apk中的资源，是不是可以自己实例化一个Resources对象呢？</p>
 </blockquote>
 <p>我们先看看系统时怎么实现的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public abstract Resources getResources();</div></pre></td></tr></table></figure>
-<p>首先它时Context中的抽象方法，在ContextImp类中实现了该方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line"></div><div class="line">   public Resources getResources() &#123;</div><div class="line">       return mResources;</div><div class="line">   &#125;</div><div class="line">   </div><div class="line">   ......</div><div class="line">   </div><div class="line">    Resources resources = packageInfo.getResources(mainThread);</div><div class="line">    mResources =resources;</div></pre></td></tr></table></figure>
-<p>一系列的调用之后 最终</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Resources resources = new Resources(classLoader)</div><div class="line">resources.setImpl(impl);</div></pre></td></tr></table></figure>
-<p>是隐藏的构造方法，我们看它的第二个够造方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@Deprecated</div><div class="line"></div><div class="line">  public Resources(AssetManager assets, DisplayMetrics metrics, Configuration config) &#123;</div><div class="line">      this(null);</div><div class="line">      mResourcesImpl = new ResourcesImpl(assets, metrics, config, new DisplayAdjustments());</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>第一个构造方法和第二个构造方法其实都是创建了ResourcesImpl的实例，只要我们把这个实例创建出来，调用哪个构造参数其实都一样。（也可以创建ResourcesImpl实例，但是需要反射的太多）</p>
+<pre><code>public abstract Resources getResources();
+</code></pre><p>首先它时Context中的抽象方法，在ContextImp类中实现了该方法</p>
+<pre><code> @Override
+
+    public Resources getResources() {
+        return mResources;
+    }
+
+    ......
+
+     Resources resources = packageInfo.getResources(mainThread);
+     mResources =resources;
+</code></pre><p>一系列的调用之后 最终</p>
+<pre><code>Resources resources = new Resources(classLoader)
+resources.setImpl(impl);
+</code></pre><p>是隐藏的构造方法，我们看它的第二个够造方法</p>
+<pre><code>  @Deprecated
+
+    public Resources(AssetManager assets, DisplayMetrics metrics, Configuration config) {
+        this(null);
+        mResourcesImpl = new ResourcesImpl(assets, metrics, config, new DisplayAdjustments());
+    }
+</code></pre><p>第一个构造方法和第二个构造方法其实都是创建了ResourcesImpl的实例，只要我们把这个实例创建出来，调用哪个构造参数其实都一样。（也可以创建ResourcesImpl实例，但是需要反射的太多）</p>
 <p>我们分别来看这三个参数</p>
 <ul>
 <li>AssetManager assets</li>
 </ul>
 <p>在ResourcesManager和AssetManager的源码中得知</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">//ResourcesManager</div><div class="line"></div><div class="line">@VisibleForTesting</div><div class="line"></div><div class="line">protected @Nullable AssetManager createAssetManager(@NonNull final ResourcesKey key) &#123;</div><div class="line">    AssetManager assets = new AssetManager();</div><div class="line"></div><div class="line">    // resDir can be null if the &apos;android&apos; package is creating a new Resources object.</div><div class="line"></div><div class="line">    // This is fine, since each AssetManager automatically loads the &apos;android&apos; package</div><div class="line"></div><div class="line">    // already.</div><div class="line"></div><div class="line">    if (key.mResDir != null) &#123;</div><div class="line">        if (assets.addAssetPath(key.mResDir) == 0) &#123;</div><div class="line">            Log.e(TAG, &quot;failed to add asset path &quot; + key.mResDir);</div><div class="line">            return null;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    ......</div><div class="line">&#125;</div><div class="line"></div><div class="line">//AssetManager </div><div class="line"></div><div class="line">/**</div><div class="line"> * Add an additional set of assets to the asset manager.  This can be</div><div class="line"> * either a directory or ZIP file.  Not for use by applications.  Returns</div><div class="line"> * the cookie of the added asset, or 0 on failure.</div><div class="line"> * &#123;@hide&#125;</div><div class="line"> */</div><div class="line">public final int addAssetPath(String path) &#123;</div><div class="line">    return  addAssetPathInternal(path, false);</div><div class="line">&#125;</div><div class="line"></div><div class="line"> private final int addAssetPathInternal(String path, boolean appAsLib) &#123;</div><div class="line">    synchronized (this) &#123;</div><div class="line">        int res = addAssetPathNative(path, appAsLib);</div><div class="line">        makeStringBlocks(mStringBlocks);</div><div class="line">        return res;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">private native final int addAssetPathNative(String path, boolean appAsLib);</div></pre></td></tr></table></figure>
-<p>通过assets.addAssetPath(),来获取资源id，可以是一个目录或者一个ZIP文件，而apk文件就是一个ZIP。</p>
+<pre><code>    //ResourcesManager
+
+    @VisibleForTesting
+
+    protected @Nullable AssetManager createAssetManager(@NonNull final ResourcesKey key) {
+        AssetManager assets = new AssetManager();
+
+        // resDir can be null if the &#39;android&#39; package is creating a new Resources object.
+
+        // This is fine, since each AssetManager automatically loads the &#39;android&#39; package
+
+        // already.
+
+        if (key.mResDir != null) {
+            if (assets.addAssetPath(key.mResDir) == 0) {
+                Log.e(TAG, &quot;failed to add asset path &quot; + key.mResDir);
+                return null;
+            }
+        }
+
+        ......
+    }
+
+    //AssetManager 
+
+    /**
+     * Add an additional set of assets to the asset manager.  This can be
+     * either a directory or ZIP file.  Not for use by applications.  Returns
+     * the cookie of the added asset, or 0 on failure.
+     * {@hide}
+     */
+    public final int addAssetPath(String path) {
+        return  addAssetPathInternal(path, false);
+    }
+
+     private final int addAssetPathInternal(String path, boolean appAsLib) {
+        synchronized (this) {
+            int res = addAssetPathNative(path, appAsLib);
+            makeStringBlocks(mStringBlocks);
+            return res;
+        }
+    }
+
+    private native final int addAssetPathNative(String path, boolean appAsLib);
+</code></pre><p>通过assets.addAssetPath(),来获取资源id，可以是一个目录或者一个ZIP文件，而apk文件就是一个ZIP。</p>
 <ul>
 <li>DisplayMetrics metrics</li>
 <li>Configuration config</li>
 </ul>
 <p>在ResourcesImpl中，所以我们也照着new就行了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">private final Configuration mTmpConfig = new Configuration();</div><div class="line">private final DisplayMetrics mMetrics = new DisplayMetrics();</div></pre></td></tr></table></figure>
-<h4 id="Demo代码如下："><a href="#Demo代码如下：" class="headerlink" title="Demo代码如下："></a>Demo代码如下：</h4><ul>
-<li><h4 id="Step-1"><a href="#Step-1" class="headerlink" title="Step 1"></a>Step 1</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">try &#123;</div><div class="line"></div><div class="line">        //  反射获取AssetManager对象</div><div class="line">            Class&lt;AssetManager&gt; managerClass = AssetManager.class;</div><div class="line">            AssetManager asset = managerClass.newInstance();</div><div class="line">            </div><div class="line">            //执行addAssetPath方法。</div><div class="line">            Method method = managerClass.getDeclaredMethod(&quot;addAssetPath&quot;, String.class);</div><div class="line">            </div><div class="line">            //后缀名随便命名，这里命名.skin</div><div class="line">            method.invoke(managerClass, Environment.getExternalStorageDirectory().getAbsolutePath()</div><div class="line">            + File.separator+&quot;test.skin&quot;);</div><div class="line"></div><div class="line">            Resources resources=new Resources(asset,new DisplayMetrics(),new Configuration());</div><div class="line">            //皮肤文件资源名 资源类型 皮肤文件包名</div><div class="line">            int id = resources.getIdentifier(&quot;test_src&quot;, &quot;drawable&quot;, &quot;livesun.skintest&quot;);</div><div class="line">            resources.getDrawable(id);</div><div class="line"></div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
-</li>
+<pre><code> private final Configuration mTmpConfig = new Configuration();
+ private final DisplayMetrics mMetrics = new DisplayMetrics();
+</code></pre><h4 id="Demo代码如下："><a href="#Demo代码如下：" class="headerlink" title="Demo代码如下："></a>Demo代码如下：</h4><ul>
+<li><h4 id="Step-1"><a href="#Step-1" class="headerlink" title="Step 1"></a>Step 1</h4><pre><code>try {
+
+      //  反射获取AssetManager对象
+          Class&lt;AssetManager&gt; managerClass = AssetManager.class;
+          AssetManager asset = managerClass.newInstance();
+
+          //执行addAssetPath方法。
+          Method method = managerClass.getDeclaredMethod(&quot;addAssetPath&quot;, String.class);
+
+          //后缀名随便命名，这里命名.skin
+          method.invoke(managerClass, Environment.getExternalStorageDirectory().getAbsolutePath()
+          + File.separator+&quot;test.skin&quot;);
+
+          Resources resources=new Resources(asset,new DisplayMetrics(),new Configuration());
+          //皮肤文件资源名 资源类型 皮肤文件包名
+          int id = resources.getIdentifier(&quot;test_src&quot;, &quot;drawable&quot;, &quot;livesun.skintest&quot;);
+          resources.getDrawable(id);
+
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+</code></pre></li>
 <li><h4 id="Step-2"><a href="#Step-2" class="headerlink" title="Step 2"></a>Step 2</h4></li>
 </ul>
 <p>打包皮肤apk 命名为test.sikn</p>

@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -404,7 +400,27 @@
         <h3 id="通过装饰者模式添加头部底部"><a href="#通过装饰者模式添加头部底部" class="headerlink" title="通过装饰者模式添加头部底部"></a>通过装饰者模式添加头部底部</h3><p>ListView提供了addHeadView和addFootView方法，使用起来非常方便，而ReyclerView则需要我们自己在adapter中判断，常规做法无外乎判断position==0，来添加头布局，不过这个做法只适合单个，而且不通用。</p>
 <p>我们看下ListView.addHeadView是如何实现的</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_warpperhead.gif" alt="image"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">public void addHeaderView(View v, Object data, boolean isSelectable) &#123;</div><div class="line">        final FixedViewInfo info = new FixedViewInfo();</div><div class="line">        info.view = v;</div><div class="line">        info.data = data;</div><div class="line">        info.isSelectable = isSelectable;</div><div class="line">        mHeaderViewInfos.add(info);</div><div class="line">        mAreAllItemsSelectable &amp;= isSelectable;</div><div class="line"></div><div class="line">       </div><div class="line">        if (mAdapter != null) &#123;</div><div class="line">            if (!(mAdapter instanceof HeaderViewListAdapter)) &#123;</div><div class="line">                mAdapter = new HeaderViewListAdapter(mHeaderViewInfos, mFooterViewInfos, mAdapter);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            </div><div class="line">            if (mDataSetObserver != null) &#123;</div><div class="line">                mDataSetObserver.onChanged();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addHeaderView</span><span class="token punctuation">(</span>View v<span class="token punctuation">,</span> Object data<span class="token punctuation">,</span> <span class="token keyword">boolean</span> isSelectable<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> FixedViewInfo info <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FixedViewInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        info<span class="token punctuation">.</span>view <span class="token operator">=</span> v<span class="token punctuation">;</span>
+        info<span class="token punctuation">.</span>data <span class="token operator">=</span> data<span class="token punctuation">;</span>
+        info<span class="token punctuation">.</span>isSelectable <span class="token operator">=</span> isSelectable<span class="token punctuation">;</span>
+        mHeaderViewInfos<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>info<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mAreAllItemsSelectable <span class="token operator">&amp;=</span> isSelectable<span class="token punctuation">;</span>
+
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mAdapter <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>mAdapter <span class="token keyword">instanceof</span> <span class="token class-name">HeaderViewListAdapter</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                mAdapter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HeaderViewListAdapter</span><span class="token punctuation">(</span>mHeaderViewInfos<span class="token punctuation">,</span> mFooterViewInfos<span class="token punctuation">,</span> mAdapter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>mDataSetObserver <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                mDataSetObserver<span class="token punctuation">.</span><span class="token function">onChanged</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这里 mAdapter = new HeaderViewListAdapter(mHeaderViewInfos,mFooterViewInfos, mAdapter)，new 了一个新的adapter，并把当前的adapter传进去了，这里其实采用的装饰者模式来做的，照着他的源码做一个试试。</p>
 <p>1、创建WrapperHeadAndFootAdapter继承成RecylcerView.Adapter，同时，创建头部集合和底部集合，添加集合和移除集合方法。</p>
 <p>这里采用SparseArray 取代HashMap 原因有两点：</p>
@@ -413,16 +429,337 @@
 <li>在千量级，性能优于HashMap，并且更轻量,更省内存。</li>
 </ul>
 <p>可以看看这篇 –&gt; <a href="http://note.youdao.com/" target="_blank" rel="external">Android内存优化–SparseArray和ArrayMap</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div></pre></td><td class="code"><pre><div class="line">public class WrapperHeadAndFootAdapter extends RecyclerView.Adapter&lt;RecyclerView.ViewHolder&gt; &#123;</div><div class="line"></div><div class="line">    //头布局集合</div><div class="line">    public SparseArray&lt;View&gt; mHeads =new SparseArray&lt;&gt;();</div><div class="line">    //底布局集合</div><div class="line">    public SparseArray&lt;View&gt; mFoots =new SparseArray&lt;&gt;();</div><div class="line">    //被装饰的Adapter</div><div class="line">    public RecyclerView.Adapter mAdapter;</div><div class="line">    //头部集合的key</div><div class="line">    public static int HEAD_KEY=1000000;</div><div class="line">    //底部集合的key</div><div class="line">    public static int FOOT_KEY=3000000;</div><div class="line"></div><div class="line"> public  WrapperHeadAndFootAdapter(RecyclerView.Adapter adapter)&#123;</div><div class="line">       </div><div class="line">        if(adapter==null)&#123;</div><div class="line">            throw new IllegalArgumentException(&quot;adapter cannot null&quot;);</div><div class="line">        &#125;</div><div class="line">         mAdapter=adapter;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">     @Override</div><div class="line">    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) &#123;</div><div class="line">      </div><div class="line">            return null;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) &#123;</div><div class="line">       </div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    public int getItemCount() &#123;</div><div class="line">        return 0;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">       /**</div><div class="line">     * 添加头布局</div><div class="line">     */</div><div class="line"></div><div class="line">    public void addHeadView(View view)&#123;</div><div class="line">        if(mHeads.indexOfValue(view)==-1)&#123;</div><div class="line">            mHeads.put(HEAD_KEY++,view);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    /**</div><div class="line">     * 移除头布局</div><div class="line">     */</div><div class="line"></div><div class="line">    public void removeHeadView(View view)&#123;</div><div class="line">       removeHeadView(view,-1);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 移除头布局</div><div class="line">     */</div><div class="line"></div><div class="line">    public void removeHeadView(View view,int posistion)&#123;</div><div class="line">        int index = mHeads.indexOfValue(view);</div><div class="line">        if(index &gt;=0)&#123;</div><div class="line">            mHeads.removeAt(index);</div><div class="line">        &#125;</div><div class="line">        notifyItemRemoved(posistion);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 添加底布局</div><div class="line">     */</div><div class="line"></div><div class="line">    public void addFootView(View view)&#123;</div><div class="line"></div><div class="line">        if(mFoots.indexOfValue(view)==-1)&#123;</div><div class="line">            mFoots.put(FOOT_KEY++,view);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 删除底布局</div><div class="line">     */</div><div class="line"></div><div class="line">    public void removeFootView(View view)&#123;</div><div class="line">        removeFootView(view,-1);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 删除底布局</div><div class="line">     */</div><div class="line"></div><div class="line">    public void removeFootView(View view,int position)&#123;</div><div class="line">        int index = mFoots.indexOfValue(view);</div><div class="line">        if(index&gt;0)&#123;</div><div class="line">            mFoots.removeAt(index);</div><div class="line">        &#125;</div><div class="line">        notifyItemRemoved(position);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这里，可能有疑问为什么mHeads和mFoots的key取值分别为100000和300000，其实这里不一定非要是这个，你也可以是0或者负数，但是这里面有个问题，当在getItemViewType中，返回key的时候，假如是0，而我们的mAdapter的默认返回值就是0，那在onCreateViewHolder中就会产生冲突，尤其是多布局的情况下，viewType的值并不确定，所以保险起见，弄了一个这个值，这个值随意，只要保证不冲突即可。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line"> public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) &#123;</div><div class="line">     //头布局--viewType是mHeads的key</div><div class="line">     if (mHeads.indexOfKey(viewType)&gt;=0)&#123;</div><div class="line">         return new RecyclerView.ViewHolder(mHeads.get(viewType)) &#123;</div><div class="line">         &#125;;</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     if(mFoots.indexOfKey(viewType)&gt;=0)&#123;</div><div class="line">         return new RecyclerView.ViewHolder(mFoots.get(viewType)) &#123;</div><div class="line">         &#125;;</div><div class="line">     &#125;</div><div class="line">         return mAdapter.onCreateViewHolder(parent,viewType);</div><div class="line"></div><div class="line"> &#125;</div><div class="line"></div><div class="line"></div><div class="line"> @Override</div><div class="line"> public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) &#123;</div><div class="line">     int normlPosition= position - mHeads.size();</div><div class="line">     int itemCount = mAdapter.getItemCount();</div><div class="line"> </div><div class="line">     if(isHeadView(position))&#123;</div><div class="line">         //如果是头部，不绑定</div><div class="line">              if(onHeadClickListener!=null)&#123;</div><div class="line">              //设置头部的点击事件</div><div class="line">             final View headView = mHeads.get(mHeads.keyAt(position));</div><div class="line">             if(headView!=null)&#123;</div><div class="line">                 headView.setOnClickListener(new View.OnClickListener() &#123;</div><div class="line">                     @Override</div><div class="line">                     public void onClick(View v) &#123;</div><div class="line">                         onHeadClickListener.onClick(headView,getHeadPosition(headView));</div><div class="line">                     &#125;</div><div class="line">                 &#125;);</div><div class="line">             &#125;</div><div class="line">         &#125;</div><div class="line">         </div><div class="line">         return;</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     if(isFootView(position))&#123;</div><div class="line">         //如果是底部，不绑定</div><div class="line">         if(onFootClickListener!=null)&#123;</div><div class="line">         //设置底部点击事件</div><div class="line">             final View footView = mFoots.get(mFoots.keyAt(normlPosition-itemCount));</div><div class="line">             if(footView!=null)&#123;</div><div class="line">                 footView.setOnClickListener(new View.OnClickListener() &#123;</div><div class="line">                     @Override</div><div class="line">                     public void onClick(View v) &#123;</div><div class="line">                         onFootClickListener.onClick(footView,getHeadPosition(footView));</div><div class="line">                     &#125;</div><div class="line">                 &#125;);</div><div class="line">             &#125;</div><div class="line">         return;</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     //正常布局</div><div class="line">     </div><div class="line">     if(normlPosition&lt;itemCount)&#123;</div><div class="line">         mAdapter.onBindViewHolder(holder,normlPosition);</div><div class="line">     &#125;</div><div class="line"></div><div class="line"> &#125;</div><div class="line"></div><div class="line"></div><div class="line"> @Override</div><div class="line"> public int getItemCount() &#123;</div><div class="line">     return mHeads.size()+mAdapter.getItemCount()+mFoots.size();</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> @Override</div><div class="line"> public int getItemViewType(int position) &#123;</div><div class="line">     //头布局</div><div class="line">     if(isHeadView(position))&#123;</div><div class="line">         return mHeads.keyAt(position);</div><div class="line">     &#125;</div><div class="line">     //正常列表</div><div class="line">     int normlPosition=position-mHeads.size();</div><div class="line">     int itemCount = mAdapter.getItemCount();</div><div class="line">     if(normlPosition&lt;itemCount)&#123;</div><div class="line"></div><div class="line">         return mAdapter.getItemViewType(normlPosition);</div><div class="line">     &#125;</div><div class="line">     //底布局</div><div class="line">     int footPosition=normlPosition-itemCount;</div><div class="line">     return mFoots.keyAt(footPosition);</div><div class="line"> &#125;</div><div class="line"></div><div class="line"></div><div class="line"> private boolean isFootView(int position)&#123;</div><div class="line"></div><div class="line">     return position&gt;=mHeads.size()+mAdapter.getItemCount();</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> private boolean isHeadView(int position)&#123;</div><div class="line">     int size = mHeads.size();</div><div class="line">     return position&lt;size;</div><div class="line"> &#125;</div><div class="line"> </div><div class="line"> </div><div class="line">  /**</div><div class="line">  * 设置头部的点击事件</div><div class="line">  * @param onHeadClickListener</div><div class="line">  */</div><div class="line"> public void setOnHeadClickListener(OnHeadClickListener onHeadClickListener)&#123;</div><div class="line"></div><div class="line">     this.onHeadClickListener = onHeadClickListener;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * 设置底部的点击事件</div><div class="line">  */</div><div class="line"></div><div class="line"> public void setOnFootClickListener(OnFootClickListener onFootClickListener)&#123;</div><div class="line"></div><div class="line">     this.onFootClickListener = onFootClickListener;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * 解决GridLayoutManager添加头部和底部不占用一行的问题</div><div class="line">  */</div><div class="line"> public void adjustSpanSize(RecyclerView recycler) &#123;</div><div class="line">     if (recycler.getLayoutManager() instanceof GridLayoutManager) &#123;</div><div class="line">         final GridLayoutManager layoutManager = (GridLayoutManager) recycler.getLayoutManager();</div><div class="line">         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() &#123;</div><div class="line">             @Override</div><div class="line">             public int getSpanSize(int position) &#123;</div><div class="line">                 boolean isHeaderOrFooter = isHeaderPosition(position) || isFooterPosition(position);</div><div class="line">                 return isHeaderOrFooter ? layoutManager.getSpanCount() : 1;</div><div class="line">             &#125;</div><div class="line">         &#125;);</div><div class="line">     &#125;</div><div class="line"> &#125;</div><div class="line"> </div><div class="line">  /**</div><div class="line">  * 获取头部的位置</div><div class="line">  * @param view</div><div class="line">  * @return</div><div class="line">  */</div><div class="line"> public int getHeadPosition(View view) &#123;</div><div class="line">     return  mHeads.indexOfValue(view);</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * 获取底部的位置</div><div class="line">  */</div><div class="line"></div><div class="line"> public int getFootPosition(View view)&#123;</div><div class="line">     int position=mFoots.indexOfValue(view)+mHeads.size()+mAdapter.getItemCount();</div><div class="line">     return position;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<p>上面代码 其实没什么好注意的，唯一注意的是在onBindViewHolder绑定数据的时候，如果是头布局或者底布局要记得return,否则会爆空指针异常。</p>
-<p>下面是头部和底部点击的监听<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public interface OnFootClickListener &#123;</div><div class="line">    void onClick(View view, int position);</div><div class="line">&#125;</div><div class="line"></div><div class="line">public interface OnHeadClickListener &#123;</div><div class="line">    void onClick(View view, int position);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>调用</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);</div><div class="line"></div><div class="line"></div><div class="line"> findViewById(R.id.chose).setOnClickListener(new View.OnClickListener() &#123;</div><div class="line">            @Override</div><div class="line">            public void onClick(View v) &#123;</div><div class="line">                if(!chose)&#123;</div><div class="line">                    chose=!chose;</div><div class="line">                    recyclerView.setLayoutManager(new GridLayoutManager(TestActivity1.this,2));</div><div class="line">                    recyclerView.getAdapter().notifyDataSetChanged();</div><div class="line">                    wrapperAdapter.spanSize(recyclerView);</div><div class="line">                &#125;else&#123;</div><div class="line">                    chose=!chose;</div><div class="line">                    recyclerView.setLayoutManager(new LinearLayoutManager(TestActivity1.this));</div><div class="line">                    recyclerView.getAdapter().notifyDataSetChanged();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        recyclerView.setLayoutManager(new LinearLayoutManager(this));</div><div class="line">        //原始adapter</div><div class="line">        MyAdapter dapter = new MyAdapter(getDatas(), this);</div><div class="line">        //wrapper</div><div class="line">        wrapperAdapter = new WrapperHeadAndFootAdapter(dapter);</div><div class="line">        LayoutInflater layoutInflater = LayoutInflater.from(this);</div><div class="line">        recyclerView.setAdapter(wrapperAdapter);</div><div class="line"></div><div class="line">        wrapperAdapter.addHeadView(layoutInflater.inflate(R.layout.head_view,recyclerView,false));</div><div class="line">        wrapperAdapter.addHeadView(layoutInflater.inflate(R.layout.head_view,recyclerView,false));</div><div class="line">        wrapperAdapter.addFootView(layoutInflater.inflate(R.layout.head_view,recyclerView,false));</div><div class="line">        wrapperAdapter.addFootView(layoutInflater.inflate(R.layout.head_view,recyclerView,false));</div><div class="line">        //原始adapter的条目点击事件</div><div class="line">        dapter.setOnItemClickListener(new OnItemClickListener&lt;CharBean&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public void onItem(int position, CharBean charBean) &#123;</div><div class="line">                Toast.makeText(TestActivity1.this,charBean.getSrc(),Toast.LENGTH_SHORT).show();</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        //底部监听事件</div><div class="line">        wrapperAdapter.setOnFootClickListener(new OnFootClickListener() &#123;</div><div class="line">            @Override</div><div class="line">            public void onClick(View view, int position) &#123;</div><div class="line">                wrapperAdapter.removeFootView(view,position);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        //头部监听事件</div><div class="line">        wrapperAdapter.setOnHeadClickListener(new OnHeadClickListener() &#123;</div><div class="line">            @Override</div><div class="line">            public void onClick(View view, int position) &#123;</div><div class="line">                wrapperAdapter.removeHeadView(view,position);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure>
-<p>这样当然有点麻烦，我们可以封装成一个WrapperRecyclerView，例如这样</p>
-<p>就可以欢快的调用了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">   public void setAdapter(Adapter adapter) &#123;</div><div class="line">       if (mAdapter != null) &#123;</div><div class="line">           mAdapter.unregisterAdapterDataObserver(mDataObserver);</div><div class="line">           mAdapter = null;</div><div class="line">       &#125;</div><div class="line">       mAdapter = adapter;</div><div class="line">       mAdapter.notifyDataSetChanged();</div><div class="line">       mWrapperAdapter = new WrapperHeadAndFootAdapter(adapter,mHeads,mFoots);</div><div class="line">       super.setAdapter(mWrapperAdapter);</div><div class="line">       //适配GridLayoutManager</div><div class="line">       mWrapperAdapter.spanSize(this);</div><div class="line">       //注册监听器</div><div class="line">       mWrapperAdapter.registerAdapterDataObserver(mDataObserver);</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<pre><code>public class WrapperHeadAndFootAdapter extends RecyclerView.Adapter&lt;RecyclerView.ViewHolder&gt; {
 
+    //头布局集合
+    public SparseArray&lt;View&gt; mHeads =new SparseArray&lt;&gt;();
+    //底布局集合
+    public SparseArray&lt;View&gt; mFoots =new SparseArray&lt;&gt;();
+    //被装饰的Adapter
+    public RecyclerView.Adapter mAdapter;
+    //头部集合的key
+    public static int HEAD_KEY=1000000;
+    //底部集合的key
+    public static int FOOT_KEY=3000000;
+
+ public  WrapperHeadAndFootAdapter(RecyclerView.Adapter adapter){
+
+        if(adapter==null){
+            throw new IllegalArgumentException(&quot;adapter cannot null&quot;);
+        }
+         mAdapter=adapter;
+    }
+
+     @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            return null;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return 0;
+    }
+
+       /**
+     * 添加头布局
+     */
+
+    public void addHeadView(View view){
+        if(mHeads.indexOfValue(view)==-1){
+            mHeads.put(HEAD_KEY++,view);
+        }
+    }
+    /**
+     * 移除头布局
+     */
+
+    public void removeHeadView(View view){
+       removeHeadView(view,-1);
+    }
+
+    /**
+     * 移除头布局
+     */
+
+    public void removeHeadView(View view,int posistion){
+        int index = mHeads.indexOfValue(view);
+        if(index &gt;=0){
+            mHeads.removeAt(index);
+        }
+        notifyItemRemoved(posistion);
+    }
+
+    /**
+     * 添加底布局
+     */
+
+    public void addFootView(View view){
+
+        if(mFoots.indexOfValue(view)==-1){
+            mFoots.put(FOOT_KEY++,view);
+        }
+    }
+
+    /**
+     * 删除底布局
+     */
+
+    public void removeFootView(View view){
+        removeFootView(view,-1);
+    }
+
+    /**
+     * 删除底布局
+     */
+
+    public void removeFootView(View view,int position){
+        int index = mFoots.indexOfValue(view);
+        if(index&gt;0){
+            mFoots.removeAt(index);
+        }
+        notifyItemRemoved(position);
+    }
+
+}
+</code></pre><p>这里，可能有疑问为什么mHeads和mFoots的key取值分别为100000和300000，其实这里不一定非要是这个，你也可以是0或者负数，但是这里面有个问题，当在getItemViewType中，返回key的时候，假如是0，而我们的mAdapter的默认返回值就是0，那在onCreateViewHolder中就会产生冲突，尤其是多布局的情况下，viewType的值并不确定，所以保险起见，弄了一个这个值，这个值随意，只要保证不冲突即可。</p>
+<pre><code>   @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        //头布局--viewType是mHeads的key
+        if (mHeads.indexOfKey(viewType)&gt;=0){
+            return new RecyclerView.ViewHolder(mHeads.get(viewType)) {
+            };
+        }
+
+        if(mFoots.indexOfKey(viewType)&gt;=0){
+            return new RecyclerView.ViewHolder(mFoots.get(viewType)) {
+            };
+        }
+            return mAdapter.onCreateViewHolder(parent,viewType);
+
+    }
+
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        int normlPosition= position - mHeads.size();
+        int itemCount = mAdapter.getItemCount();
+
+        if(isHeadView(position)){
+            //如果是头部，不绑定
+                 if(onHeadClickListener!=null){
+                 //设置头部的点击事件
+                final View headView = mHeads.get(mHeads.keyAt(position));
+                if(headView!=null){
+                    headView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onHeadClickListener.onClick(headView,getHeadPosition(headView));
+                        }
+                    });
+                }
+            }
+
+            return;
+        }
+
+        if(isFootView(position)){
+            //如果是底部，不绑定
+            if(onFootClickListener!=null){
+            //设置底部点击事件
+                final View footView = mFoots.get(mFoots.keyAt(normlPosition-itemCount));
+                if(footView!=null){
+                    footView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onFootClickListener.onClick(footView,getHeadPosition(footView));
+                        }
+                    });
+                }
+            return;
+        }
+
+        //正常布局
+
+        if(normlPosition&lt;itemCount){
+            mAdapter.onBindViewHolder(holder,normlPosition);
+        }
+
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return mHeads.size()+mAdapter.getItemCount()+mFoots.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        //头布局
+        if(isHeadView(position)){
+            return mHeads.keyAt(position);
+        }
+        //正常列表
+        int normlPosition=position-mHeads.size();
+        int itemCount = mAdapter.getItemCount();
+        if(normlPosition&lt;itemCount){
+
+            return mAdapter.getItemViewType(normlPosition);
+        }
+        //底布局
+        int footPosition=normlPosition-itemCount;
+        return mFoots.keyAt(footPosition);
+    }
+
+
+    private boolean isFootView(int position){
+
+        return position&gt;=mHeads.size()+mAdapter.getItemCount();
+    }
+
+    private boolean isHeadView(int position){
+        int size = mHeads.size();
+        return position&lt;size;
+    }
+
+
+     /**
+     * 设置头部的点击事件
+     * @param onHeadClickListener
+     */
+    public void setOnHeadClickListener(OnHeadClickListener onHeadClickListener){
+
+        this.onHeadClickListener = onHeadClickListener;
+    }
+
+    /**
+     * 设置底部的点击事件
+     */
+
+    public void setOnFootClickListener(OnFootClickListener onFootClickListener){
+
+        this.onFootClickListener = onFootClickListener;
+    }
+
+    /**
+     * 解决GridLayoutManager添加头部和底部不占用一行的问题
+     */
+    public void adjustSpanSize(RecyclerView recycler) {
+        if (recycler.getLayoutManager() instanceof GridLayoutManager) {
+            final GridLayoutManager layoutManager = (GridLayoutManager) recycler.getLayoutManager();
+            layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    boolean isHeaderOrFooter = isHeaderPosition(position) || isFooterPosition(position);
+                    return isHeaderOrFooter ? layoutManager.getSpanCount() : 1;
+                }
+            });
+        }
+    }
+
+     /**
+     * 获取头部的位置
+     * @param view
+     * @return
+     */
+    public int getHeadPosition(View view) {
+        return  mHeads.indexOfValue(view);
+    }
+
+    /**
+     * 获取底部的位置
+     */
+
+    public int getFootPosition(View view){
+        int position=mFoots.indexOfValue(view)+mHeads.size()+mAdapter.getItemCount();
+        return position;
+    }
+</code></pre><p>上面代码 其实没什么好注意的，唯一注意的是在onBindViewHolder绑定数据的时候，如果是头布局或者底布局要记得return,否则会爆空指针异常。</p>
+<p>下面是头部和底部点击的监听</p>
+<pre><code>public interface OnFootClickListener {
+    void onClick(View view, int position);
+}
+
+public interface OnHeadClickListener {
+    void onClick(View view, int position);
+}
+</code></pre><p>调用</p>
+<pre><code>RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+
+
+ findViewById(R.id.chose).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!chose){
+                    chose=!chose;
+                    recyclerView.setLayoutManager(new GridLayoutManager(TestActivity1.this,2));
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                    wrapperAdapter.spanSize(recyclerView);
+                }else{
+                    chose=!chose;
+                    recyclerView.setLayoutManager(new LinearLayoutManager(TestActivity1.this));
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                }
+            }
+        });
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //原始adapter
+        MyAdapter dapter = new MyAdapter(getDatas(), this);
+        //wrapper
+        wrapperAdapter = new WrapperHeadAndFootAdapter(dapter);
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        recyclerView.setAdapter(wrapperAdapter);
+
+        wrapperAdapter.addHeadView(layoutInflater.inflate(R.layout.head_view,recyclerView,false));
+        wrapperAdapter.addHeadView(layoutInflater.inflate(R.layout.head_view,recyclerView,false));
+        wrapperAdapter.addFootView(layoutInflater.inflate(R.layout.head_view,recyclerView,false));
+        wrapperAdapter.addFootView(layoutInflater.inflate(R.layout.head_view,recyclerView,false));
+        //原始adapter的条目点击事件
+        dapter.setOnItemClickListener(new OnItemClickListener&lt;CharBean&gt;() {
+            @Override
+            public void onItem(int position, CharBean charBean) {
+                Toast.makeText(TestActivity1.this,charBean.getSrc(),Toast.LENGTH_SHORT).show();
+            }
+        });
+        //底部监听事件
+        wrapperAdapter.setOnFootClickListener(new OnFootClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                wrapperAdapter.removeFootView(view,position);
+            }
+        });
+        //头部监听事件
+        wrapperAdapter.setOnHeadClickListener(new OnHeadClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                wrapperAdapter.removeHeadView(view,position);
+            }
+        });
+</code></pre><p>这样当然有点麻烦，我们可以封装成一个WrapperRecyclerView，例如这样</p>
+<p>就可以欢快的调用了。</p>
+<pre><code> @Override
+    public void setAdapter(Adapter adapter) {
+        if (mAdapter != null) {
+            mAdapter.unregisterAdapterDataObserver(mDataObserver);
+            mAdapter = null;
+        }
+        mAdapter = adapter;
+        mAdapter.notifyDataSetChanged();
+        mWrapperAdapter = new WrapperHeadAndFootAdapter(adapter,mHeads,mFoots);
+        super.setAdapter(mWrapperAdapter);
+        //适配GridLayoutManager
+        mWrapperAdapter.spanSize(this);
+        //注册监听器
+        mWrapperAdapter.registerAdapterDataObserver(mDataObserver);
+    }
+</code></pre>
     
 
     

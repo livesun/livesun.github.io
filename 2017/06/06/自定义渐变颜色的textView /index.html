@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -411,12 +407,72 @@
 <p>通过canvas.clipRect方法，即可控制上下两层的不同的切割区域。</p>
 </blockquote>
 <h4 id="具体代码如下："><a href="#具体代码如下：" class="headerlink" title="具体代码如下："></a>具体代码如下：</h4><p>1.在resource中创建attrs.xml文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;resources&gt;</div><div class="line">    &lt;declare-styleable name=&quot;GradienTextView&quot;&gt;</div><div class="line">        &lt;attr format=&quot;color&quot; name=&quot;original_color&quot;/&gt;</div><div class="line">        &lt;attr format=&quot;color&quot; name=&quot;change_color&quot;/&gt;</div><div class="line">    &lt;/declare-styleable&gt;</div><div class="line">   </div><div class="line">&lt;/resources&gt;</div></pre></td></tr></table></figure>
-<p>2.新建GradienTextView集成TextView,重写onDrow方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">public GradienTextView(Context context) &#123;</div><div class="line">        this(context,null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public GradienTextView(Context context, AttributeSet attrs) &#123;</div><div class="line">        this(context, attrs,0);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public GradienTextView(Context context, AttributeSet attrs, int defStyleAttr) &#123;</div><div class="line">        super(context, attrs, defStyleAttr);</div><div class="line">        TypedArray td = context.obtainStyledAttributes(attrs, R.styleable.ChangeTextView);</div><div class="line">        mOriginalColor = td.getColor(R.styleable.ChangeTextView_originalCololr, Color.BLACK);</div><div class="line">        mChangeColor = td.getColor(R.styleable.ChangeTextView_changeColor, Color.RED);</div><div class="line">        td.recycle();</div><div class="line">        //根据颜色获取画笔</div><div class="line">        mOriginalPaint = getPaintByColor(mOriginalColor);</div><div class="line">        mChangePaint=getPaintByColor(mChangeColor);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private Paint getPaintByColor(int color)&#123;</div><div class="line">        Paint paint=new Paint();</div><div class="line">        paint.setColor(color);</div><div class="line">        paint.setAntiAlias(true);</div><div class="line">        paint.setDither(true);//防抖动</div><div class="line">        paint.setTextSize(getTextSize());</div><div class="line">        return paint;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onDraw(Canvas canvas) &#123;</div><div class="line">    </div><div class="line">        //切割区域的大小</div><div class="line">        float middle = mCurrentProgress * getWidth();</div><div class="line">        Paint.FontMetricsInt fontMetricsInt = mOriginalPaint.getFontMetricsInt();</div><div class="line">        //绘制文字的基线</div><div class="line">        baseLine = (fontMetricsInt.bottom - fontMetricsInt.top) / 2 - fontMetricsInt.bottom + getHeight()/2</div><div class="line">                +getPaddingTop()/2-getPaddingBottom()/2;</div><div class="line"></div><div class="line">        //保存画布 如果不保存画布进行操作，会造成画布丢失是不可逆的</div><div class="line">        canvas.save();</div><div class="line">        //从原点开始，切割一半大小的区域</div><div class="line">        canvas.clipRect(0,0,middle,getHeight());</div><div class="line">        canvas.drawText(getText().toString(), getPaddingLeft(),baseLine,mOriginalPaint);</div><div class="line">        canvas.restore();</div><div class="line">        //此时，操作下半部分区域</div><div class="line">        canvas.save();</div><div class="line">        canvas.clipRect(middle,0,getWidth(),getHeight());</div><div class="line">        canvas.drawText(getText().toString(), getPaddingLeft(),baseLine,mChangePaint);</div><div class="line">        canvas.restore();</div><div class="line">       </div><div class="line">       &#125;</div></pre></td></tr></table></figure>
-<p>3.设置进度，重绘视图</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private float mCurrentProgress=0f;</div><div class="line">public void setCurrentProgress(float currentProgress)&#123;</div><div class="line">       mCurrentProgress=currentProgress;</div><div class="line">       invalidate();</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>githup地址：<a href="https://github.com/livesun/GradientTextView" target="_blank" rel="external">https://github.com/livesun/GradientTextView</a></p>
+<pre><code>&lt;resources&gt;
+    &lt;declare-styleable name=&quot;GradienTextView&quot;&gt;
+        &lt;attr format=&quot;color&quot; name=&quot;original_color&quot;/&gt;
+        &lt;attr format=&quot;color&quot; name=&quot;change_color&quot;/&gt;
+    &lt;/declare-styleable&gt;
+
+&lt;/resources&gt;
+</code></pre><p>2.新建GradienTextView集成TextView,重写onDrow方法</p>
+<pre><code>public GradienTextView(Context context) {
+        this(context,null);
+    }
+
+    public GradienTextView(Context context, AttributeSet attrs) {
+        this(context, attrs,0);
+    }
+
+    public GradienTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        TypedArray td = context.obtainStyledAttributes(attrs, R.styleable.ChangeTextView);
+        mOriginalColor = td.getColor(R.styleable.ChangeTextView_originalCololr, Color.BLACK);
+        mChangeColor = td.getColor(R.styleable.ChangeTextView_changeColor, Color.RED);
+        td.recycle();
+        //根据颜色获取画笔
+        mOriginalPaint = getPaintByColor(mOriginalColor);
+        mChangePaint=getPaintByColor(mChangeColor);
+    }
+
+    private Paint getPaintByColor(int color){
+        Paint paint=new Paint();
+        paint.setColor(color);
+        paint.setAntiAlias(true);
+        paint.setDither(true);//防抖动
+        paint.setTextSize(getTextSize());
+        return paint;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+
+        //切割区域的大小
+        float middle = mCurrentProgress * getWidth();
+        Paint.FontMetricsInt fontMetricsInt = mOriginalPaint.getFontMetricsInt();
+        //绘制文字的基线
+        baseLine = (fontMetricsInt.bottom - fontMetricsInt.top) / 2 - fontMetricsInt.bottom + getHeight()/2
+                +getPaddingTop()/2-getPaddingBottom()/2;
+
+        //保存画布 如果不保存画布进行操作，会造成画布丢失是不可逆的
+        canvas.save();
+        //从原点开始，切割一半大小的区域
+        canvas.clipRect(0,0,middle,getHeight());
+        canvas.drawText(getText().toString(), getPaddingLeft(),baseLine,mOriginalPaint);
+        canvas.restore();
+        //此时，操作下半部分区域
+        canvas.save();
+        canvas.clipRect(middle,0,getWidth(),getHeight());
+        canvas.drawText(getText().toString(), getPaddingLeft(),baseLine,mChangePaint);
+        canvas.restore();
+
+       }
+</code></pre><p>3.设置进度，重绘视图</p>
+<pre><code> private float mCurrentProgress=0f;
+ public void setCurrentProgress(float currentProgress){
+        mCurrentProgress=currentProgress;
+        invalidate();
+    }
+</code></pre><p>githup地址：<a href="https://github.com/livesun/GradientTextView" target="_blank" rel="external">https://github.com/livesun/GradientTextView</a></p>
 
     
 

@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -248,7 +244,7 @@
     </button>
 
     <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
-        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#android-clipToPadding属性应用"><span class="post-toc-number">1.</span> <span class="post-toc-text">android:clipToPadding属性应用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#效果如下"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">效果如下</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#代码如下"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">代码如下</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#clipToPadding"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">clipToPadding</span></a></li></ol></li></ol>
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#android-clipToPadding属性应用"><span class="post-toc-number">1.</span> <span class="post-toc-text">android:clipToPadding属性应用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#效果如下"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">效果如下</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#代码如下"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">代码如下</span></a></li></ol></li></ol></li></ol>
 
         <!--
         <li class="mdl-menu__item">
@@ -404,26 +400,108 @@
         <h2 id="android-clipToPadding属性应用"><a href="#android-clipToPadding属性应用" class="headerlink" title="android:clipToPadding属性应用"></a>android:clipToPadding属性应用</h2><h3 id="效果如下"><a href="#效果如下" class="headerlink" title="效果如下"></a>效果如下</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/clippadding2.gif" alt="image"></p>
 <p>效果实现是非常简单的，只需要自定义scrollview的滑动监听，动态设置toolbar的透明度即可。</p>
 <h4 id="代码如下"><a href="#代码如下" class="headerlink" title="代码如下"></a>代码如下</h4><ul>
-<li><p>XML布局 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;RelativeLayout </div><div class="line">	xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</div><div class="line">    android:id=&quot;@+id/activity_main&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;&gt;</div><div class="line"></div><div class="line">   &lt;livesun.letterindex.ui.MyScrollView</div><div class="line">       android:id=&quot;@+id/scrollView&quot;</div><div class="line">       android:paddingTop=&quot;?actionBarSize&quot;</div><div class="line">       android:layout_width=&quot;match_parent&quot;</div><div class="line">       android:layout_height=&quot;match_parent&quot;&gt;</div><div class="line">      &lt;android.support.v7.widget.LinearLayoutCompat</div><div class="line">          android:layout_width=&quot;match_parent&quot;</div><div class="line">          android:layout_height=&quot;match_parent&quot;</div><div class="line">          android:orientation=&quot;vertical&quot;</div><div class="line">          &gt;</div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试1&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试2&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line"></div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试3&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试4&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line"></div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试5&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试6&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line"></div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试7&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试8&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line"></div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试9&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试10&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line"></div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试11&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试12&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line"></div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试13&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试14&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line"></div><div class="line">         &lt;Button</div><div class="line">             android:text=&quot;测试15&quot;</div><div class="line">             android:layout_width=&quot;match_parent&quot;</div><div class="line">             android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line"></div><div class="line">      &lt;/android.support.v7.widget.LinearLayoutCompat&gt;</div><div class="line">   &lt;/livesun.letterindex.ui.MyScrollView&gt;</div><div class="line"></div><div class="line">   &lt;android.support.v7.widget.Toolbar</div><div class="line">       android:id=&quot;@+id/toolbar&quot;</div><div class="line">       android:layout_width=&quot;match_parent&quot;</div><div class="line">       android:layout_height=&quot;?actionBarSize&quot;</div><div class="line">       app:title=&quot;测试&quot;</div><div class="line">       app:titleTextColor=&quot;#fff&quot;</div><div class="line">       android:background=&quot;@color/colorAccent&quot;</div><div class="line">       &gt;</div><div class="line"></div><div class="line">   &lt;/android.support.v7.widget.Toolbar&gt;</div><div class="line"></div><div class="line">&lt;/RelativeLayout&gt;</div></pre></td></tr></table></figure>
-</li>
-<li><p>自定义scrollview滑动监听</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">public class MyScrollView extends ScrollView &#123;</div><div class="line">    </div><div class="line">    private OnScrollChangedListener listener;</div><div class="line">    private int heightPixels;</div><div class="line"></div><div class="line">    public MyScrollView(Context context) &#123;</div><div class="line">        this(context,null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public MyScrollView(Context context, AttributeSet attrs) &#123;</div><div class="line">        this(context, attrs,0);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public MyScrollView(Context context, AttributeSet attrs, int defStyleAttr) &#123;</div><div class="line">        super(context, attrs, defStyleAttr);</div><div class="line">        //获取屏幕高度</div><div class="line">        DisplayMetrics metrics = context.getResources().getDisplayMetrics();</div><div class="line">        heightPixels = metrics.heightPixels;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    protected void onScrollChanged(int l, int t, int oldl, int oldt) &#123;</div><div class="line">        super.onScrollChanged(l, t, oldl, oldt);</div><div class="line">        if (listener!=null) &#123;</div><div class="line">            //滑动的高度小于等于</div><div class="line">            int scrollY = getScrollY();</div><div class="line">            if(scrollY&lt;=heightPixels/3f)&#123;</div><div class="line">                listener.change(1-scrollY/(heightPixels/3f));</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    public interface OnScrollChangedListener&#123;</div><div class="line">        /*</div><div class="line">        alpha 1-0;</div><div class="line">         */</div><div class="line">        void change(float alpha);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setOnScrollChangedListener(OnScrollChangedListener listener)&#123;</div><div class="line"></div><div class="line">        this.listener = listener;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>activity中修改toolbar的透明度</p>
-</li>
+<li>XML布局<br>```</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line"></div><div class="line">    super.onCreate(savedInstanceState);</div><div class="line">    setContentView(R.layout.activity_main);</div><div class="line">    toolbar = (Toolbar) findViewById(R.id.toolbar);</div><div class="line">    MyScrollView scrollView= (MyScrollView) findViewById(R.id.scrollView);</div><div class="line">    scrollView.setOnScrollChangedListener(this);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">public void change(float alpha) &#123;</div><div class="line">    toolbar.setAlpha(alpha);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>运行发现，toolbar虽然成功的变淡，但是白了块，和我们的的目标效果并不一样。</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/clippadding1.gif" alt="image"></p>
-<p>解决的方法有很多中，这里介绍一种非常简单的方式</p>
-<h3 id="clipToPadding"><a href="#clipToPadding" class="headerlink" title="clipToPadding"></a>clipToPadding</h3><p>clipToPadding是ViewGroup中的一个属性，默认为true</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">case R.styleable.ViewGroup_clipToPadding:</div><div class="line">setClipToPadding(a.getBoolean(attr, true));</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">    * Sets whether this ViewGroup will clip its children to its padding and resize (but not</div><div class="line">    * clip) any EdgeEffect to the padded region, if padding is present.</div><div class="line">    * &lt;p&gt;</div><div class="line">    * By default, children are clipped to the padding of their parent</div><div class="line">    * ViewGroup. This clipping behavior is only enabled if padding is non-zero.</div><div class="line">    *</div><div class="line">    * @param clipToPadding true to clip children to the padding of the group, and resize (but</div><div class="line">    *        not clip) any EdgeEffect to the padded region. False otherwise.</div><div class="line">    * @attr ref android.R.styleable#ViewGroup_clipToPadding</div><div class="line">    */</div><div class="line">    </div><div class="line">   public void setClipToPadding(boolean clipToPadding) &#123;</div><div class="line">       if (hasBooleanFlag(FLAG_CLIP_TO_PADDING) != clipToPadding) &#123;</div><div class="line">           setBooleanFlag(FLAG_CLIP_TO_PADDING, clipToPadding);</div><div class="line">           invalidate(true);</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>什么意思呢？ 就是说clipToPadding属性定义了是否允许ViewGroup在padding中绘制,该值默认为true,即不允许，false则刚好相反。</p>
-<p>那我们改一下布局文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;livesun.letterindex.ui.MyScrollView</div><div class="line">      android:id=&quot;@+id/scrollView&quot;</div><div class="line">      android:clipToPadding=&quot;false&quot;</div><div class="line">      android:paddingTop=&quot;?actionBarSize&quot;</div><div class="line">      android:layout_width=&quot;match_parent&quot;</div><div class="line">      android:layout_height=&quot;match_parent&quot;&gt;</div></pre></td></tr></table></figure>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/clippadding2.gif" alt="image"></p>
+<relativelayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/activity_main" android:layout_width="match_parent" android:layout_height="match_parent"><br><br>   <livesun.letterindex.ui.myscrollview android:id="@+id/scrollView" android:paddingtop="?actionBarSize" android:layout_width="match_parent" android:layout_height="match_parent"><br>      <android.support.v7.widget.linearlayoutcompat android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical"><br>         <button android:text="测试1" android:layout_width="match_parent" android:layout_height="wrap_content"><br>         </button><button android:text="测试2" android:layout_width="match_parent" android:layout_height="wrap_content"><br><br>         </button><button android:text="测试3" android:layout_width="match_parent" android:layout_height="wrap_content"><br>         </button><button android:text="测试4" android:layout_width="match_parent" android:layout_height="wrap_content"><br><br>         </button><button android:text="测试5" android:layout_width="match_parent" android:layout_height="wrap_content"><br>         </button><button android:text="测试6" android:layout_width="match_parent" android:layout_height="wrap_content"><br><br>         </button><button android:text="测试7" android:layout_width="match_parent" android:layout_height="wrap_content"><br>         </button><button android:text="测试8" android:layout_width="match_parent" android:layout_height="wrap_content"><br><br>         </button><button android:text="测试9" android:layout_width="match_parent" android:layout_height="wrap_content"><br>         </button><button android:text="测试10" android:layout_width="match_parent" android:layout_height="wrap_content"><br><br>         </button><button android:text="测试11" android:layout_width="match_parent" android:layout_height="wrap_content"><br>         </button><button android:text="测试12" android:layout_width="match_parent" android:layout_height="wrap_content"><br><br>         </button><button android:text="测试13" android:layout_width="match_parent" android:layout_height="wrap_content"><br>         </button><button android:text="测试14" android:layout_width="match_parent" android:layout_height="wrap_content"><br><br>         </button><button android:text="测试15" android:layout_width="match_parent" android:layout_height="wrap_content"><br><br>      </button></android.support.v7.widget.linearlayoutcompat><br>   </livesun.letterindex.ui.myscrollview><br><br>   <android.support.v7.widget.toolbar android:id="@+id/toolbar" android:layout_width="match_parent" android:layout_height="?actionBarSize" app:title="测试" app:titletextcolor="#fff" android:background="@color/colorAccent"><br><br>   </android.support.v7.widget.toolbar><br><br></relativelayout>
+
+<pre><code>
+
+
+- 自定义scrollview滑动监听
+</code></pre><p>public class MyScrollView extends ScrollView {</p>
+<pre><code>private OnScrollChangedListener listener;
+private int heightPixels;
+
+public MyScrollView(Context context) {
+    this(context,null);
+}
+
+public MyScrollView(Context context, AttributeSet attrs) {
+    this(context, attrs,0);
+}
+
+public MyScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    //获取屏幕高度
+    DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+    heightPixels = metrics.heightPixels;
+}
+
+
+protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+    super.onScrollChanged(l, t, oldl, oldt);
+    if (listener!=null) {
+        //滑动的高度小于等于
+        int scrollY = getScrollY();
+        if(scrollY&lt;=heightPixels/3f){
+            listener.change(1-scrollY/(heightPixels/3f));
+        }
+    }
+}
+
+
+public interface OnScrollChangedListener{
+    /*
+    alpha 1-0;
+     */
+    void change(float alpha);
+}
+
+public void setOnScrollChangedListener(OnScrollChangedListener listener){
+
+    this.listener = listener;
+}
+</code></pre><p>}</p>
+<pre><code>- activity中修改toolbar的透明度
+</code></pre><pre><code>protected void onCreate(Bundle savedInstanceState) {
+
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    toolbar = (Toolbar) findViewById(R.id.toolbar);
+    MyScrollView scrollView= (MyScrollView) findViewById(R.id.scrollView);
+    scrollView.setOnScrollChangedListener(this);
+}
+
+
+public void change(float alpha) {
+    toolbar.setAlpha(alpha);
+}
+</code></pre><pre><code>
+运行发现，toolbar虽然成功的变淡，但是白了块，和我们的的目标效果并不一样。
+
+![image](http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/clippadding1.gif)
+
+
+解决的方法有很多中，这里介绍一种非常简单的方式
+
+### clipToPadding
+
+clipToPadding是ViewGroup中的一个属性，默认为true
+</code></pre><p> case R.styleable.ViewGroup_clipToPadding:<br> setClipToPadding(a.getBoolean(attr, true));</p>
+<pre><code>
+</code></pre><p> /**</p>
+<pre><code> * Sets whether this ViewGroup will clip its children to its padding and resize (but not
+ * clip) any EdgeEffect to the padded region, if padding is present.
+ * &lt;p&gt;
+ * By default, children are clipped to the padding of their parent
+ * ViewGroup. This clipping behavior is only enabled if padding is non-zero.
+ *
+ * @param clipToPadding true to clip children to the padding of the group, and resize (but
+ *        not clip) any EdgeEffect to the padded region. False otherwise.
+ * @attr ref android.R.styleable#ViewGroup_clipToPadding
+ */
+
+public void setClipToPadding(boolean clipToPadding) {
+    if (hasBooleanFlag(FLAG_CLIP_TO_PADDING) != clipToPadding) {
+        setBooleanFlag(FLAG_CLIP_TO_PADDING, clipToPadding);
+        invalidate(true);
+    }
+}
+</code></pre><pre><code>
+什么意思呢？ 就是说clipToPadding属性定义了是否允许ViewGroup在padding中绘制,该值默认为true,即不允许，false则刚好相反。
+
+那我们改一下布局文件
+</code></pre><p> <livesun.letterindex.ui.myscrollview android:id="@+id/scrollView" android:cliptopadding="false" android:paddingtop="?actionBarSize" android:layout_width="match_parent" android:layout_height="match_parent"><br>```<br><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/clippadding2.gif" alt="image"></livesun.letterindex.ui.myscrollview></p>
 <p>当然 listview 和 recycleview 也同样适用 可以自己试试哦。</p>
 
     

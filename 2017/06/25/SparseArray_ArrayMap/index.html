@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -404,17 +400,37 @@
         <h2 id="SparseArray"><a href="#SparseArray" class="headerlink" title="SparseArray"></a>SparseArray</h2><p>SparseArray比HashMap 更省内存。</p>
 <p>在千级以下的数据处理中，比HashMap的性能更好，因为它避免了对key的自动装箱（int转为Integer类型），同时采取了压缩方式来表示稀疏的数组数据。</p>
 <p>SparseArray 的内部采用两个数组来维持key 和 value</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">private int[] mKeys;</div><div class="line">private Object[] mValues;</div></pre></td></tr></table></figure>
-<p>SparseArray 的key只能为int类型，value 为Object类型。</p>
+<pre><code>private int[] mKeys;
+private Object[] mValues;
+</code></pre><p>SparseArray 的key只能为int类型，value 为Object类型。</p>
 <p>在数据存储和查找时，使用的是二分查找。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public void put(int key, E value) &#123;</div><div class="line">        int i = ContainerHelpers.binarySearch(mKeys, mSize, key);</div><div class="line">        ...</div><div class="line">        &#125;</div><div class="line"> public E get(int key, E valueIfKeyNotFound) &#123;</div><div class="line">        int i = ContainerHelpers.binarySearch(mKeys, mSize, key);</div><div class="line">        ...</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
-<p>put 数据的时候，通过使用二分查找key的大小，按照大小顺序排列，所以，SparseArray存储的元素都是按元素的key值从小到大排列好的。 </p>
+<pre><code>public void put(int key, E value) {
+        int i = ContainerHelpers.binarySearch(mKeys, mSize, key);
+        ...
+        }
+ public E get(int key, E valueIfKeyNotFound) {
+        int i = ContainerHelpers.binarySearch(mKeys, mSize, key);
+        ...
+        }
+</code></pre><p>put 数据的时候，通过使用二分查找key的大小，按照大小顺序排列，所以，SparseArray存储的元素都是按元素的key值从小到大排列好的。 </p>
 <p>get 数据的时候，也是通过二分查找，来判断元素的位置，所以在千级的数据量中就远比HashMap通过比遍历Entry[]数组要快的多。</p>
-<h3 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public void put(int key, E value)</div></pre></td></tr></table></figure>
-<h3 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public E get(int key)</div><div class="line"></div><div class="line">public E get(int key, E valueIfKeyNotFound)</div><div class="line"></div><div class="line">//第二个方法相比与第一个方法，可以设置在key不存在的情况下返回一个默认值</div></pre></td></tr></table></figure>
-<h3 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a>删除数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public void remove(int key)</div><div class="line"></div><div class="line">public void delete(int key)</div><div class="line"></div><div class="line">// 其实最终调用的是delete方法</div></pre></td></tr></table></figure>
-<h3 id="特有方法"><a href="#特有方法" class="headerlink" title="特有方法"></a>特有方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//通过indx获取key</div><div class="line">public int keyAt(int index)</div><div class="line"></div><div class="line">//通过indx获取value</div><div class="line">public E valueAt(int index)</div></pre></td></tr></table></figure>
-<h3 id="关于SparseArray的使用场景"><a href="#关于SparseArray的使用场景" class="headerlink" title="关于SparseArray的使用场景"></a>关于SparseArray的使用场景</h3><ul>
+<h3 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h3><pre><code>public void put(int key, E value)
+</code></pre><h3 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h3><pre><code>public E get(int key)
+
+public E get(int key, E valueIfKeyNotFound)
+
+//第二个方法相比与第一个方法，可以设置在key不存在的情况下返回一个默认值
+</code></pre><h3 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a>删除数据</h3><pre><code> public void remove(int key)
+
+ public void delete(int key)
+
+ // 其实最终调用的是delete方法
+</code></pre><h3 id="特有方法"><a href="#特有方法" class="headerlink" title="特有方法"></a>特有方法</h3><pre><code>//通过indx获取key
+public int keyAt(int index)
+
+//通过indx获取value
+public E valueAt(int index)
+</code></pre><h3 id="关于SparseArray的使用场景"><a href="#关于SparseArray的使用场景" class="headerlink" title="关于SparseArray的使用场景"></a>关于SparseArray的使用场景</h3><ul>
 <li>数据量比较小的情况下，千量级别。</li>
 <li>key为int类型。（如果key为Long类型，还有一个LongSparseArray）</li>
 <li>如果数据量很大，SparseArray的性能 最低不低于HashMap的50%，酌情选择。</li>
@@ -422,13 +438,17 @@
 <p>官方文档</p>
 <p>The implementation is not intended to be appropriate for data structures that<br>may contain large numbers of items. It is generally slower than a traditional<br>HashMap, since lookups require a binary search and adds and removes require<br>inserting and deleting entries in the array. For containers holding up to<br>hundreds of items, the performance difference is not significant, less than50%.</p>
 <h2 id="ArrayMap"><a href="#ArrayMap" class="headerlink" title="ArrayMap"></a>ArrayMap</h2><p>关于ArrayMap,它是是一个<key,value>的键值对数据结构，它的内部和SparesArray一样，维持了两个数组，一个储存key，一个储存value，并且都采用二分法进行大小排序，可以理解成SparseArray是一个特殊的ArrayMap,都是针对手机内存优化的存储api</key,value></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">private Object[] mKeys;</div><div class="line"></div><div class="line">private Object[] mValues;</div></pre></td></tr></table></figure>
-<h3 id="添加数据-1"><a href="#添加数据-1" class="headerlink" title="添加数据"></a>添加数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public V put(K key, V value)</div></pre></td></tr></table></figure>
-<h3 id="获取数据-1"><a href="#获取数据-1" class="headerlink" title="获取数据"></a>获取数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public V get(Object key)</div></pre></td></tr></table></figure>
-<h3 id="删除数据-1"><a href="#删除数据-1" class="headerlink" title="删除数据"></a>删除数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public V remove(Object key)</div></pre></td></tr></table></figure>
-<h3 id="特有方法-1"><a href="#特有方法-1" class="headerlink" title="特有方法"></a>特有方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">public K keyAt(int index)</div><div class="line">public V valueAt(int index)</div></pre></td></tr></table></figure>
-<p>以上都只支持到API19版本，如果想向下兼容，导入V4包即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android.support.v4.util.ArrayMap;</div></pre></td></tr></table></figure>
+<pre><code>private Object[] mKeys;
+
+private Object[] mValues;
+</code></pre><h3 id="添加数据-1"><a href="#添加数据-1" class="headerlink" title="添加数据"></a>添加数据</h3><pre><code>public V put(K key, V value)
+</code></pre><h3 id="获取数据-1"><a href="#获取数据-1" class="headerlink" title="获取数据"></a>获取数据</h3><pre><code>public V get(Object key)
+</code></pre><h3 id="删除数据-1"><a href="#删除数据-1" class="headerlink" title="删除数据"></a>删除数据</h3><pre><code>public V remove(Object key)
+</code></pre><h3 id="特有方法-1"><a href="#特有方法-1" class="headerlink" title="特有方法"></a>特有方法</h3><pre><code>public K keyAt(int index)
+public V valueAt(int index)
+</code></pre><p>以上都只支持到API19版本，如果想向下兼容，导入V4包即可</p>
+<pre><code>android.support.v4.util.ArrayMap;
+</code></pre>
     
 
     

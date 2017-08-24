@@ -32,7 +32,7 @@
     <meta name="theme-color" content="#0097A7">
     <meta name="author" content="孙俊卿">
     <meta name="description" content="记录生活点滴">
-    <meta name="keywords" content="android">
+    <meta name="keywords" content="java">
 
     <!-- Favicons -->
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
@@ -146,12 +146,7 @@
 
     <style>
       body{
-        background-color: #F5F5F5;
-      }
-
-      /* blog_info bottom background */
-      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
-        background-color: #fff;
+        background-image: url(/img/bg.png);
       }
     </style>
 
@@ -200,8 +195,9 @@
 
     <!-- Custom Head -->
     
-<link rel="stylesheet" href="/css/prism-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
+<script src="/js/prism-line-numbers.min.js"></script></head>
 
 
     
@@ -405,26 +401,88 @@
 <p>先上UML类图</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/strategy_pattern.png" alt="image"></p>
 <p>不同的支付模式，其实都是都有一个共性，我们把他抽取出来，写一个接口</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public interface IPay &#123;</div><div class="line"></div><div class="line">//支付</div><div class="line">    void pay();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>分别写三个实现类</p>
+<pre><code>public interface IPay {
+
+//支付
+    void pay();
+}
+</code></pre><p>分别写三个实现类</p>
 <ul>
 <li>QQ</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public class QQPay implements IPay &#123;</div><div class="line"></div><div class="line">    public void pay() &#123;</div><div class="line">    </div><div class="line">        Log.d(&quot;AAA&quot;,&quot;QQ支付&quot;);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
+<pre><code>public class QQPay implements IPay {
+
+    public void pay() {
+
+        Log.d(&quot;AAA&quot;,&quot;QQ支付&quot;);
+    }
+
+}
+</code></pre><ul>
 <li>微信</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public class WXPay implements IPay &#123;</div><div class="line"></div><div class="line">    public void pay() &#123;</div><div class="line">    </div><div class="line">        Log.d(&quot;AAA&quot;,&quot;微信支付&quot;);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
+<pre><code>
+public class WXPay implements IPay {
+
+    public void pay() {
+
+        Log.d(&quot;AAA&quot;,&quot;微信支付&quot;);
+    }
+
+}
+</code></pre><ul>
 <li>阿里</li>
 </ul>
 <p>好像京东和阿里有仇，我们拿来凑个数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public class ALPay implements IPay &#123;</div><div class="line"></div><div class="line">    public void pay() &#123;</div><div class="line">    </div><div class="line">        Log.d(&quot;AAA&quot;,&quot;阿里支付&quot;);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这些支付方式有了，还需要一个用到它们地方</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public class Shopping &#123;</div><div class="line"></div><div class="line">    private IPay mPay;</div><div class="line">    </div><div class="line">    public Shopping(IPay pay)&#123;</div><div class="line">    </div><div class="line">        mPay=pay;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void buy()&#123;</div><div class="line">    </div><div class="line">        mPay.pay();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>好了，我们来调用测试一下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public class PayActivity extends AppCompatActivity &#123;</div><div class="line"></div><div class="line"></div><div class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">    </div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line"></div><div class="line">        chosePayMode();</div><div class="line">        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void chosePayMode()&#123;</div><div class="line">    </div><div class="line">        Shopping qqShop=new Shopping(new QQPay());</div><div class="line">        qqShop.buy();</div><div class="line"></div><div class="line">        Shopping wxShop=new Shopping(new WXPay());</div><div class="line">        wxShop.buy();</div><div class="line"></div><div class="line">        Shopping alShop=new Shopping(new ALPay());</div><div class="line">        alShop.buy();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以看到，Shopping类并不知道自己具体调用了哪种实现方式，它只需要负责购买就行，调用者想用什么支付方式，就用什么支付方式。</p>
+<pre><code>public class ALPay implements IPay {
+
+    public void pay() {
+
+        Log.d(&quot;AAA&quot;,&quot;阿里支付&quot;);
+    }
+
+}
+</code></pre><p>这些支付方式有了，还需要一个用到它们地方</p>
+<pre><code>public class Shopping {
+
+    private IPay mPay;
+
+    public Shopping(IPay pay){
+
+        mPay=pay;
+    }
+
+    public void buy(){
+
+        mPay.pay();
+    }
+
+}
+</code></pre><p>好了，我们来调用测试一下</p>
+<pre><code>public class PayActivity extends AppCompatActivity {
+
+
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+
+        chosePayMode();
+
+    }
+
+    public void chosePayMode(){
+
+        Shopping qqShop=new Shopping(new QQPay());
+        qqShop.buy();
+
+        Shopping wxShop=new Shopping(new WXPay());
+        wxShop.buy();
+
+        Shopping alShop=new Shopping(new ALPay());
+        alShop.buy();
+    }
+}
+</code></pre><p>可以看到，Shopping类并不知道自己具体调用了哪种实现方式，它只需要负责购买就行，调用者想用什么支付方式，就用什么支付方式。</p>
 <p>这就是策略模式，不但把高内聚低耦合特点表现了出来，同时又符合OCP原则，如果还有什么其他类型的支付，只要继承IPay接口就行了，而不用修改Shopping类，好好体会体会，是不是好处多多。</p>
 <p>github:<a href="https://github.com/livesun" target="_blank" rel="external">https://github.com/livesun</a></p>
 
