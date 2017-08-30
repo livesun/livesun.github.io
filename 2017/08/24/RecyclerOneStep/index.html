@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="孙俊卿的博客">
 <meta property="og:description" content="效果图 通过装饰者模式添加头部底部ListView提供了addHeadView和addFootView方法，使用起来非常方便，而ReyclerView则需要我们自己在adapter中判断，常规做法无外乎判断position==0，来添加头布局，不过这个做法只适合单个，而且不通用。我们看下ListView.addHeadView是如何实现的">
 <meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_warpperhead.gif">
-<meta property="og:updated_time" content="2017-08-30T03:36:11.916Z">
+<meta property="og:updated_time" content="2017-08-30T03:47:24.593Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RecyclerView进阶（一）通过装饰者模式添加头部底部">
 <meta name="twitter:description" content="效果图 通过装饰者模式添加头部底部ListView提供了addHeadView和addFootView方法，使用起来非常方便，而ReyclerView则需要我们自己在adapter中判断，常规做法无外乎判断position==0，来添加头布局，不过这个做法只适合单个，而且不通用。我们看下ListView.addHeadView是如何实现的">
@@ -197,7 +197,7 @@
 <li>SparseArray默认以int为key，少了拆箱装箱流程</li>
 <li>在千量级，性能优于HashMap，并且更轻量,更省内存。</li>
 </ul>
-<p>可以看看这篇 –&gt; <a href="http://note.youdao.com/" target="_blank" rel="external">Android内存优化–SparseArray和ArrayMap</a></p>
+<p>可以看看这篇 –&gt; <a href="https://livesun.github.io/2017/06/25/SparseArray_ArrayMap/">Android内存优化–SparseArray和ArrayMap</a></p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WrapperHeadAndFootAdapter</span> <span class="token keyword">extends</span> <span class="token class-name">RecyclerView<span class="token punctuation">.</span>Adapter</span><span class="token operator">&lt;</span>RecyclerView<span class="token punctuation">.</span>ViewHolder<span class="token operator">></span> <span class="token punctuation">{</span>
 
     <span class="token comment" spellcheck="true">//头布局集合</span>
