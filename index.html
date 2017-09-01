@@ -145,6 +145,85 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-RecyclerThreeStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/01/RecyclerThreeStep/">RecyclerView进阶（三）拖拽排序--仿新闻客户端</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/01/RecyclerThreeStep/" class="archive-article-date">
+  	<time datetime="2017-09-01T03:46:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_swip5.gif" alt="image"></p>
+<p>长按进入编辑模式，编辑模式下，我的频道可以拖拽排序，同时，可以移除我的频道栏目，并添加到其他频道中，也可以从其他频道添加进我的频道，同时移除其他频道的该模块。</p>
+<p>这个效果，相信在不少app中看到过，这个拖拽排序的实现方式有好几种，如WindowManager，利用他的updateViewLayout，不断更新view的位置。</p>
+<p>这里，我们使用RecyclerView的ItemTouchHelper辅助类，来实现</p>
+        
+          <a class="article-more-a" href="/2017/09/01/RecyclerThreeStep/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/01/RecyclerThreeStep/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-RecylcerTwoStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -469,120 +548,9 @@
 
 
   
-    <article id="post-ViewGroupTouchEvent" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/01/ViewGroupTouchEvent/">ViewGroup的Touch事件分发以及源码分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/01/ViewGroupTouchEvent/" class="archive-article-date">
-  	<time datetime="2017-08-01T08:36:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>上一次我们创建了TouchView，这次我们创建一个TouchViewGroup</p>
-<pre><code class="java">public class TouchViewGroup extends LinearLayout {
-    public TouchViewGroup(Context context) {
-        this(context,null);
-    }
-
-    public TouchViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    public TouchViewGroup(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
-    }
-
- //事件分发
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        Log.d(&quot;AAA&quot;,&quot;ViewGroup + dispatchTouchEvent--&gt;&quot;+ev.getAction());
-        return super.dispatchTouchEvent(ev);
-    }
-
-    //事件触摸
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        Log.d(&quot;AAA&quot;,&quot;ViewGroup + onTouchEvent--&gt;&quot;+event.getAction());
-        return super.onTouchEvent(event);
-    }
-
-    //事件拦截
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        Log.d(&quot;AAA&quot;,&quot;ViewGroup + onInterceptTouchEvent--&gt;&quot;+ev.getAction());
-        return super.onInterceptTouchEvent(ev);
-    }
-}
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/08/01/ViewGroupTouchEvent/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/01/ViewGroupTouchEvent/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
