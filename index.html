@@ -145,6 +145,89 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-RecyclerFourStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/22/RecyclerFourStep/">RecyclerView进阶（四）万能Adapter</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/22/RecyclerFourStep/" class="archive-article-date">
+  	<time datetime="2017-09-22T03:47:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这次对RecylcerView的adapter经行封装，以减少重复代码的调用。</p>
+<p>实现的功能：</p>
+<ul>
+<li>返回统一数据的点击事件</li>
+<li>多条目布局</li>
+<li>统一的图片加载</li>
+<li>极度简洁的调用流程</li>
+</ul>
+        
+          <a class="article-more-a" href="/2017/09/22/RecyclerFourStep/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/22/RecyclerFourStep/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-RecyclerThreeStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -430,95 +513,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/08/14/ViewTouchCombat/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ViewTouchEventEnd" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/14/ViewTouchEventEnd/">Touch事件分发归纳总结</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/14/ViewTouchEventEnd/" class="archive-article-date">
-  	<time datetime="2017-08-14T03:44:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="这是对前两篇的总结和补充"><a href="#这是对前两篇的总结和补充" class="headerlink" title="这是对前两篇的总结和补充"></a>这是对前两篇的总结和补充</h3><p>1、对于一个根ViewGroup来说，点击事件产生后，首先会传给它的dispatchTouchEvent方法，如果onIterceptTouchEvent方法返回false，不拦截该事件，则执行其子View/ViewGroup的dispatchTouchEvent方法，如果如果onIterceptTouchEvent方法返回true，则表示拦截改事件，则执行其本身的onToucheEvent方法。</p>
-<pre><code class="java">public boolean dispatchTouchEvent (MotionEvent ev){
-    boolean result =false;
-    if(onInterceptTouchEvent(ev)){
-        result=onTouchEvent(ev);
-    }else{
-        result=child.dispatchTouchEvent(ev);
-    }
-
-    returen result;
-}
-</code></pre>
-<p>2、当一个View需要处理事件时，如果设置setOnTouchListener,其onTouch返回false，则onTouchEvent调用，如果onTouch返回true，则onTouchEvent不调用，可以看到setOnTouchListener的优先级 &gt; onTouchEvent &gt; setOnClickListener。</p>
-<p>3、事件传递的顺序：Activity -&gt; Window -&gt; View，顶级View接收到传递事件之后，然后一步步分发下去。但如果一个View的onTouchEvent返回false，就会往上调用其父控件的onTouchEvent，依此类推，如果所有的View都不处理该事件，则会将该事件又传递给Activity，即传递给Activity的onTouchEvent方法。</p>
-        
-          <a class="article-more-a" href="/2017/08/14/ViewTouchEventEnd/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/14/ViewTouchEventEnd/">阅读全文 >></a>
         </p>
       
 

@@ -6,20 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>RecyclerView进阶（三）拖拽排序--仿新闻客户端 | 孙俊卿的博客</title>
+  <title>RecyclerView进阶（四）万能Adapter | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="效果图">
+  <meta name="description" content="这次对RecylcerView的adapter经行封装，以减少重复代码的调用。 实现的功能：  返回统一数据的点击事件 多条目布局 统一的图片加载 极度简洁的调用流程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RecyclerView进阶（三）拖拽排序--仿新闻客户端">
-<meta property="og:url" content="http://livesun.github.io/2017/09/01/RecylcerTwoStep/index.html">
+<meta property="og:title" content="RecyclerView进阶（四）万能Adapter">
+<meta property="og:url" content="http://livesun.github.io/2017/09/22/RecyclerFourStep/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="效果图">
-<meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_xuanguxiding.gif">
-<meta property="og:updated_time" content="2017-09-01T03:46:51.750Z">
+<meta property="og:description" content="这次对RecylcerView的adapter经行封装，以减少重复代码的调用。 实现的功能：  返回统一数据的点击事件 多条目布局 统一的图片加载 极度简洁的调用流程">
+<meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_adapter1.png">
+<meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_adapter2.png">
+<meta property="og:updated_time" content="2017-09-22T03:50:53.753Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RecyclerView进阶（三）拖拽排序--仿新闻客户端">
-<meta name="twitter:description" content="效果图">
-<meta name="twitter:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_xuanguxiding.gif">
+<meta name="twitter:title" content="RecyclerView进阶（四）万能Adapter">
+<meta name="twitter:description" content="这次对RecylcerView的adapter经行封装，以减少重复代码的调用。 实现的功能：  返回统一数据的点击事件 多条目布局 统一的图片加载 极度简洁的调用流程">
+<meta name="twitter:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_adapter1.png">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -146,188 +147,296 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-RecylcerTwoStep" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-RecyclerFourStep" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      RecyclerView进阶（三）拖拽排序--仿新闻客户端
+      RecyclerView进阶（四）万能Adapter
     </h1>
   
 
         
-        <a href="/2017/09/01/RecylcerTwoStep/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:46:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
+        <a href="/2017/09/22/RecyclerFourStep/" class="archive-article-date">
+  	<time datetime="2017-09-22T03:47:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_xuanguxiding.gif" alt="image"></p>
+        <p>这次对RecylcerView的adapter经行封装，以减少重复代码的调用。</p>
+<p>实现的功能：</p>
+<ul>
+<li>返回统一数据的点击事件</li>
+<li>多条目布局</li>
+<li>统一的图片加载</li>
+<li>极度简洁的调用流程</li>
+</ul>
 <a id="more"></a>
-<h3 id="主页面布局"><a href="#主页面布局" class="headerlink" title="主页面布局"></a>主页面布局</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token operator">&lt;</span><span class="token operator">?</span>xml version<span class="token operator">=</span><span class="token string">"1.0"</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token operator">?</span><span class="token operator">></span>
-<span class="token operator">&lt;</span>FrameLayout xmlns<span class="token operator">:</span>android<span class="token operator">=</span><span class="token string">"http://schemas.android.com/apk/res/android"</span>
-    android<span class="token operator">:</span>layout_width<span class="token operator">=</span><span class="token string">"match_parent"</span>
-    android<span class="token operator">:</span>layout_height<span class="token operator">=</span><span class="token string">"match_parent"</span>
-    <span class="token operator">></span>
+<p>普通使用：</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_adapter1.png" alt="image"></p>
+<p>adapter代码只需要 </p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyTaskAdapter</span> <span class="token keyword">extends</span> <span class="token class-name">BaseAdapter</span><span class="token operator">&lt;</span>MyTaskModel<span class="token operator">></span> <span class="token punctuation">{</span>
 
-    <span class="token operator">&lt;</span>android<span class="token punctuation">.</span>support<span class="token punctuation">.</span>v7<span class="token punctuation">.</span>widget<span class="token punctuation">.</span>RecyclerView
-        android<span class="token operator">:</span>id<span class="token operator">=</span><span class="token string">"@+id/recycle"</span>
-        android<span class="token operator">:</span>layout_width<span class="token operator">=</span><span class="token string">"match_parent"</span>
-        android<span class="token operator">:</span>layout_height<span class="token operator">=</span><span class="token string">"match_parent"</span><span class="token operator">/</span><span class="token operator">></span>
-
-    <span class="token operator">&lt;</span>include layout<span class="token operator">=</span><span class="token string">"@layout/layout_sticky_header_view"</span><span class="token operator">/</span><span class="token operator">></span>
-<span class="token operator">&lt;</span><span class="token operator">/</span>FrameLayout<span class="token operator">></span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="activity-代码"><a href="#activity-代码" class="headerlink" title="activity 代码"></a>activity 代码</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MainActivity</span> <span class="token keyword">extends</span> <span class="token class-name">AppCompatActivity</span> <span class="token punctuation">{</span>
-
-    <span class="token keyword">private</span> RelativeLayout targert<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> TextView tvStickyHeaderView<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> RecyclerView recyclerView<span class="token punctuation">;</span>
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span>Bundle savedInstanceState<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>savedInstanceState<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setContentView</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>layout<span class="token punctuation">.</span>activity_main<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        RecyclerView recyclerView <span class="token operator">=</span>  <span class="token punctuation">(</span>RecyclerView<span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>recycle<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        tvStickyHeaderView <span class="token operator">=</span> <span class="token punctuation">(</span>TextView<span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>tv_sticky_header_view<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        recyclerView<span class="token punctuation">.</span><span class="token function">setLayoutManager</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">LinearLayoutManager</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        recyclerView<span class="token punctuation">.</span><span class="token function">setAdapter</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StickyExampleAdapter</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span><span class="token function">getData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        recyclerView<span class="token punctuation">.</span><span class="token function">addOnScrollListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RecyclerView<span class="token punctuation">.</span>OnScrollListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token annotation punctuation">@Override</span>
-            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onScrolled</span><span class="token punctuation">(</span>RecyclerView recyclerView<span class="token punctuation">,</span> <span class="token keyword">int</span> dx<span class="token punctuation">,</span> <span class="token keyword">int</span> dy<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onScrolled</span><span class="token punctuation">(</span>recyclerView<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                View stickview <span class="token operator">=</span> recyclerView<span class="token punctuation">.</span><span class="token function">findChildViewUnder</span><span class="token punctuation">(</span><span class="token number">0</span> <span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span><span class="token punctuation">(</span>stickview<span class="token operator">!=</span>null<span class="token operator">&amp;&amp;</span>stickview<span class="token punctuation">.</span><span class="token function">getContentDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">!=</span>null<span class="token punctuation">)</span><span class="token punctuation">{</span>
-                    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>TextUtils<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>tvStickyHeaderView<span class="token punctuation">.</span><span class="token function">getText</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>String<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>stickview<span class="token punctuation">.</span><span class="token function">getContentDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-                        tvStickyHeaderView<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>stickview<span class="token punctuation">.</span><span class="token function">getContentDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-               <span class="token keyword">final</span> View  transInfoView<span class="token operator">=</span> recyclerView<span class="token punctuation">.</span><span class="token function">findChildViewUnder</span><span class="token punctuation">(</span>
-                        <span class="token number">0</span><span class="token punctuation">,</span> tvStickyHeaderView<span class="token punctuation">.</span><span class="token function">getHeight</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">1</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
-                transInfoView<span class="token punctuation">.</span><span class="token function">setOnClickListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">View<span class="token punctuation">.</span>OnClickListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token annotation punctuation">@Override</span>
-                    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span>View v<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        Log<span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span><span class="token string">"BBB"</span><span class="token punctuation">,</span><span class="token string">"点击="</span><span class="token operator">+</span>transInfoView<span class="token punctuation">.</span><span class="token function">getTop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>transInfoView <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> transInfoView<span class="token punctuation">.</span><span class="token function">getTag</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-
-                    <span class="token keyword">int</span> transViewStatus <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> transInfoView<span class="token punctuation">.</span><span class="token function">getTag</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">int</span> top <span class="token operator">=</span> transInfoView<span class="token punctuation">.</span><span class="token function">getTop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>transViewStatus <span class="token operator">==</span> StickyExampleAdapter<span class="token punctuation">.</span>HAS_STICKY_VIEW<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token keyword">if</span> <span class="token punctuation">(</span>top <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                            <span class="token keyword">int</span> dealtY <span class="token operator">=</span>  top<span class="token operator">-</span> tvStickyHeaderView<span class="token punctuation">.</span><span class="token function">getMeasuredHeight</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            tvStickyHeaderView<span class="token punctuation">.</span><span class="token function">setTranslationY</span><span class="token punctuation">(</span>dealtY<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            Log<span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span><span class="token string">"BBB"</span><span class="token punctuation">,</span><span class="token string">"transInfoView++++="</span><span class="token operator">+</span>transInfoView<span class="token punctuation">.</span><span class="token function">getTop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                            tvStickyHeaderView<span class="token punctuation">.</span><span class="token function">setTranslationY</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token punctuation">}</span>
-                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>transViewStatus <span class="token operator">==</span> StickyExampleAdapter<span class="token punctuation">.</span>NONE_STICKY_VIEW<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        tvStickyHeaderView<span class="token punctuation">.</span><span class="token function">setTranslationY</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token function">MyTaskAdapter</span><span class="token punctuation">(</span>Context context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> R<span class="token punctuation">.</span>layout<span class="token punctuation">.</span>item_mytask_fragment<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 
-    <span class="token keyword">public</span>  List<span class="token operator">&lt;</span>StickyBean<span class="token operator">></span> <span class="token function">getData</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        List<span class="token operator">&lt;</span>StickyBean<span class="token operator">></span> stickyExampleModels <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> index <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> index <span class="token operator">&lt;</span> <span class="token number">100</span><span class="token punctuation">;</span> index<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">&lt;</span> <span class="token number">15</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                stickyExampleModels<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StickyBean</span><span class="token punctuation">(</span>
-                        <span class="token string">"吸顶文本1"</span><span class="token punctuation">,</span> <span class="token string">"name"</span> <span class="token operator">+</span> index<span class="token punctuation">,</span> <span class="token string">"gender"</span> <span class="token operator">+</span> index<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">&lt;</span> <span class="token number">25</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                stickyExampleModels<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StickyBean</span><span class="token punctuation">(</span>
-                        <span class="token string">"吸顶文本2"</span><span class="token punctuation">,</span> <span class="token string">"name"</span> <span class="token operator">+</span> index<span class="token punctuation">,</span> <span class="token string">"gender"</span> <span class="token operator">+</span> index<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">&lt;</span> <span class="token number">35</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                stickyExampleModels<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StickyBean</span><span class="token punctuation">(</span>
-                        <span class="token string">"吸顶文本3"</span><span class="token punctuation">,</span> <span class="token string">"name"</span> <span class="token operator">+</span> index<span class="token punctuation">,</span> <span class="token string">"gender"</span> <span class="token operator">+</span> index<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                stickyExampleModels<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StickyBean</span><span class="token punctuation">(</span>
-                        <span class="token string">"吸顶文本4"</span><span class="token punctuation">,</span> <span class="token string">"name"</span> <span class="token operator">+</span> index<span class="token punctuation">,</span> <span class="token string">"gender"</span> <span class="token operator">+</span> index<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token keyword">return</span> stickyExampleModels<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">bindData</span><span class="token punctuation">(</span>ViewHolder holder<span class="token punctuation">,</span> MyTaskModel item<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        holder<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>task_end_tv<span class="token punctuation">,</span>item<span class="token punctuation">.</span><span class="token function">getLateEndTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        holder<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>task_start_tv<span class="token punctuation">,</span>item<span class="token punctuation">.</span><span class="token function">getAssignTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        holder<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>task_no_tv<span class="token punctuation">,</span>item<span class="token punctuation">.</span><span class="token function">getTaskId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        holder<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>task_title_tv<span class="token punctuation">,</span>item<span class="token punctuation">.</span><span class="token function">getTaskName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        holder<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>task_state_tv<span class="token punctuation">,</span>item<span class="token punctuation">.</span><span class="token function">getTaskStatus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="Adapter代码"><a href="#Adapter代码" class="headerlink" title="Adapter代码"></a>Adapter代码</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StickyExampleAdapter</span> <span class="token keyword">extends</span> <span class="token class-name">RecyclerView<span class="token punctuation">.</span>Adapter</span><span class="token operator">&lt;</span>StickyExampleAdapter<span class="token punctuation">.</span>RecyclerViewHolder<span class="token operator">></span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">//第一个吸顶</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> FIRST_STICKY_VIEW <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">//别的吸顶</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> HAS_STICKY_VIEW <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">//正常View</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> NONE_STICKY_VIEW <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> LayoutInflater mInflate<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> Context context<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> List<span class="token operator">&lt;</span>StickyBean<span class="token operator">></span> datas<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> StickyBean stickyBean<span class="token punctuation">;</span>
-
-    <span class="token keyword">public</span> <span class="token function">StickyExampleAdapter</span><span class="token punctuation">(</span>Context context<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>StickyBean<span class="token operator">></span> datas<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        mInflate <span class="token operator">=</span> LayoutInflater<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>context<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>context <span class="token operator">=</span> context<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>datas <span class="token operator">=</span> datas<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> RecyclerViewHolder <span class="token function">onCreateViewHolder</span><span class="token punctuation">(</span>ViewGroup parent<span class="token punctuation">,</span> <span class="token keyword">int</span> viewType<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-
-        View inflate <span class="token operator">=</span> mInflate<span class="token punctuation">.</span><span class="token function">inflate</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>layout<span class="token punctuation">.</span>item_ui<span class="token punctuation">,</span> parent<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">RecyclerViewHolder</span><span class="token punctuation">(</span>inflate<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onBindViewHolder</span><span class="token punctuation">(</span>RecyclerViewHolder holder<span class="token punctuation">,</span> <span class="token keyword">int</span> position<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        stickyBean <span class="token operator">=</span> datas<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>position<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        holder<span class="token punctuation">.</span>tvName<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>stickyBean<span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        holder<span class="token punctuation">.</span>tvGender<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>stickyBean<span class="token punctuation">.</span>autor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>position <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            holder<span class="token punctuation">.</span>tvStickyHeader<span class="token punctuation">.</span><span class="token function">setVisibility</span><span class="token punctuation">(</span>View<span class="token punctuation">.</span>VISIBLE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            holder<span class="token punctuation">.</span>tvStickyHeader<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>stickyBean<span class="token punctuation">.</span>sticky<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            holder<span class="token punctuation">.</span>itemView<span class="token punctuation">.</span><span class="token function">setTag</span><span class="token punctuation">(</span>FIRST_STICKY_VIEW<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>TextUtils<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>stickyBean<span class="token punctuation">.</span>sticky<span class="token punctuation">,</span> datas<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>position <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>sticky<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                holder<span class="token punctuation">.</span>tvStickyHeader<span class="token punctuation">.</span><span class="token function">setVisibility</span><span class="token punctuation">(</span>View<span class="token punctuation">.</span>VISIBLE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                holder<span class="token punctuation">.</span>tvStickyHeader<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>stickyBean<span class="token punctuation">.</span>sticky<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                holder<span class="token punctuation">.</span>itemView<span class="token punctuation">.</span><span class="token function">setTag</span><span class="token punctuation">(</span>HAS_STICKY_VIEW<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                holder<span class="token punctuation">.</span>tvStickyHeader<span class="token punctuation">.</span><span class="token function">setVisibility</span><span class="token punctuation">(</span>View<span class="token punctuation">.</span>GONE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                holder<span class="token punctuation">.</span>itemView<span class="token punctuation">.</span><span class="token function">setTag</span><span class="token punctuation">(</span>NONE_STICKY_VIEW<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>多条目布局</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_adapter2.png" alt="image"></p>
+<pre class="line-numbers language-java"><code class="language-java"> mRecyclerView <span class="token operator">=</span> <span class="token function">findViewById</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>recycler<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mRecyclerView<span class="token punctuation">.</span><span class="token function">setLayoutManager</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">LinearLayoutManager</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        TalkAdapter mTalkAdapter<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">TalkAdapter</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">OnItemViewSupport</span><span class="token operator">&lt;</span>TalkBean<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">getSupportItemView</span><span class="token punctuation">(</span>TalkBean item<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                    <span class="token keyword">return</span> R<span class="token punctuation">.</span>layout<span class="token punctuation">.</span>item_me<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                    <span class="token keyword">return</span> R<span class="token punctuation">.</span>layout<span class="token punctuation">.</span>item_friends<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">//通过此处设置ContentDescription，作为内容描述，可以通过getContentDescription取出，功效跟setTag差不多。</span>
-        holder<span class="token punctuation">.</span>itemView<span class="token punctuation">.</span><span class="token function">setContentDescription</span><span class="token punctuation">(</span>stickyBean<span class="token punctuation">.</span>sticky<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        mRecyclerView<span class="token punctuation">.</span><span class="token function">setAdapter</span><span class="token punctuation">(</span>mTalkAdapter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        mTalkAdapter<span class="token punctuation">.</span><span class="token function">setOnItemClickListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">OnItemClickListener</span><span class="token operator">&lt;</span>TalkBean<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onItemClick</span><span class="token punctuation">(</span>TalkBean item<span class="token punctuation">,</span> <span class="token keyword">int</span> position<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TalkAdapter</span> <span class="token keyword">extends</span> <span class="token class-name">BaseAdapter</span><span class="token operator">&lt;</span>TalkBean<span class="token operator">></span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">public</span> <span class="token function">TalkAdapter</span><span class="token punctuation">(</span>Context context<span class="token punctuation">,</span> OnItemViewSupport<span class="token operator">&lt;</span>TalkBean<span class="token operator">></span> itemSupport<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> itemSupport<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">bindData</span><span class="token punctuation">(</span>ViewHolder holder<span class="token punctuation">,</span> TalkBean item<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            holder<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>me<span class="token punctuation">,</span>item<span class="token punctuation">.</span><span class="token function">getText</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            holder<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>frident<span class="token punctuation">,</span>item<span class="token punctuation">.</span><span class="token function">getText</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>设置图片，可以直接设置资源文件或者网络图片</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">bindData</span><span class="token punctuation">(</span>ViewHolder holder<span class="token punctuation">,</span> TestBean item<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+            holder<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>me<span class="token punctuation">,</span>item<span class="token punctuation">.</span><span class="token function">getText</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">//网络图片</span>
+            holder<span class="token punctuation">.</span><span class="token function">setImage</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>image<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">MyImageLoader</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span><span class="token function">getPath</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">//资源文件</span>
+            holder<span class="token punctuation">.</span><span class="token function">setImageResource</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>image<span class="token punctuation">,</span>R<span class="token punctuation">.</span>mipmap<span class="token punctuation">.</span>ic_launcher<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+
+这里需要建一个类MyImageLoader，可以使用任意加载图片的框架
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyImageLoader</span> <span class="token keyword">extends</span> <span class="token class-name">ViewHolder<span class="token punctuation">.</span>ImageLoader</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token function">MyImageLoader</span><span class="token punctuation">(</span>String path<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">loadImage</span><span class="token punctuation">(</span>ImageView imageView<span class="token punctuation">,</span> String path<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Glide<span class="token punctuation">.</span><span class="token function">with</span><span class="token punctuation">(</span>context<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>mipmap<span class="token punctuation">.</span>ic_no_data<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">into</span><span class="token punctuation">(</span>imageView<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>是不是非常简洁。</p>
+<p>下面封装的代码如下</p>
+<p>BaseAdapter</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">BaseAdapter</span><span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token keyword">extends</span> <span class="token class-name">RecyclerView<span class="token punctuation">.</span>Adapter</span><span class="token operator">&lt;</span>ViewHolder<span class="token operator">></span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> Context mContext<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> List<span class="token operator">&lt;</span>T<span class="token operator">></span> mDats<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> mLayoutId<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> LayoutInflater mInflater<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> OnItemViewSupport mItemSupport<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> OnItemClickListener<span class="token operator">&lt;</span>T<span class="token operator">></span> clickListener<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">//正常布局</span>
+    <span class="token keyword">public</span> <span class="token function">BaseAdapter</span><span class="token punctuation">(</span>Context context<span class="token punctuation">,</span> <span class="token keyword">int</span> layoutId<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        mContext<span class="token operator">=</span>context<span class="token punctuation">;</span>
+        mLayoutId<span class="token operator">=</span> layoutId<span class="token punctuation">;</span>
+        mInflater <span class="token operator">=</span> LayoutInflater<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>context<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addDatas</span><span class="token punctuation">(</span>List<span class="token operator">&lt;</span>T<span class="token operator">></span> datas<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        mDats<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>datas<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setDatas</span><span class="token punctuation">(</span>List<span class="token operator">&lt;</span>T<span class="token operator">></span> datas<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        mDats<span class="token operator">=</span>datas<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//多布局调用这个</span>
+    <span class="token keyword">public</span> <span class="token function">BaseAdapter</span><span class="token punctuation">(</span>Context context<span class="token punctuation">,</span> OnItemViewSupport<span class="token operator">&lt;</span>T<span class="token operator">></span> itemSupport<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">(</span>context <span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mItemSupport<span class="token operator">=</span>itemSupport<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//dia</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> ViewHolder <span class="token function">onCreateViewHolder</span><span class="token punctuation">(</span>ViewGroup parent<span class="token punctuation">,</span> <span class="token keyword">int</span> viewType<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>mItemSupport<span class="token operator">!=</span>null<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            mLayoutId<span class="token operator">=</span>viewType<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ViewHolder</span><span class="token punctuation">(</span>mInflater<span class="token punctuation">.</span><span class="token function">inflate</span><span class="token punctuation">(</span>mLayoutId<span class="token punctuation">,</span>parent<span class="token punctuation">,</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onBindViewHolder</span><span class="token punctuation">(</span>ViewHolder holder<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">int</span> position<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> T item <span class="token operator">=</span> mDats<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">bindData</span><span class="token punctuation">(</span>holder<span class="token punctuation">,</span> item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>clickListener<span class="token operator">!=</span>null<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            holder<span class="token punctuation">.</span>itemView<span class="token punctuation">.</span><span class="token function">setOnClickListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">View<span class="token punctuation">.</span>OnClickListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token annotation punctuation">@Override</span>
+                <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span>View v<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    clickListener<span class="token punctuation">.</span><span class="token function">onItemClick</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span>position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">protected</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">bindData</span><span class="token punctuation">(</span>ViewHolder holder<span class="token punctuation">,</span> T item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
 
     <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">getItemCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> datas <span class="token operator">==</span> null <span class="token operator">?</span> <span class="token number">0</span> <span class="token operator">:</span> datas<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> mDats<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 
-    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RecyclerViewHolder</span> <span class="token keyword">extends</span> <span class="token class-name">RecyclerView<span class="token punctuation">.</span>ViewHolder</span><span class="token punctuation">{</span>
-         TextView tvStickyHeader<span class="token punctuation">;</span>
-         RelativeLayout rlContentWrapper<span class="token punctuation">;</span>
-         TextView tvName<span class="token punctuation">;</span>
-         TextView tvGender<span class="token punctuation">;</span>
-         <span class="token function">RecyclerViewHolder</span><span class="token punctuation">(</span>View itemView<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">super</span><span class="token punctuation">(</span>itemView<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            tvStickyHeader <span class="token operator">=</span> <span class="token punctuation">(</span>TextView<span class="token punctuation">)</span> itemView<span class="token punctuation">.</span><span class="token function">findViewById</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>tv_sticky_header_view<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            rlContentWrapper <span class="token operator">=</span> <span class="token punctuation">(</span>RelativeLayout<span class="token punctuation">)</span> itemView<span class="token punctuation">.</span><span class="token function">findViewById</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>rl_content_wrapper<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            tvName <span class="token operator">=</span> <span class="token punctuation">(</span>TextView<span class="token punctuation">)</span> itemView<span class="token punctuation">.</span><span class="token function">findViewById</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>named<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            tvGender <span class="token operator">=</span> <span class="token punctuation">(</span>TextView<span class="token punctuation">)</span> itemView<span class="token punctuation">.</span><span class="token function">findViewById</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>auto<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">getItemViewType</span><span class="token punctuation">(</span><span class="token keyword">int</span> position<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//处理多布局</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mItemSupport<span class="token operator">!=</span>null<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword">return</span> mItemSupport<span class="token punctuation">.</span><span class="token function">getSupportItemView</span><span class="token punctuation">(</span>mDats<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>position<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">getItemViewType</span><span class="token punctuation">(</span>position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setOnItemClickListener</span><span class="token punctuation">(</span>OnItemClickListener<span class="token operator">&lt;</span>T<span class="token operator">></span> clickListener<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span>clickListener <span class="token operator">=</span> clickListener<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>条目点击的监听事件</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">OnItemClickListener</span><span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">void</span> <span class="token function">onItemClick</span><span class="token punctuation">(</span>T item<span class="token punctuation">,</span> <span class="token keyword">int</span> position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>多条目支持的接口</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">OnItemViewSupport</span><span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">int</span> <span class="token function">getSupportItemView</span><span class="token punctuation">(</span>T item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>ViewHolder</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ViewHolder</span> <span class="token keyword">extends</span> <span class="token class-name">RecyclerView<span class="token punctuation">.</span>ViewHolder</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> SparseArray<span class="token operator">&lt;</span>View<span class="token operator">></span> mViews<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token function">ViewHolder</span><span class="token punctuation">(</span>View itemView<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span>itemView<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mViews<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">SparseArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 获取View方法
+     * @param id
+     * @param &lt;T>
+     * @return
+     */</span>
+    <span class="token keyword">public</span> <span class="token operator">&lt;</span>T <span class="token keyword">extends</span> <span class="token class-name">View</span><span class="token operator">></span> T <span class="token function">getView</span><span class="token punctuation">(</span><span class="token annotation punctuation">@IdRes</span> <span class="token keyword">int</span> id<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        View view<span class="token operator">=</span> mViews<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span>view<span class="token operator">==</span>null<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            view <span class="token operator">=</span>itemView<span class="token punctuation">.</span><span class="token function">findViewById</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mViews<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span>view<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>T<span class="token punctuation">)</span> view<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 设置文本
+     */</span>
+    <span class="token keyword">public</span> ViewHolder <span class="token function">setText</span><span class="token punctuation">(</span><span class="token annotation punctuation">@IdRes</span> <span class="token keyword">int</span> id<span class="token punctuation">,</span> CharSequence text<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        TextView textView <span class="token operator">=</span> <span class="token function">getView</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>TextUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            textView<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            textView<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+
+    <span class="token comment" spellcheck="true">/**
+     * 设置图片
+     */</span>
+    <span class="token keyword">public</span> ViewHolder <span class="token function">setImageResource</span><span class="token punctuation">(</span><span class="token annotation punctuation">@IdRes</span> <span class="token keyword">int</span> id<span class="token punctuation">,</span> <span class="token annotation punctuation">@DrawableRes</span> <span class="token keyword">int</span> resId<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        ImageView view <span class="token operator">=</span> <span class="token function">getView</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        view<span class="token punctuation">.</span><span class="token function">setImageResource</span><span class="token punctuation">(</span>resId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 设置网络图片
+     */</span>
+
+    <span class="token keyword">public</span> ViewHolder <span class="token function">setImage</span><span class="token punctuation">(</span><span class="token annotation punctuation">@IdRes</span> <span class="token keyword">int</span> id<span class="token punctuation">,</span> ImageLoader loader<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        ImageView view <span class="token operator">=</span> <span class="token function">getView</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        loader<span class="token punctuation">.</span><span class="token function">loadImage</span><span class="token punctuation">(</span>view<span class="token punctuation">,</span>loader<span class="token punctuation">.</span>mPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 解耦图片处理
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">ImageLoader</span><span class="token punctuation">{</span>
+        String mPath<span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token function">ImageLoader</span><span class="token punctuation">(</span>String path<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>mPath<span class="token operator">=</span>path<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">protected</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">loadImage</span><span class="token punctuation">(</span>ImageView imageView<span class="token punctuation">,</span> String path<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="github地址：https-github-com-livesun-RecyclerViewBaseAdaoter"><a href="#github地址：https-github-com-livesun-RecyclerViewBaseAdaoter" class="headerlink" title="github地址：https://github.com/livesun/RecyclerViewBaseAdaoter"></a>github地址：<a href="https://github.com/livesun/RecyclerViewBaseAdaoter" target="_blank" rel="external">https://github.com/livesun/RecyclerViewBaseAdaoter</a></h2>
       
 
       
@@ -396,7 +505,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://livesun.github.io/2017/09/01/RecylcerTwoStep/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://livesun.github.io/2017/09/22/RecyclerFourStep/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -411,8 +520,8 @@
 <nav id="article-nav">
   
   
-    <a href="/2017/08/30/RecyclerThreeStep/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">RecyclerView进阶（二）实现悬浮吸顶</div>
+    <a href="/2017/09/01/RecyclerThreeStep/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">RecyclerView进阶（三）拖拽排序--仿新闻客户端</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -439,7 +548,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#效果图"><span class="toc-number">1.</span> <span class="toc-text">效果图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主页面布局"><span class="toc-number">2.</span> <span class="toc-text">主页面布局</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#activity-代码"><span class="toc-number">3.</span> <span class="toc-text">activity 代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Adapter代码"><span class="toc-number">4.</span> <span class="toc-text">Adapter代码</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#github地址：https-github-com-livesun-RecyclerViewBaseAdaoter"><span class="toc-number">1.</span> <span class="toc-text">github地址：https://github.com/livesun/RecyclerViewBaseAdaoter</span></a></li></ol>
                     </div>
                 </span>
             </div>
