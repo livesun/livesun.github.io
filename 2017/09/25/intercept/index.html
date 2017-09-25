@@ -6,17 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>Category: 源码分析 | 孙俊卿的博客</title>
+  <title>通过AppCompateActivity,学习View的拦截 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="孙俊卿的博客">
-<meta property="og:url" content="http://livesun.github.io/categories/源码分析/index.html">
+  <meta name="description" content="再开始之前，我们有必要先看这么一个问题，同样一个TextView,如果我们的MainActivity 分别继承Activity，AppCompatActivity，我们打印一下我们的TextView。  &amp;lt;!--继承自Activity：--&amp;gt;  android.widget.TextView id/text_view  &amp;lt;!--继承自AppCompatActivity： --&amp;g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过AppCompateActivity,学习View的拦截">
+<meta property="og:url" content="http://livesun.github.io/2017/09/25/intercept/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="再开始之前，我们有必要先看这么一个问题，同样一个TextView,如果我们的MainActivity 分别继承Activity，AppCompatActivity，我们打印一下我们的TextView。  &amp;lt;!--继承自Activity：--&amp;gt;  android.widget.TextView id/text_view  &amp;lt;!--继承自AppCompatActivity： --&amp;g">
+<meta property="og:updated_time" content="2017-09-25T10:13:29.806Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="孙俊卿的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="通过AppCompateActivity,学习View的拦截">
+<meta name="twitter:description" content="再开始之前，我们有必要先看这么一个问题，同样一个TextView,如果我们的MainActivity 分别继承Activity，AppCompatActivity，我们打印一下我们的TextView。  &amp;lt;!--继承自Activity：--&amp;gt;  android.widget.TextView id/text_view  &amp;lt;!--继承自AppCompatActivity： --&amp;g">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -143,37 +144,384 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-intercept" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      通过AppCompateActivity,学习View的拦截
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/09/25/intercept/" class="archive-article-date">
+
+        
+        <a href="/2017/09/25/intercept/" class="archive-article-date">
   	<time datetime="2017-09-25T10:13:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-25</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/09/25/intercept/">通过AppCompateActivity,学习View的拦截</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>再开始之前，我们有必要先看这么一个问题，同样一个TextView,如果我们的MainActivity 分别继承Activity，AppCompatActivity，我们打印一下我们的TextView。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span>继承自Activity：<span class="token operator">--</span><span class="token operator">></span>
 
-        <div class="article-info info-on-right">
-          
-          
+android<span class="token punctuation">.</span>widget<span class="token punctuation">.</span>TextView id<span class="token operator">/</span>text_view
+
+<span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span>继承自AppCompatActivity： <span class="token operator">--</span><span class="token operator">></span>
+
+android<span class="token punctuation">.</span>support<span class="token punctuation">.</span>v7<span class="token punctuation">.</span>widget<span class="token punctuation">.</span>AppCompatTextView id<span class="token operator">/</span>text_view
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>发现一个很有趣的现象，明明是TextView，为什么继承AppCompatActivity 就变成AppCompatTextView了？到底发生了什么？</p>
+<a id="more"></a>
+<p><a href="https://livesun.github.io/2017/06/28/setContentView%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">setContentView源码分析</a></p>
+<p>可以看到，setContentView所做的事情，就是通过PhoneWindow实例化一个DecorView，同时解析一系列系统自带的资源文件，把它添加到DecorView中，这里面有一个id为 android.R.id.content的FrameLayout,这个正是我们的activity的直接父容器，而setContentView把自己的资源文件添加进去。</p>
+<p>也可以看到继承AppComatActivity的setContentView方法其实跟继承Activity的实现没什么太大的区别。<br>到这里，我们还是没发现是什么导致TextView变成AppCompatTextView的。</p>
+<p>我们看AppCompatActivity onCreate方法（）</p>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Nullable</span> Bundle savedInstanceState<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> AppCompatDelegate delegate <span class="token operator">=</span> <span class="token function">getDelegate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        delegate<span class="token punctuation">.</span><span class="token function">installViewFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        delegate<span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>savedInstanceState<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>delegate<span class="token punctuation">.</span><span class="token function">applyDayNight</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> mThemeId <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// If DayNight has been applied, we need to re-apply the theme for</span>
+            <span class="token comment" spellcheck="true">// the changes to take effect. On API 23+, we should bypass</span>
+            <span class="token comment" spellcheck="true">// setTheme(), which will no-op if the theme ID is identical to the</span>
+            <span class="token comment" spellcheck="true">// current theme ID.</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>Build<span class="token punctuation">.</span>VERSION<span class="token punctuation">.</span>SDK_INT <span class="token operator">>=</span> <span class="token number">23</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">onApplyThemeResource</span><span class="token punctuation">(</span><span class="token function">getTheme</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> mThemeId<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token function">setTheme</span><span class="token punctuation">(</span>mThemeId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>savedInstanceState<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在调用super.onCreate(savedInstanceState)之前，其实调用了delegate.installViewFactory()和 delegate.onCreate(savedInstanceState)这两个方法。</p>
+<p>看注释</p>
+<pre><code> /**
+     * Installs AppCompat&#39;s {@link android.view.LayoutInflater} Factory so that it can replace
+     * the framework widgets with compatible tinted versions. This should be called before
+     * {@code super.onCreate()} as so:
+     * &lt;pre class=&quot;prettyprint&quot;&gt;
+     * protected void onCreate(Bundle savedInstanceState) {
+     *     getDelegate().installViewFactory();
+     *     getDelegate().onCreate(savedInstanceState);
+     *     super.onCreate(savedInstanceState);
+     *
+     *     // ...
+     * }
+     * &lt;/pre&gt;
+     * If you are using your own {@link android.view.LayoutInflater.Factory Factory} or
+     * {@link android.view.LayoutInflater.Factory2 Factory2} then you can omit this call, and instead call
+     * {@link #createView(android.view.View, String, android.content.Context, android.util.AttributeSet)}
+     * from your factory to return any compatible widgets.
+     */
+    public abstract void installViewFactory();
+</code></pre><p>安装AppCompat的( android.view。LayoutInflater)工厂，以便它可以用兼容版本b并替换框架小部件。（比如TextView 替换成AppCompatTextView）。</p>
+<p>如果你使用自己的Factory，或者Factory2,则可以跳过这个调用，调用自己工厂的createView(View view，String name, Context context, AttributeSet attrs)}来返回任何兼容的小部件。</p>
+<p>看来原因就在这里面。</p>
+<p>我们找到他的实现</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">//AppCompatDelegateImplV9中</span>
+
+AppCompatDelegateImplV9 <span class="token keyword">implements</span> <span class="token class-name">LayoutInflater<span class="token punctuation">.</span>Factory2</span>
+
+  <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">installViewFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LayoutInflater layoutInflater <span class="token operator">=</span> LayoutInflater<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>mContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>layoutInflater<span class="token punctuation">.</span><span class="token function">getFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//在这里注册了自己的工厂。</span>
+            LayoutInflaterCompat<span class="token punctuation">.</span><span class="token function">setFactory2</span><span class="token punctuation">(</span>layoutInflater<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>layoutInflater<span class="token punctuation">.</span><span class="token function">getFactory2</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">instanceof</span> <span class="token class-name">AppCompatDelegateImplV9</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                Log<span class="token punctuation">.</span><span class="token function">i</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"The Activity's LayoutInflater already has a Factory installed"</span>
+                        <span class="token operator">+</span> <span class="token string">" so we can not install AppCompat's"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Factory2</span> <span class="token keyword">extends</span> <span class="token class-name">Factory</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">/**
+         * Version of {@link #onCreateView(String, Context, AttributeSet)}
+         * that also supplies the parent that the view created view will be
+         * placed in.
+         *
+         * @param parent The parent that the created view will be placed
+         * in; &lt;em>note that this may be null&lt;/em>. 创建视图的父节点将被放置在其中 可能为空
+         * @param name Tag name to be inflated.被创建的标签名称。比如TextView,livesun.io.MyTextView等。
+         * @param context The context the view is being created in. 上下文
+         * @param attrs Inflation attributes as specified in XML file.
+         *在XML文件中指定的详细属性：如textColor width 等
+         * @return View Newly created view. Return null for the default
+         *         behavior.视图新创建的视图
+         */</span>
+        <span class="token keyword">public</span> View <span class="token function">onCreateView</span><span class="token punctuation">(</span>View parent<span class="token punctuation">,</span> String name<span class="token punctuation">,</span> Context context<span class="token punctuation">,</span> AttributeSet attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Factory</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">/**
+         * Hook you can supply that is called when inflating from a LayoutInflater.
+         * You can use this to customize the tag names available in your XML
+         * layout files.
+         * 
+         * &lt;p>
+         * Note that it is good practice to prefix these custom names with your
+         * package (i.e., com.coolcompany.apps) to avoid conflicts with system
+         * names.
+         * 
+         * @param name Tag name to be inflated.
+         * @param context The context the view is being created in.
+         * @param attrs Inflation attributes as specified in XML file.
+         * 
+         * @return View Newly created view. Return null for the default
+         *         behavior.
+         */</span>
+        <span class="token keyword">public</span> View <span class="token function">onCreateView</span><span class="token punctuation">(</span>String name<span class="token punctuation">,</span> Context context<span class="token punctuation">,</span> AttributeSet attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接着看这两个回掉方法是如何实现的</p>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token comment" spellcheck="true">/**
+     * From {@link LayoutInflater.Factory2}.
+     */</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">final</span> View <span class="token function">onCreateView</span><span class="token punctuation">(</span>View parent<span class="token punctuation">,</span> String name<span class="token punctuation">,</span> Context context<span class="token punctuation">,</span> AttributeSet attrs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// First let the Activity's Factory try and inflate the view</span>
+        <span class="token keyword">final</span> View view <span class="token operator">=</span> <span class="token function">callActivityOnCreateView</span><span class="token punctuation">(</span>parent<span class="token punctuation">,</span> name<span class="token punctuation">,</span> context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>view <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> view<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">// If the Factory didn't handle it, let our createView() method try</span>
+        <span class="token keyword">return</span> <span class="token function">createView</span><span class="token punctuation">(</span>parent<span class="token punctuation">,</span> name<span class="token punctuation">,</span> context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * From {@link LayoutInflater.Factory2}.
+     */</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> View <span class="token function">onCreateView</span><span class="token punctuation">(</span>String name<span class="token punctuation">,</span> Context context<span class="token punctuation">,</span> AttributeSet attrs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">onCreateView</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> name<span class="token punctuation">,</span> context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+<span class="token comment" spellcheck="true">//这里看了半天，只能看出mOriginalWindowCallback 其实是Window.Callback。</span>
+<span class="token comment" spellcheck="true">// mAppCompatWindowCallback = wrapWindowCallback(mOriginalWindowCallback);</span>
+<span class="token comment" spellcheck="true">//mWindow.setCallback(mAppCompatWindowCallback);</span>
+<span class="token comment" spellcheck="true">//通过这两句代码 重新设置了一个新的Callback </span>
+<span class="token comment" spellcheck="true">//但是并没用看到跟LayoutInflater.Factory有什么关系</span>
+<span class="token comment" spellcheck="true">//难道我们自己设置callBack的时候 同时让其实现LayoutInflater.Factory才行？？</span>
+<span class="token comment" spellcheck="true">//但是不管怎么说，目前这里是走不了。我们接着看return的createView(parent, name, context, attrs);方法。</span>
+
+View <span class="token function">callActivityOnCreateView</span><span class="token punctuation">(</span>View parent<span class="token punctuation">,</span> String name<span class="token punctuation">,</span> Context context<span class="token punctuation">,</span> AttributeSet attrs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Let the Activity's LayoutInflater.Factory try and handle it</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mOriginalWindowCallback <span class="token keyword">instanceof</span> <span class="token class-name">LayoutInflater<span class="token punctuation">.</span>Factory</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">final</span> View result <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>LayoutInflater<span class="token punctuation">.</span>Factory<span class="token punctuation">)</span> mOriginalWindowCallback<span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">onCreateView</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>result <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>createView(parent, name, context, attrs)方法是个关键的方法。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> IS_PRE_LOLLIPOP <span class="token operator">=</span> Build<span class="token punctuation">.</span>VERSION<span class="token punctuation">.</span>SDK_INT <span class="token operator">&lt;</span> <span class="token number">21</span><span class="token punctuation">;</span>
+
+ <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> View <span class="token function">createView</span><span class="token punctuation">(</span>View parent<span class="token punctuation">,</span> <span class="token keyword">final</span> String name<span class="token punctuation">,</span> <span class="token annotation punctuation">@NonNull</span> Context context<span class="token punctuation">,</span>
+            <span class="token annotation punctuation">@NonNull</span> AttributeSet attrs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mAppCompatViewInflater <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            mAppCompatViewInflater <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatViewInflater</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">boolean</span> inheritContext <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>IS_PRE_LOLLIPOP<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            inheritContext <span class="token operator">=</span> <span class="token punctuation">(</span>attrs <span class="token keyword">instanceof</span> <span class="token class-name">XmlPullParser</span><span class="token punctuation">)</span>
+                    <span class="token comment" spellcheck="true">// If we have a XmlPullParser, we can detect where we are in the layout</span>
+                    <span class="token comment" spellcheck="true">//如果我们有一个XmlPullParser，我们就可以检测布局中的位置</span>
+                    <span class="token operator">?</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>XmlPullParser<span class="token punctuation">)</span> attrs<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDepth</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">1</span>
+                    <span class="token comment" spellcheck="true">// Otherwise we have to use the old heuristic</span>
+                    <span class="token comment" spellcheck="true">//否则我们就得使用古老的启发式</span>
+                    <span class="token operator">:</span> <span class="token function">shouldInheritContext</span><span class="token punctuation">(</span><span class="token punctuation">(</span>ViewParent<span class="token punctuation">)</span> parent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> mAppCompatViewInflater<span class="token punctuation">.</span><span class="token function">createView</span><span class="token punctuation">(</span>parent<span class="token punctuation">,</span> name<span class="token punctuation">,</span> context<span class="token punctuation">,</span> attrs<span class="token punctuation">,</span> inheritContext<span class="token punctuation">,</span>
+                IS_PRE_LOLLIPOP<span class="token punctuation">,</span> <span class="token comment" spellcheck="true">/* Only read android:theme pre-L (L+ handles this anyway) */</span>
+                <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token comment" spellcheck="true">/* Read read app:theme as a fallback at all times for legacy reasons */</span>
+                VectorEnabledTintResources<span class="token punctuation">.</span><span class="token function">shouldBeUsed</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">/* Only tint wrap the context if enabled */</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>先判断mAppCompatViewInflater为空，然后获取其对象，如果小于5.0，然后再判断inheritContext为true还是false。如果为true则使用父容器的context。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+ <span class="token keyword">public</span> <span class="token keyword">final</span> View <span class="token function">createView</span><span class="token punctuation">(</span>View parent<span class="token punctuation">,</span> <span class="token keyword">final</span> String name<span class="token punctuation">,</span> <span class="token annotation punctuation">@NonNull</span> Context context<span class="token punctuation">,</span>
+            <span class="token annotation punctuation">@NonNull</span> AttributeSet attrs<span class="token punctuation">,</span> <span class="token keyword">boolean</span> inheritContext<span class="token punctuation">,</span>
+            <span class="token keyword">boolean</span> readAndroidTheme<span class="token punctuation">,</span> <span class="token keyword">boolean</span> readAppTheme<span class="token punctuation">,</span> <span class="token keyword">boolean</span> wrapContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> Context originalContext <span class="token operator">=</span> context<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//一系列的判断到底使用谁的context</span>
+        <span class="token comment" spellcheck="true">// We can emulate Lollipop's android:theme attribute propagating down the view hierarchy</span>
+        <span class="token comment" spellcheck="true">// by using the parent's context</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>inheritContext <span class="token operator">&amp;&amp;</span> parent <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            context <span class="token operator">=</span> parent<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>readAndroidTheme <span class="token operator">||</span> readAppTheme<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// We then apply the theme on the context, if specified</span>
+            context <span class="token operator">=</span> <span class="token function">themifyContext</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">,</span> readAndroidTheme<span class="token punctuation">,</span> readAppTheme<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>wrapContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            context <span class="token operator">=</span> TintContextWrapper<span class="token punctuation">.</span><span class="token function">wrap</span><span class="token punctuation">(</span>context<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        View view <span class="token operator">=</span> null<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// We need to 'inject' our tint aware Views in place of the standard framework versions</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">case</span> <span class="token string">"TextView"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatTextView</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"ImageView"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatImageView</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"Button"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatButton</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"EditText"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatEditText</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"Spinner"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatSpinner</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"ImageButton"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatImageButton</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"CheckBox"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatCheckBox</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"RadioButton"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatRadioButton</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"CheckedTextView"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatCheckedTextView</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"AutoCompleteTextView"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatAutoCompleteTextView</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"MultiAutoCompleteTextView"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatMultiAutoCompleteTextView</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"RatingBar"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatRatingBar</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"SeekBar"</span><span class="token operator">:</span>
+                view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppCompatSeekBar</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>view <span class="token operator">==</span> null <span class="token operator">&amp;&amp;</span> originalContext <span class="token operator">!=</span> context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// If the original context does not equal our themed context, then we need to manually</span>
+            <span class="token comment" spellcheck="true">// inflate it using the name so that android:theme takes effect.</span>
+            <span class="token comment" spellcheck="true">//如果原始上下文不等于我们的主题上下文，</span>
+            <span class="token comment" spellcheck="true">//那么我们需要用这个名称手动infalte，以便android:theme 生效。</span>
+            view <span class="token operator">=</span> <span class="token function">createViewFromTag</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> name<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>view <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// If we have created a view, check its android:onClick</span>
+            <span class="token comment" spellcheck="true">// 如果我们创建了一个视图，检查它的android:onClick</span>
+            <span class="token function">checkOnClickListener</span><span class="token punctuation">(</span>view<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> view<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>到这里，明白了为什么会出现这样类似变魔术的情况了吧。</p>
+<p>也就是说只要我们再onCreat方法的时候，setFactory，那么视图的创建就不会走系统的，而按我们自己的来，至于其中原因，我们看下inflate的源码。</p>
+<pre><code>View createViewFromTag(View parent, String name, Context context, AttributeSet attrs,
+            boolean ignoreThemeAttr) {
+        if (name.equals(&quot;view&quot;)) {
+            name = attrs.getAttributeValue(null, &quot;class&quot;);
+        }
+
+        // Apply a theme wrapper, if allowed and one is specified.
+        if (!ignoreThemeAttr) {
+            final TypedArray ta = context.obtainStyledAttributes(attrs, ATTRS_THEME);
+            final int themeResId = ta.getResourceId(0, 0);
+            if (themeResId != 0) {
+                context = new ContextThemeWrapper(context, themeResId);
+            }
+            ta.recycle();
+        }
+
+        if (name.equals(TAG_1995)) {
+            // Let&#39;s party like it&#39;s 1995!
+            return new BlinkLayout(context, attrs);
+        }
+
+        try {
+            View view;
+            //如果factort2 不为null,就会调用factort2的onCreateView方法。
+            if (mFactory2 != null) {
+                view = mFactory2.onCreateView(parent, name, context, attrs);
+            } else if (mFactory != null) {
+            //如果factort 不为null,就会调用factort的onCreateView方法。
+                view = mFactory.onCreateView(name, context, attrs);
+            } else {
+                view = null;
+            }
+            // 如果factort2和factortweinull 而私有的不为null,就会调用mPrivateFactory的onCreateView方法。
+            if (view == null &amp;&amp; mPrivateFactory != null) {
+
+                view = mPrivateFactory.onCreateView(parent, name, context, attrs);
+            }
+            //如果还为null,才会调用默认的onCreateView
+
+            if (view == null) {
+                final Object lastContext = mConstructorArgs[0];
+                mConstructorArgs[0] = context;
+                try {
+                    if (-1 == name.indexOf(&#39;.&#39;)) {
+                    //如系统控件 TextView ImagView
+                        view = onCreateView(parent, name, attrs);
+                    } else {
+                    //自定义控件，如livesun.io.MyTextView
+                    //其实是通过放射来实现初始化的
+                        view = createView(name, null, attrs);
+                    }
+                } finally {
+                    mConstructorArgs[0] = lastContext;
+                }
+            }
+
+            return view;
+        } catch (InflateException e) {
+            throw e;
+
+        } catch (ClassNotFoundException e) {
+            final InflateException ie = new InflateException(attrs.getPositionDescription()
+                    + &quot;: Error inflating class &quot; + name, e);
+            ie.setStackTrace(EMPTY_STACK_TRACE);
+            throw ie;
+
+        } catch (Exception e) {
+            final InflateException ie = new InflateException(attrs.getPositionDescription()
+                    + &quot;: Error inflating class &quot; + name, e);
+            ie.setStackTrace(EMPTY_STACK_TRACE);
+            throw ie;
+        }
+    }
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -186,172 +534,130 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://livesun.github.io/2017/09/25/intercept/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/08/14/ViewTouchEventEnd/" class="archive-article-date">
-  	<time datetime="2017-08-14T03:44:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-14</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2017/09/22/RecyclerFourStep/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">RecyclerView进阶（四）万能Adapter</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/08/14/ViewTouchEventEnd/">Touch事件分发归纳总结</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    目录，不存在的…
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/08/01/ViewGroupTouchEvent/" class="archive-article-date">
-  	<time datetime="2017-08-01T08:36:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-01</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/08/01/ViewGroupTouchEvent/">ViewGroup的Touch事件分发以及源码分析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/07/27/viewTouchEvent/" class="archive-article-date">
-  	<time datetime="2017-07-27T10:50:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-27</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/27/viewTouchEvent/">View的Touch事件分发以及源码分析</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/06/28/setContentView源码分析/" class="archive-article-date">
-  	<time datetime="2017-06-28T02:03:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/06/28/setContentView源码分析/">setContentView源码分析（一）</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-  
-    </div></section>
-  
+    <section id="comments">
+      <div id="disqus_thread"></div>
+        <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'true'; // required: replace example with your forum shortname
 
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/categories/源码分析/page/2/">2</a><a class="extend next" rel="next" href="/categories/源码分析/page/2/">Next &raquo;</a>
-    </nav>
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </section>
   
 
 
@@ -375,10 +681,10 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
-		isCategory: true,
+		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: false,
 		root: "/",
