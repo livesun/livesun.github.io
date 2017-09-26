@@ -145,6 +145,88 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-webview_upload" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/26/webview_upload/">WebView（一）上传文件</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/26/webview_upload/" class="archive-article-date">
+  	<time datetime="2017-09-26T07:58:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>默认情况下，Android的WebView不支持文件上传，需要手动适配，原理就是获取到选择文件的uri,然后传给页面去上传。</p>
+<p>做的时候遇到不少坑，这里记录一下。</p>
+<p>效果截图：</p>
+<p>在小米上：</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/webview_file2.png?x-oss-process=image/resize,w_340" alt="img-w150"></p>
+<p>在原生上：</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/webview_file1.png" alt="image"></p>
+        
+          <a class="article-more-a" href="/2017/09/26/webview_upload/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/日常踩坑/" class="article-tag-list-link color5">日常踩坑</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/26/webview_upload/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-intercept" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -440,83 +522,6 @@ android.support.v7.widget.AppCompatTextView id/text_view
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/08/30/RecylcerTwoStep/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-RecyclerOneStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/24/RecyclerOneStep/">RecyclerView进阶（一）通过装饰者模式添加头部底部</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/24/RecyclerOneStep/" class="archive-article-date">
-  	<time datetime="2017-08-24T07:26:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_warpperhead.gif" alt="image"></p>
-<h3 id="通过装饰者模式添加头部底部"><a href="#通过装饰者模式添加头部底部" class="headerlink" title="通过装饰者模式添加头部底部"></a>通过装饰者模式添加头部底部</h3><p>ListView提供了addHeadView和addFootView方法，使用起来非常方便，而ReyclerView则需要我们自己在adapter中判断，常规做法无外乎判断position==0，来添加头布局，不过这个做法只适合单个，而且不通用。<br>我们看下ListView.addHeadView是如何实现的</p>
-        
-          <a class="article-more-a" href="/2017/08/24/RecyclerOneStep/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/24/RecyclerOneStep/">阅读全文 >></a>
         </p>
       
 
