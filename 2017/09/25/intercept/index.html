@@ -8,16 +8,19 @@
   <link rel="dns-prefetch" href="http://livesun.github.io">
   <title>通过AppCompateActivity,学习View的拦截 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="首先 先上效果图使用只需要，再Fragment中的xml文件中添加自定义属性，如">
+  <meta name="description" content="再开始之前，我们有必要先看这么一个问题，同样一个TextView,如果我们的MainActivity 分别继承Activity，AppCompatActivity，我们打印一下我们的TextView。  &amp;lt;!--继承自Activity：--&amp;gt;  android.widget.TextView id/text_view  &amp;lt;!--继承自AppCompatActivity： --&amp;g">
 <meta property="og:type" content="article">
 <meta property="og:title" content="通过AppCompateActivity,学习View的拦截">
 <meta property="og:url" content="http://livesun.github.io/2017/09/25/intercept/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="首先 先上效果图使用只需要，再Fragment中的xml文件中添加自定义属性，如">
-<meta property="og:updated_time" content="2017-09-26T11:19:53.753Z">
+<meta property="og:description" content="再开始之前，我们有必要先看这么一个问题，同样一个TextView,如果我们的MainActivity 分别继承Activity，AppCompatActivity，我们打印一下我们的TextView。  &amp;lt;!--继承自Activity：--&amp;gt;  android.widget.TextView id/text_view  &amp;lt;!--继承自AppCompatActivity： --&amp;g">
+<meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/indectir_view1.png">
+<meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/indectir_view2.png">
+<meta property="og:updated_time" content="2017-09-26T11:39:12.196Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通过AppCompateActivity,学习View的拦截">
-<meta name="twitter:description" content="首先 先上效果图使用只需要，再Fragment中的xml文件中添加自定义属性，如">
+<meta name="twitter:description" content="再开始之前，我们有必要先看这么一个问题，同样一个TextView,如果我们的MainActivity 分别继承Activity，AppCompatActivity，我们打印一下我们的TextView。  &amp;lt;!--继承自Activity：--&amp;gt;  android.widget.TextView id/text_view  &amp;lt;!--继承自AppCompatActivity： --&amp;g">
+<meta name="twitter:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/indectir_view1.png">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -164,9 +167,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="首先-先上效果图"><a href="#首先-先上效果图" class="headerlink" title="首先 先上效果图"></a>首先 先上效果图</h3><h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>只需要，再Fragment中的xml文件中添加自定义属性，如</p>
-<a id="more"></a>
-<p>再开始之前，我们有必要先看这么一个问题，同样一个TextView,如果我们的MainActivity 分别继承Activity，AppCompatActivity，我们打印一下我们的TextView。</p>
+        <p>再开始之前，我们有必要先看这么一个问题，同样一个TextView,如果我们的MainActivity 分别继承Activity，AppCompatActivity，我们打印一下我们的TextView。</p>
 <pre class="line-numbers language-java"><code class="language-java">
 <span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span>继承自Activity：<span class="token operator">--</span><span class="token operator">></span>
 
@@ -201,6 +202,7 @@ android<span class="token punctuation">.</span>support<span class="token punctua
     <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>在调用super.onCreate(savedInstanceState)之前，其实调用了delegate.installViewFactory()和 delegate.onCreate(savedInstanceState)这两个方法。</p>
+<a id="more"></a>
 <p>看注释</p>
 <pre class="line-numbers language-java"><code class="language-java"> <span class="token comment" spellcheck="true">/**
      * Installs AppCompat's {@link android.view.LayoutInflater} Factory so that it can replace
@@ -641,6 +643,67 @@ View <span class="token function">callActivityOnCreateView</span><span class="to
     <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>所以拦截View的创建的本质，其实就是在LayoutInfalte中，通过pull解析器解析整个XML视图文件，通过createViewFromTag方法，创建一个个View时，在之前通过Factory是否为null的判断,结合view的值，来创建view。这时，如果我们改变前期的判断，整个view在创建之前，我们就可以做很多事情，其实就是layoutInflate留好位置，改变它就行了。</p>
+<h3 id="来那我们变个魔术"><a href="#来那我们变个魔术" class="headerlink" title="来那我们变个魔术"></a>来那我们变个魔术</h3><p>重写Activity的onCreateView方法，因为我们知道Activity已经实现了Factory2 （mWindow.getLayoutInflater().setPrivateFactory(this);）</p>
+<pre class="line-numbers language-java"><code class="language-java">
+ <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> View <span class="token function">onCreateView</span><span class="token punctuation">(</span>View parent<span class="token punctuation">,</span> String name<span class="token punctuation">,</span> Context context<span class="token punctuation">,</span> AttributeSet attrs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>name<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token string">"TextView"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            EditText editText<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">EditText</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            editText<span class="token punctuation">.</span><span class="token function">setHint</span><span class="token punctuation">(</span><span class="token string">"大变TextView"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> editText<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这是我们的布局文件</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token operator">&lt;</span><span class="token operator">?</span>xml version<span class="token operator">=</span><span class="token string">"1.0"</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token operator">?</span><span class="token operator">></span>
+<span class="token operator">&lt;</span>RelativeLayout
+    xmlns<span class="token operator">:</span>android<span class="token operator">=</span><span class="token string">"http://schemas.android.com/apk/res/android"</span>
+    android<span class="token operator">:</span>layout_width<span class="token operator">=</span><span class="token string">"match_parent"</span>
+    android<span class="token operator">:</span>layout_height<span class="token operator">=</span><span class="token string">"match_parent"</span>
+    android<span class="token operator">:</span>orientation<span class="token operator">=</span><span class="token string">"vertical"</span>
+    android<span class="token operator">:</span>id<span class="token operator">=</span><span class="token string">"@+id/root"</span>
+   <span class="token operator">></span>
+
+    <span class="token operator">&lt;</span>TextView
+        android<span class="token operator">:</span>layout_width<span class="token operator">=</span><span class="token string">"wrap_content"</span>
+        android<span class="token operator">:</span>layout_height<span class="token operator">=</span><span class="token string">"wrap_content"</span>
+        android<span class="token operator">:</span>text<span class="token operator">=</span><span class="token string">"ddddd"</span>
+        <span class="token operator">/</span><span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>RelativeLayout<span class="token operator">></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>运行结果</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/indectir_view1.png" alt="image"></p>
+<p>当然 还可以这么写，自己设置Factory2、Factory 他们优先级更高</p>
+<pre><code> @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        mLayoutInflater = LayoutInflater.from(this);
+        LayoutInflaterCompat.setFactory2(mLayoutInflater, new LayoutInflater.Factory2() {
+            @Override
+            public View onCreateView(String s, Context context, AttributeSet attributeSet) {
+                return null;
+            }
+
+            @Override
+            public View onCreateView(View parent, String name, Context context, AttributeSet attributeSet) {
+                if (name.equals(&quot;TextView&quot;))
+                {
+                    EditText editText=new EditText(MainActivity.this);
+                    editText.setHint(&quot;大变TextView2.0&quot;);
+                    return editText;
+                }
+                return null;
+            }
+        });
+        setContentView(R.layout.scroll_demo);
+        super.onCreate(savedInstanceState);
+
+    }
+</code></pre><h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/indectir_view2.png" alt="image"></p>
 
       
 
@@ -762,7 +825,7 @@ View <span class="token function">callActivityOnCreateView</span><span class="to
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#首先-先上效果图"><span class="toc-number">1.</span> <span class="toc-text">首先 先上效果图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用"><span class="toc-number">2.</span> <span class="toc-text">使用</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#来那我们变个魔术"><span class="toc-number">1.</span> <span class="toc-text">来那我们变个魔术</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结果"><span class="toc-number">2.</span> <span class="toc-text">结果</span></a></li></ol>
                     </div>
                 </span>
             </div>
