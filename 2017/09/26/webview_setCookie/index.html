@@ -6,17 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>孙俊卿的博客</title>
+  <title>WebView（二）设置Cookie | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="孙俊卿的博客">
-<meta property="og:url" content="http://livesun.github.io/page/3/index.html">
+  <meta name="description" content="百度了很多，但是大都是同样的代码    public  void synCookies( String url,String cookie) {         CookieSyncManager.createInstance(UiUtils.getContext());         CookieManager cookieManager = CookieManager.getInstance">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebView（二）设置Cookie">
+<meta property="og:url" content="http://livesun.github.io/2017/09/26/webview_setCookie/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="百度了很多，但是大都是同样的代码    public  void synCookies( String url,String cookie) {         CookieSyncManager.createInstance(UiUtils.getContext());         CookieManager cookieManager = CookieManager.getInstance">
+<meta property="og:updated_time" content="2017-09-26T08:33:06.241Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="孙俊卿的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="WebView（二）设置Cookie">
+<meta name="twitter:description" content="百度了很多，但是大都是同样的代码    public  void synCookies( String url,String cookie) {         CookieSyncManager.createInstance(UiUtils.getContext());         CookieManager cookieManager = CookieManager.getInstance">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -143,32 +144,120 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-QQZoomListView" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-webview_setCookie" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/28/QQZoomListView/">仿QQ空间头部可拉伸控件 --ZoomHeardListView</a>
+    <h1 class="article-title" itemprop="name">
+      WebView（二）设置Cookie
     </h1>
   
 
         
-        <a href="/2017/07/28/QQZoomListView/" class="archive-article-date">
-  	<time datetime="2017-07-28T09:40:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-28</time>
+        <a href="/2017/09/26/webview_setCookie/" class="archive-article-date">
+  	<time datetime="2017-09-26T08:32:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/qqZoom.gif" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/07/28/QQZoomListView/#more">more >></a>
-        
+        <p>百度了很多，但是大都是同样的代码 </p>
+<pre class="line-numbers language-java"><code class="language-java">
+ <span class="token keyword">public</span>  <span class="token keyword">void</span> <span class="token function">synCookies</span><span class="token punctuation">(</span> String url<span class="token punctuation">,</span>String cookie<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        CookieSyncManager<span class="token punctuation">.</span><span class="token function">createInstance</span><span class="token punctuation">(</span>UiUtils<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CookieManager cookieManager <span class="token operator">=</span> CookieManager<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        cookieManager<span class="token punctuation">.</span><span class="token function">setAcceptCookie</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        cookieManager<span class="token punctuation">.</span><span class="token function">setCookie</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> cookie<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CookieSyncManager<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">sync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样肯定没错，但是很多情况下，它不起作用。</p>
+<p>首先，最好先清空cookie，防止切换用户导致cookie混乱。</p>
+<p>其次，当cookie的信息不止一条是，上面的代码是失效的。</p>
+<p>还有，如果存在path，和domain，需要带回去，拼接的时候用分号拼接，通过StringBuilder的方式合成一个字符串。</p>
+<p>多个cookie信息，一定要分开对应自己的path和domain，for循环，多次setCookie。</p>
+<a id="more"></a>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">synCookies</span><span class="token punctuation">(</span>Context context<span class="token punctuation">,</span>String url<span class="token punctuation">,</span>List<span class="token operator">&lt;</span>Cookie<span class="token operator">></span> cookies<span class="token punctuation">)</span><span class="token punctuation">{</span>  
+        <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token operator">!</span>TextUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span> <span class="token punctuation">)</span>  
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>TextUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>cookies<span class="token punctuation">)</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>Build<span class="token punctuation">.</span>VERSION<span class="token punctuation">.</span>SDK_INT <span class="token operator">&lt;</span> Build<span class="token punctuation">.</span>VERSION_CODES<span class="token punctuation">.</span>LOLLIPOP<span class="token punctuation">)</span><span class="token punctuation">{</span>  
+                    CookieSyncManager<span class="token punctuation">.</span><span class="token function">createInstance</span><span class="token punctuation">(</span> context<span class="token punctuation">)</span><span class="token punctuation">;</span>  
+                <span class="token punctuation">}</span>  
+                CookieManager cookieManager <span class="token operator">=</span> CookieManager<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+                cookieManager<span class="token punctuation">.</span><span class="token function">setAcceptCookie</span><span class="token punctuation">(</span> <span class="token boolean">true</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>  
+                cookieManager<span class="token punctuation">.</span><span class="token function">removeSessionCookie</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 移除  </span>
+                cookieManager<span class="token punctuation">.</span><span class="token function">removeAllCookie</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+                StringBuilder sbCookie <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//创建一个拼接cookie的容器,</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span>Cookie cookie <span class="token operator">:</span> cookies<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                sbCookie<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>cookie<span class="token punctuation">.</span><span class="token function">name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token string">"="</span><span class="token operator">+</span>cookie<span class="token punctuation">.</span><span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                sbCookie<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">";domain="</span><span class="token operator">+</span>cookie<span class="token punctuation">.</span><span class="token function">domain</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                sbCookie<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">";path="</span><span class="token operator">+</span>cookie<span class="token punctuation">.</span><span class="token function">path</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                String cookieValue <span class="token operator">=</span> sbCookie<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+                cookieManager<span class="token punctuation">.</span><span class="token function">setCookie</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> cookieValue<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//为url设置cookie </span>
+             <span class="token punctuation">}</span>
+                CookieSyncManager<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">sync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//同步cookie  </span>
+                String newCookie <span class="token operator">=</span> cookieManager<span class="token punctuation">.</span><span class="token function">getCookie</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>  
+                LogManager<span class="token punctuation">.</span><span class="token function">i</span><span class="token punctuation">(</span><span class="token string">"同步后cookie"</span><span class="token punctuation">,</span> newCookie<span class="token punctuation">)</span><span class="token punctuation">;</span>  
+            <span class="token punctuation">}</span>  
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这次遇到的坑是这样的，页面请求第一次的时候，cookie成功带过去了，但是页面内部请求有ajax请求时，发送到后台的cookie迷之消失了，也不知道是什么原因。</p>
+<p>解决方法如下</p>
+<p>拦截请求，在拦截中重新同步cookie</p>
+<pre class="line-numbers language-java"><code class="language-java">
+mProgressWebView<span class="token punctuation">.</span><span class="token function">setWebViewClient</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">CustomWebViewClient</span><span class="token punctuation">(</span>mProgressWebView<span class="token punctuation">.</span><span class="token function">getWebView</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+            <span class="token comment" spellcheck="true">/**
+             * 5.0以下
+             */</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> WebResourceResponse <span class="token function">shouldInterceptRequest</span><span class="token punctuation">(</span>WebView view<span class="token punctuation">,</span> String url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">synCookies</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token keyword">return</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">shouldInterceptRequest</span><span class="token punctuation">(</span>view<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//将加好cookie的url传给父类继续执行</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">/**
+            *5.0以上
+            */</span>
+            <span class="token annotation punctuation">@SuppressLint</span><span class="token punctuation">(</span><span class="token string">"NewApi"</span><span class="token punctuation">)</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> WebResourceResponse <span class="token function">shouldInterceptRequest</span><span class="token punctuation">(</span>WebView view <span class="token punctuation">,</span> WebResourceRequest request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                String url <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token function">synCookies</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">shouldInterceptRequest</span><span class="token punctuation">(</span>view<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+ <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">synCookies</span><span class="token punctuation">(</span>String url<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token operator">!</span>TextUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span> <span class="token punctuation">)</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>TextUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>SpUtils<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span>SpUtils<span class="token punctuation">.</span>TOKEN<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>Build<span class="token punctuation">.</span>VERSION<span class="token punctuation">.</span>SDK_INT <span class="token operator">&lt;</span> Build<span class="token punctuation">.</span>VERSION_CODES<span class="token punctuation">.</span>LOLLIPOP<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                    CookieSyncManager<span class="token punctuation">.</span><span class="token function">createInstance</span><span class="token punctuation">(</span> UiUtils<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                CookieManager cookieManager <span class="token operator">=</span> CookieManager<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                cookieManager<span class="token punctuation">.</span><span class="token function">setAcceptCookie</span><span class="token punctuation">(</span> <span class="token boolean">true</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+                cookieManager<span class="token punctuation">.</span><span class="token function">removeSessionCookie</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 移除</span>
+                cookieManager<span class="token punctuation">.</span><span class="token function">removeAllCookie</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                StringBuilder sbCookie <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">//应为我这里只传递一个oatoken = xxxxxxxxx;而且后台默认不用domain和path</span>
+                sbCookie<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>SpUtils<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span>SpUtils<span class="token punctuation">.</span>TOKEN<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//拼接sessionId</span>
+<span class="token comment" spellcheck="true">//                 sbCookie.append(String.format(";domain=%s", ""));</span>
+<span class="token comment" spellcheck="true">//                 sbCookie.append(String.format(";path=%s", ""));</span>
+                String cookieValue <span class="token operator">=</span> sbCookie<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                cookieManager<span class="token punctuation">.</span><span class="token function">setCookie</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> cookieValue<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//为url设置cookie</span>
+                CookieSyncManager<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">sync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//同步cookie</span>
+                String newCookie <span class="token operator">=</span> cookieManager<span class="token punctuation">.</span><span class="token function">getCookie</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
       
 
       
@@ -182,7 +271,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
+        			<a href="/categories/日常踩坑/" class="article-tag-list-link color5">日常踩坑</a>
         		</li>
       		
 		</ul>
@@ -190,16 +279,75 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/28/QQZoomListView/">阅读全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://livesun.github.io/2017/09/26/webview_setCookie/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/09/26/webview_upload/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">WebView（一）上传文件</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -214,376 +362,46 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-viewTouchEvent" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/27/viewTouchEvent/">View的Touch事件分发以及源码分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/27/viewTouchEvent/" class="archive-article-date">
-  	<time datetime="2017-07-27T10:50:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Touch事件分发中有两个主角:ViewGroup和View。<br>为了方便理解，今天我们先单独讲View的Touch事件分发，我们先看下实例代码</p>
-<p>首先，我们自定义一个view</p>
-<pre><code class="java">public class TouchView extends View {
-    private  Context context;
-    private  AttributeSet attrs;
-
-    public TouchView(Context context) {
-        super(context);
-    }
-
-    public TouchView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        this.context = context;
-        this.attrs = attrs;
-    }
-
-    public TouchView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
-        return super.onTouchEvent(event);
-    }
-
-    /**
-     * 用来做事件分发
-     * @param event
-     * @return
-     */
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        addTextView(&quot;dispatchTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
-        return super.dispatchTouchEvent(event);
-    }
-
-    public void addTextView(String tag, ViewGroup viewGroup){
-        TextView textView=new TextView(context);
-        textView.setText(tag);
-        textView.setTextSize(18);
-        textView.setTextColor(Color.BLACK);
-        viewGroup.addView(textView);
-        TextView text=new TextView(context);
-        text.setText(&quot;↓&quot;);
-        viewGroup.addView(text);
-    }
-}
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/07/27/viewTouchEvent/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/27/viewTouchEvent/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    目录，不存在的…
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
-  
-    <article id="post-TagLayout" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/25/TagLayout/">流布局与Adapter设计模式的结合</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/25/TagLayout/" class="archive-article-date">
-  	<time datetime="2017-07-25T07:57:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>流式布局,相信很多项目中都有这样的需求，比如各大软件的标签呀，小说，热搜等，网上现成的有很多，不过普通的流布局并不难，今天闲来无事，我们就来实现一下。</p>
-<p>下面的这种效果就是典型的流式布局。<br><img src="http://upload-images.jianshu.io/upload_images/1234624-cf6abdeb578a7bb8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/07/25/TagLayout/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/25/TagLayout/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-messenger" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/16/messenger/">Android的IPC方式---Messenger</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/16/messenger/" class="archive-article-date">
-  	<time datetime="2017-07-16T10:20:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Android 进程间通讯是非常重要的知识点，其实他的实现方式有很多种比如，使用Bundle，使用文件共享，使用AIDL，使用ContentProvider,Socket</p>
-<p>今天的通信方式，我们采用另外一种传递信息比较方便方式，Messenger。</p>
-<p>先看个图</p>
-<p><img src="http://img.blog.csdn.net/20150723095636567" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/07/16/messenger/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Android架构/" class="article-tag-list-link color5">Android架构</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/16/messenger/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-dynamicProxy_mode" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/06/dynamicProxy_mode/">设计模式(3)--动态代理模式以及源码分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/06/dynamicProxy_mode/" class="archive-article-date">
-  	<time datetime="2017-07-06T01:26:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h3><ul>
-<li>静态代理：在代码运行之前代理类的class文件就存在了</li>
-<li>动态代理：刚刚相反，通过反射来动态生成代理对象，也就是说编码的时候不知道代理谁，只有执行的时候才知道。</li>
-</ul>
-        
-          <a class="article-more-a" href="/2017/07/06/dynamicProxy_mode/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/设计模式/" class="article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/06/dynamicProxy_mode/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
+  
+    <section id="comments">
+      <div id="disqus_thread"></div>
+        <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'true'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </section>
   
 
 
@@ -606,8 +424,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
