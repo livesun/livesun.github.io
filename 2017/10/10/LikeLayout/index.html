@@ -6,17 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>Category: 自定义view | 孙俊卿的博客</title>
+  <title>自定义TypeEvaluator实现炫酷的点赞效果 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="孙俊卿的博客">
-<meta property="og:url" content="http://livesun.github.io/categories/自定义view/index.html">
+  <meta name="description" content="效果图 原理是通过自定义TypeEvaluator，来实现三阶贝塞尔曲线的运动轨迹，重点是找到控制点，套入公式。 三阶贝塞尔曲线公式：  t：为时间 p0：起点 p1：控制点1 p2：控制点2 p3：始点，终点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义TypeEvaluator实现炫酷的点赞效果">
+<meta property="og:url" content="http://livesun.github.io/2017/10/10/LikeLayout/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="效果图 原理是通过自定义TypeEvaluator，来实现三阶贝塞尔曲线的运动轨迹，重点是找到控制点，套入公式。 三阶贝塞尔曲线公式：  t：为时间 p0：起点 p1：控制点1 p2：控制点2 p3：始点，终点">
+<meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/like_layout.gif">
+<meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/beisaier.png">
+<meta property="og:updated_time" content="2017-10-10T09:57:27.191Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="孙俊卿的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="自定义TypeEvaluator实现炫酷的点赞效果">
+<meta name="twitter:description" content="效果图 原理是通过自定义TypeEvaluator，来实现三阶贝塞尔曲线的运动轨迹，重点是找到控制点，套入公式。 三阶贝塞尔曲线公式：  t：为时间 p0：起点 p1：控制点1 p2：控制点2 p3：始点，终点">
+<meta name="twitter:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/like_layout.gif">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -143,37 +147,207 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-LikeLayout" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      自定义TypeEvaluator实现炫酷的点赞效果
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/10/10/LikeLayout/" class="archive-article-date">
+
+        
+        <a href="/2017/10/10/LikeLayout/" class="archive-article-date">
   	<time datetime="2017-10-10T09:57:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-10</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/10/10/LikeLayout/">自定义TypeEvaluator实现炫酷的点赞效果</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/like_layout.gif" alt="image"></p>
+<p>原理是通过自定义TypeEvaluator，来实现三阶贝塞尔曲线的运动轨迹，重点是找到控制点，套入公式。</p>
+<h3 id="三阶贝塞尔曲线公式："><a href="#三阶贝塞尔曲线公式：" class="headerlink" title="三阶贝塞尔曲线公式："></a>三阶贝塞尔曲线公式：</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/beisaier.png" alt="image"></p>
+<ul>
+<li>t：为时间</li>
+<li>p0：起点</li>
+<li>p1：控制点1</li>
+<li>p2：控制点2</li>
+<li>p3：始点，终点</li>
+</ul>
+<a id="more"></a>
+<h3 id="代码如下"><a href="#代码如下" class="headerlink" title="代码如下"></a>代码如下</h3><pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LikeLayout</span> <span class="token keyword">extends</span> <span class="token class-name">RelativeLayout</span> <span class="token punctuation">{</span>
 
-        <div class="article-info info-on-right">
-          
-          
+    <span class="token keyword">private</span> Random mRandom<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> mImageRes<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> mDrawableHeight<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> mDrawableWidth<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> mHeight<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> mWidth<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> Interpolator<span class="token punctuation">[</span><span class="token punctuation">]</span> mInterpolators<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">LikeLayout</span><span class="token punctuation">(</span>Context context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span>null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token function">LikeLayout</span><span class="token punctuation">(</span>Context context<span class="token punctuation">,</span> AttributeSet attrs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token function">LikeLayout</span><span class="token punctuation">(</span>Context context<span class="token punctuation">,</span> AttributeSet attrs<span class="token punctuation">,</span> <span class="token keyword">int</span> defStyleAttr<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> attrs<span class="token punctuation">,</span> defStyleAttr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mRandom <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Random</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mInterpolators <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Interpolator</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">{</span><span class="token keyword">new</span> <span class="token class-name">AccelerateDecelerateInterpolator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">AccelerateInterpolator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                <span class="token keyword">new</span> <span class="token class-name">DecelerateInterpolator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">LinearInterpolator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onMeasure</span><span class="token punctuation">(</span><span class="token keyword">int</span> widthMeasureSpec<span class="token punctuation">,</span> <span class="token keyword">int</span> heightMeasureSpec<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onMeasure</span><span class="token punctuation">(</span>widthMeasureSpec<span class="token punctuation">,</span> heightMeasureSpec<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 获取控件的宽高</span>
+        mWidth <span class="token operator">=</span> MeasureSpec<span class="token punctuation">.</span><span class="token function">getSize</span><span class="token punctuation">(</span>widthMeasureSpec<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mHeight <span class="token operator">=</span> MeasureSpec<span class="token punctuation">.</span><span class="token function">getSize</span><span class="token punctuation">(</span>heightMeasureSpec<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 设置图片资源
+     * @param imageRes
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setImagRes</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> imageRes<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        mImageRes <span class="token operator">=</span> imageRes<span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>mImageRes<span class="token punctuation">.</span>length<span class="token operator">></span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            Drawable drawable <span class="token operator">=</span> ContextCompat<span class="token punctuation">.</span><span class="token function">getDrawable</span><span class="token punctuation">(</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> mImageRes<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mDrawableHeight <span class="token operator">=</span> drawable<span class="token punctuation">.</span><span class="token function">getIntrinsicHeight</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mDrawableWidth <span class="token operator">=</span> drawable<span class="token punctuation">.</span><span class="token function">getIntrinsicWidth</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//展示</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>mImageRes<span class="token punctuation">.</span>length<span class="token operator">==</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">addImage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">//添加图片</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">addImage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> ImageView likeIv<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">ImageView</span><span class="token punctuation">(</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> i <span class="token operator">=</span> mImageRes<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        likeIv<span class="token punctuation">.</span><span class="token function">setImageResource</span><span class="token punctuation">(</span>mImageRes<span class="token punctuation">[</span>mRandom<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span>mImageRes<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        RelativeLayout<span class="token punctuation">.</span>LayoutParams params<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">LayoutParams</span><span class="token punctuation">(</span>ViewGroup<span class="token punctuation">.</span>LayoutParams<span class="token punctuation">.</span>WRAP_CONTENT<span class="token punctuation">,</span>ViewGroup<span class="token punctuation">.</span>LayoutParams<span class="token punctuation">.</span>WRAP_CONTENT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        params<span class="token punctuation">.</span><span class="token function">addRule</span><span class="token punctuation">(</span>ALIGN_PARENT_BOTTOM<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        params<span class="token punctuation">.</span><span class="token function">addRule</span><span class="token punctuation">(</span>CENTER_HORIZONTAL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        likeIv<span class="token punctuation">.</span><span class="token function">setLayoutParams</span><span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">addView</span><span class="token punctuation">(</span>likeIv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//播放动画</span>
+        AnimatorSet animatorSet <span class="token operator">=</span> <span class="token function">startAnimator</span><span class="token punctuation">(</span>likeIv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        animatorSet<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        animatorSet<span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">AnimatorListenerAdapter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onAnimationEnd</span><span class="token punctuation">(</span>Animator animation<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onAnimationEnd</span><span class="token punctuation">(</span>animation<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">//移除</span>
+                <span class="token function">removeView</span><span class="token punctuation">(</span>likeIv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> AnimatorSet <span class="token function">startAnimator</span><span class="token punctuation">(</span>ImageView likeIv<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        AnimatorSet allAnimatorSet<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">AnimatorSet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//开始时的动画集合</span>
+        AnimatorSet beginAnimatorSet<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">AnimatorSet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ObjectAnimator alphaAnimator<span class="token operator">=</span>ObjectAnimator<span class="token punctuation">.</span><span class="token function">ofFloat</span><span class="token punctuation">(</span>likeIv<span class="token punctuation">,</span><span class="token string">"alpha"</span><span class="token punctuation">,</span><span class="token number">0.3f</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">.</span>f<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ObjectAnimator scaleXAnimator <span class="token operator">=</span> ObjectAnimator<span class="token punctuation">.</span><span class="token function">ofFloat</span><span class="token punctuation">(</span>likeIv<span class="token punctuation">,</span> <span class="token string">"scaleX"</span><span class="token punctuation">,</span> <span class="token number">0.3f</span><span class="token punctuation">,</span> <span class="token number">1.0f</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ObjectAnimator scaleYAnimator <span class="token operator">=</span> ObjectAnimator<span class="token punctuation">.</span><span class="token function">ofFloat</span><span class="token punctuation">(</span>likeIv<span class="token punctuation">,</span> <span class="token string">"scaleY"</span><span class="token punctuation">,</span> <span class="token number">0.3f</span><span class="token punctuation">,</span> <span class="token number">1.0f</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ObjectAnimator rotationAnimator <span class="token operator">=</span> ObjectAnimator<span class="token punctuation">.</span><span class="token function">ofFloat</span><span class="token punctuation">(</span>likeIv<span class="token punctuation">,</span> <span class="token string">"rotation"</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span>mRandom<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span><span class="token number">60</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        beginAnimatorSet<span class="token punctuation">.</span><span class="token function">playTogether</span><span class="token punctuation">(</span>alphaAnimator<span class="token punctuation">,</span>scaleXAnimator<span class="token punctuation">,</span>scaleYAnimator<span class="token punctuation">,</span>rotationAnimator<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        beginAnimatorSet<span class="token punctuation">.</span><span class="token function">setDuration</span><span class="token punctuation">(</span><span class="token number">350</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        beginAnimatorSet<span class="token punctuation">.</span><span class="token function">setInterpolator</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BounceInterpolator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//按顺序执行</span>
+        allAnimatorSet<span class="token punctuation">.</span><span class="token function">playSequentially</span><span class="token punctuation">(</span>beginAnimatorSet<span class="token punctuation">,</span><span class="token function">getBetheAnimator</span><span class="token punctuation">(</span>likeIv<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> allAnimatorSet<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> Animator <span class="token function">getBetheAnimator</span><span class="token punctuation">(</span><span class="token keyword">final</span> ImageView likeIv<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//起点，底部正中间，记得减去图片宽度的一半</span>
+        PointF p0<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">PointF</span><span class="token punctuation">(</span>mWidth<span class="token operator">/</span><span class="token number">2</span><span class="token operator">-</span>mDrawableWidth<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">,</span>mHeight<span class="token operator">-</span>mDrawableHeight<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//控制点1 下半部分</span>
+        PointF p1<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">PointF</span><span class="token punctuation">(</span>mRandom<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span>mWidth<span class="token operator">-</span>mDrawableWidth<span class="token punctuation">)</span><span class="token punctuation">,</span>mRandom<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span>mHeight<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token operator">+</span>mHeight<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//控制点2 上半部分</span>
+        PointF p2<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">PointF</span><span class="token punctuation">(</span>mRandom<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span>mWidth<span class="token operator">-</span>mDrawableWidth<span class="token punctuation">)</span><span class="token punctuation">,</span>mRandom<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span>mHeight<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//始点 防止露出来</span>
+        PointF p3<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">PointF</span><span class="token punctuation">(</span>mRandom<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span>mWidth<span class="token operator">-</span>mDrawableWidth<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        BetheTypeEvaluator betheEvaluator<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">BetheTypeEvaluator</span><span class="token punctuation">(</span>p1<span class="token punctuation">,</span>p2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ValueAnimator animator <span class="token operator">=</span> ObjectAnimator<span class="token punctuation">.</span><span class="token function">ofObject</span><span class="token punctuation">(</span>betheEvaluator<span class="token punctuation">,</span> p0<span class="token punctuation">,</span> p3<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        animator<span class="token punctuation">.</span><span class="token function">setDuration</span><span class="token punctuation">(</span><span class="token number">2000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        animator<span class="token punctuation">.</span><span class="token function">setInterpolator</span><span class="token punctuation">(</span>mInterpolators<span class="token punctuation">[</span>mRandom<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span>mInterpolators<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        animator<span class="token punctuation">.</span><span class="token function">addUpdateListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ValueAnimator<span class="token punctuation">.</span>AnimatorUpdateListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onAnimationUpdate</span><span class="token punctuation">(</span>ValueAnimator animation<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                PointF pointF<span class="token operator">=</span> <span class="token punctuation">(</span>PointF<span class="token punctuation">)</span> animation<span class="token punctuation">.</span><span class="token function">getAnimatedValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                likeIv<span class="token punctuation">.</span><span class="token function">setX</span><span class="token punctuation">(</span>pointF<span class="token punctuation">.</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                likeIv<span class="token punctuation">.</span><span class="token function">setY</span><span class="token punctuation">(</span>pointF<span class="token punctuation">.</span>y<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 透明度</span>
+                <span class="token keyword">float</span> t <span class="token operator">=</span> animation<span class="token punctuation">.</span><span class="token function">getAnimatedFraction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                likeIv<span class="token punctuation">.</span><span class="token function">setAlpha</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> t <span class="token operator">+</span> <span class="token number">0.3f</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> animator<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 自定义贝塞尔曲线动画
+     *  三阶贝塞尔曲线公式：
+     *
+     */</span>
+     <span class="token keyword">class</span> <span class="token class-name">BetheTypeEvaluator</span> <span class="token keyword">implements</span> <span class="token class-name">TypeEvaluator</span><span class="token operator">&lt;</span>PointF<span class="token operator">></span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//控制点p1,p2</span>
+        <span class="token keyword">private</span>  PointF mP1<span class="token punctuation">;</span>
+        <span class="token keyword">private</span>  PointF mP2<span class="token punctuation">;</span>
+
+        <span class="token keyword">public</span> <span class="token function">BetheTypeEvaluator</span><span class="token punctuation">(</span>PointF p1<span class="token punctuation">,</span> PointF p2<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            mP1 <span class="token operator">=</span> p1<span class="token punctuation">;</span>
+            mP2 <span class="token operator">=</span> p2<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">public</span> PointF <span class="token function">evaluate</span><span class="token punctuation">(</span><span class="token keyword">float</span> t<span class="token punctuation">,</span> PointF p0<span class="token punctuation">,</span> PointF p3<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            PointF pointF<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">PointF</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            pointF<span class="token punctuation">.</span>x<span class="token operator">=</span>p0<span class="token punctuation">.</span>x<span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span>
+                    <span class="token operator">+</span><span class="token number">3</span><span class="token operator">*</span>mP1<span class="token punctuation">.</span>x<span class="token operator">*</span>t<span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span>
+                    <span class="token operator">+</span><span class="token number">3</span><span class="token operator">*</span> mP2<span class="token punctuation">.</span>x<span class="token operator">*</span>t<span class="token operator">*</span>t<span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span>
+                    <span class="token operator">+</span>p3<span class="token punctuation">.</span>x<span class="token operator">*</span>t<span class="token operator">*</span>t<span class="token operator">*</span>t<span class="token punctuation">;</span>
+            pointF<span class="token punctuation">.</span>y<span class="token operator">=</span>p0<span class="token punctuation">.</span>y<span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span>
+                    <span class="token operator">+</span><span class="token number">3</span><span class="token operator">*</span>mP1<span class="token punctuation">.</span>y<span class="token operator">*</span>t<span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span>
+                    <span class="token operator">+</span><span class="token number">3</span><span class="token operator">*</span> mP2<span class="token punctuation">.</span>y<span class="token operator">*</span>t<span class="token operator">*</span>t<span class="token operator">*</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>t<span class="token punctuation">)</span>
+                    <span class="token operator">+</span>p3<span class="token punctuation">.</span>y<span class="token operator">*</span>t<span class="token operator">*</span>t<span class="token operator">*</span>t<span class="token punctuation">;</span>
+            <span class="token keyword">return</span> pointF<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h3><pre class="line-numbers language-java"><code class="language-java"> mLikeLayout<span class="token punctuation">.</span><span class="token function">setImagRes</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>drawable<span class="token punctuation">.</span>zan1<span class="token punctuation">,</span>R<span class="token punctuation">.</span>drawable<span class="token punctuation">.</span>zan3<span class="token punctuation">,</span>R<span class="token punctuation">.</span>drawable<span class="token punctuation">.</span>zan2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">findViewById</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>cliclk<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setOnClickListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">View<span class="token punctuation">.</span>OnClickListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span>View v<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                mLikeLayout<span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -186,172 +360,130 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://livesun.github.io/2017/10/10/LikeLayout/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/08/14/ViewTouchCombat/" class="archive-article-date">
-  	<time datetime="2017-08-14T10:43:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-14</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2017/09/26/webview_setCookie/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">WebView（二）设置Cookie</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/08/14/ViewTouchCombat/">View的Touch事件分发实战应用</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#效果图"><span class="toc-number">1.</span> <span class="toc-text">效果图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三阶贝塞尔曲线公式："><span class="toc-number">2.</span> <span class="toc-text">三阶贝塞尔曲线公式：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码如下"><span class="toc-number">3.</span> <span class="toc-text">代码如下</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调用"><span class="toc-number">4.</span> <span class="toc-text">调用</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/07/28/QQZoomListView/" class="archive-article-date">
-  	<time datetime="2017-07-28T09:40:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/28/QQZoomListView/">仿QQ空间头部可拉伸控件 --ZoomHeardListView</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/07/25/TagLayout/" class="archive-article-date">
-  	<time datetime="2017-07-25T07:57:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-25</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/25/TagLayout/">流布局与Adapter设计模式的结合</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/06/19/cunstom_drawable/" class="archive-article-date">
-  	<time datetime="2017-06-19T04:40:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/06/19/cunstom_drawable/">自定义Drawable(一) 实现图片圆角、圆形、椭圆形</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-  
-    </div></section>
-  
+    <section id="comments">
+      <div id="disqus_thread"></div>
+        <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'true'; // required: replace example with your forum shortname
 
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/categories/自定义view/page/2/">2</a><a class="extend next" rel="next" href="/categories/自定义view/page/2/">Next &raquo;</a>
-    </nav>
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </section>
   
 
 
@@ -375,10 +507,10 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
-		isCategory: true,
+		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: false,
 		root: "/",
