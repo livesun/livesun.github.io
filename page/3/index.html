@@ -145,6 +145,95 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ViewTouchEventEnd" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/14/ViewTouchEventEnd/">Touch事件分发归纳总结</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/14/ViewTouchEventEnd/" class="archive-article-date">
+  	<time datetime="2017-08-14T03:44:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="这是对前两篇的总结和补充"><a href="#这是对前两篇的总结和补充" class="headerlink" title="这是对前两篇的总结和补充"></a>这是对前两篇的总结和补充</h3><p>1、对于一个根ViewGroup来说，点击事件产生后，首先会传给它的dispatchTouchEvent方法，如果onIterceptTouchEvent方法返回false，不拦截该事件，则执行其子View/ViewGroup的dispatchTouchEvent方法，如果如果onIterceptTouchEvent方法返回true，则表示拦截改事件，则执行其本身的onToucheEvent方法。</p>
+<pre><code class="java">public boolean dispatchTouchEvent (MotionEvent ev){
+    boolean result =false;
+    if(onInterceptTouchEvent(ev)){
+        result=onTouchEvent(ev);
+    }else{
+        result=child.dispatchTouchEvent(ev);
+    }
+
+    returen result;
+}
+</code></pre>
+<p>2、当一个View需要处理事件时，如果设置setOnTouchListener,其onTouch返回false，则onTouchEvent调用，如果onTouch返回true，则onTouchEvent不调用，可以看到setOnTouchListener的优先级 &gt; onTouchEvent &gt; setOnClickListener。</p>
+<p>3、事件传递的顺序：Activity -&gt; Window -&gt; View，顶级View接收到传递事件之后，然后一步步分发下去。但如果一个View的onTouchEvent返回false，就会往上调用其父控件的onTouchEvent，依此类推，如果所有的View都不处理该事件，则会将该事件又传递给Activity，即传递给Activity的onTouchEvent方法。</p>
+        
+          <a class="article-more-a" href="/2017/08/14/ViewTouchEventEnd/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/14/ViewTouchEventEnd/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-ViewGroupTouchEvent" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -504,85 +593,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/07/25/TagLayout/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-messenger" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/16/messenger/">Android的IPC方式---Messenger</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/16/messenger/" class="archive-article-date">
-  	<time datetime="2017-07-16T10:20:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Android 进程间通讯是非常重要的知识点，其实他的实现方式有很多种比如，使用Bundle，使用文件共享，使用AIDL，使用ContentProvider,Socket</p>
-<p>今天的通信方式，我们采用另外一种传递信息比较方便方式，Messenger。</p>
-<p>先看个图</p>
-<p><img src="http://img.blog.csdn.net/20150723095636567" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/07/16/messenger/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Android架构/" class="article-tag-list-link color5">Android架构</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/16/messenger/">阅读全文 >></a>
         </p>
       
 
