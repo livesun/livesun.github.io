@@ -6,17 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>孙俊卿的博客</title>
+  <title>高效加载Bitmap(一)---BitmapFactory加载bitmap | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="孙俊卿的博客">
-<meta property="og:url" content="http://livesun.github.io/page/6/index.html">
+  <meta name="description" content="1、屏幕密度，DPI，PX，DP1、屏幕密度（Screen density）指的是屏幕里像素值浓度，分辨率/屏幕尺寸可以反映出手机密度。为了方便，Android将屏幕密度分为6种，low, medium, high, extra-high, extra-extra-high, and extra-extra-extra-high. 2、DPI每英寸像素数，可以反映屏幕的清晰度，计算公式为屏幕对角线">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高效加载Bitmap(一)---BitmapFactory加载bitmap">
+<meta property="og:url" content="http://livesun.github.io/2017/10/20/Bitmap1/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="1、屏幕密度，DPI，PX，DP1、屏幕密度（Screen density）指的是屏幕里像素值浓度，分辨率/屏幕尺寸可以反映出手机密度。为了方便，Android将屏幕密度分为6种，low, medium, high, extra-high, extra-extra-high, and extra-extra-extra-high. 2、DPI每英寸像素数，可以反映屏幕的清晰度，计算公式为屏幕对角线">
+<meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry1.png">
+<meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry2.png">
+<meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry1.png">
+<meta property="og:updated_time" content="2017-10-20T03:47:43.276Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="孙俊卿的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="高效加载Bitmap(一)---BitmapFactory加载bitmap">
+<meta name="twitter:description" content="1、屏幕密度，DPI，PX，DP1、屏幕密度（Screen density）指的是屏幕里像素值浓度，分辨率/屏幕尺寸可以反映出手机密度。为了方便，Android将屏幕密度分为6种，low, medium, high, extra-high, extra-extra-high, and extra-extra-extra-high. 2、DPI每英寸像素数，可以反映屏幕的清晰度，计算公式为屏幕对角线">
+<meta name="twitter:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry1.png">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -143,34 +148,222 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-pattern_strategy" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-Bitmap1" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/08/pattern_strategy/">设计模式(1)--策略模式</a>
+    <h1 class="article-title" itemprop="name">
+      高效加载Bitmap(一)---BitmapFactory加载bitmap
     </h1>
   
 
         
-        <a href="/2017/06/08/pattern_strategy/" class="archive-article-date">
-  	<time datetime="2017-06-08T08:03:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-08</time>
+        <a href="/2017/10/20/Bitmap1/" class="archive-article-date">
+  	<time datetime="2017-10-20T03:47:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-20</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>恰巧这几天京东6.18活动，不少人都会趁着折扣买东西，那买东西要支付啊，我们就以支付来讲讲策略模式的应用</p>
-<p>先上UML类图</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/strategy_pattern.png" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/06/08/pattern_strategy/#more">more >></a>
-        
+        <h3 id="1、屏幕密度，DPI，PX，DP"><a href="#1、屏幕密度，DPI，PX，DP" class="headerlink" title="1、屏幕密度，DPI，PX，DP"></a>1、屏幕密度，DPI，PX，DP</h3><h5 id="1、屏幕密度"><a href="#1、屏幕密度" class="headerlink" title="1、屏幕密度"></a>1、屏幕密度</h5><p>（Screen density）指的是屏幕里像素值浓度，分辨率/屏幕尺寸可以反映出手机密度。为了方便，Android将屏幕密度分为6种，low, medium, high, extra-high, extra-extra-high, and extra-extra-extra-high.</p>
+<h5 id="2、DPI"><a href="#2、DPI" class="headerlink" title="2、DPI"></a>2、DPI</h5><p>每英寸像素数，可以反映屏幕的清晰度，计算公式为屏幕对角线的像素点/对角线的长度（物理长度）</p>
+<p>如 小米2s 屏幕分辨率为720px*1280px，4.3英寸。</p>
+<p>dpi=√ (720^2 +1280^2) /4.3 = 342ppi。</p>
+<h5 id="3、PX"><a href="#3、PX" class="headerlink" title="3、PX"></a>3、PX</h5><p>像素，电子屏幕上组成一幅图画或照片的最基本单元，如分辨率为720px*1280px，就是横向720个像素，纵向1280个像素。</p>
+<h5 id="4、DP"><a href="#4、DP" class="headerlink" title="4、DP"></a>4、DP</h5><p>是安卓开发用的长度单位，1dp表示的是在每英寸像素数为160时1px的长度。</p>
+<p>举个例子，在一个屏幕密度为480dpi的手机上。</p>
+<p>1px=dp*(dpi/160)=3dp。</p>
+<p>在屏幕密度为160dpi的手机上。</p>
+<p>1px=dp*(dpi/160)=1dp。</p>
+<p>所以Android一般用dp来作为单位，从而动态适配控件的大小，已达到最佳效果。</p>
+<a id="more"></a>
+<h5 id="5、具体的数据"><a href="#5、具体的数据" class="headerlink" title="5、具体的数据"></a>5、具体的数据</h5><ul>
+<li>ldpi (low) ~120dpi</li>
+<li>mdpi (medium) ~160dpi</li>
+<li>hdpi (high) ~240dpi</li>
+<li>xhdpi (extra-high) ~320dpi</li>
+<li>xxhdpi (extra-extra-high) ~480dpi</li>
+<li>xxxhdpi (extra-extra-extra-high) ~640dpi</li>
+</ul>
+<h3 id="2、BitmapFactory解析Bitmap的原理。"><a href="#2、BitmapFactory解析Bitmap的原理。" class="headerlink" title="2、BitmapFactory解析Bitmap的原理。"></a>2、BitmapFactory解析Bitmap的原理。</h3><p>有一张64x64的图片，(手机为480dpi)我们先放在drawable-xhdpi目录下。</p>
+<p>效果如下</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry1.png" alt="image"></p>
+<p>同样的手机，我们把图片放到drawable-xxxhdpi目录下。</p>
+<p>效果如下</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry2.png" alt="image"></p>
+<p>图片很明显变小了。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+    BitmapFactory<span class="token punctuation">.</span>Options options<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">BitmapFactory<span class="token punctuation">.</span>Options</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    options<span class="token punctuation">.</span>inDensity<span class="token operator">=</span><span class="token number">320</span><span class="token punctuation">;</span>
+    Bitmap bitmap <span class="token operator">=</span> BitmapFactory<span class="token punctuation">.</span><span class="token function">decodeResource</span><span class="token punctuation">(</span><span class="token function">getResources</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> R<span class="token punctuation">.</span>drawable<span class="token punctuation">.</span>zan1<span class="token punctuation">,</span> options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    imageView<span class="token punctuation">.</span><span class="token function">setImageBitmap</span><span class="token punctuation">(</span>bitmap<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>但是，如果我们更改inDensity的值，它又变回来了。</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry1.png" alt="image"></p>
+<p>BitmapFactory提供了六种解析Bitmap的方法</p>
+<ul>
+<li>BitmapFactory.decodeResource();</li>
+<li>BitmapFactory.decodeByteArray();</li>
+<li>BitmapFactory.decodeFile();</li>
+<li>BitmapFactory.decodeStream();</li>
+<li>BitmapFactory.decodeFileDescriptor();</li>
+<li>BitmapFactory.decodeResourceStream();</li>
+</ul>
+<p>分别从资源,字节数组,文件和流中加载一个Bitmap对象，而一般常用的是前四种。而，decodeFile和decodeResource以及decodeResourceStream最终又调用了decodeStream方法。</p>
+<p>这些方法最终都是在Android的底层实现，对应着BitmapFactory的几个native方法。</p>
+<p>这里面有一个值得注意的地方，decodeResource在调用decodeStream之前，多调用了一个decodeResourceStream 方法。根据当前设备屏幕像素密度densityDpi的值进行缩放适配操作</p>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token comment" spellcheck="true">/**
+     * Decode a new Bitmap from an InputStream. This InputStream was obtained from
+     * resources, which we pass to be able to scale the bitmap accordingly.
+        如果这个输入流是从resource，我们可以调整bitmap适应的比例
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> Bitmap <span class="token function">decodeResourceStream</span><span class="token punctuation">(</span>Resources res<span class="token punctuation">,</span> TypedValue value<span class="token punctuation">,</span>
+            InputStream is<span class="token punctuation">,</span> Rect pad<span class="token punctuation">,</span> Options opts<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>opts <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            opts <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Options</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>opts<span class="token punctuation">.</span>inDensity <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> value <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//像素密度--根据资源文件不同位置，值不同</span>
+            <span class="token keyword">final</span> <span class="token keyword">int</span> density <span class="token operator">=</span> value<span class="token punctuation">.</span>density<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//如果是默认位置，比如drawable文件，则是160</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>density <span class="token operator">==</span> TypedValue<span class="token punctuation">.</span>DENSITY_DEFAULT<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//160像素密度 标准 1dp=1px</span>
+                opts<span class="token punctuation">.</span>inDensity <span class="token operator">=</span> DisplayMetrics<span class="token punctuation">.</span>DENSITY_DEFAULT<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>density <span class="token operator">!=</span> TypedValue<span class="token punctuation">.</span>DENSITY_NONE<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                opts<span class="token punctuation">.</span>inDensity <span class="token operator">=</span> density<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>opts<span class="token punctuation">.</span>inTargetDensity <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> res <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//屏幕像素密度--固定值</span>
+            opts<span class="token punctuation">.</span>inTargetDensity <span class="token operator">=</span> res<span class="token punctuation">.</span><span class="token function">getDisplayMetrics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>densityDpi<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> <span class="token function">decodeStream</span><span class="token punctuation">(</span>is<span class="token punctuation">,</span> pad<span class="token punctuation">,</span> opts<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> Bitmap <span class="token function">decodeStream</span><span class="token punctuation">(</span>InputStream is<span class="token punctuation">,</span> Rect outPadding<span class="token punctuation">,</span> Options opts<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token operator">/</span>
+        Bitmap bm <span class="token operator">=</span> null<span class="token punctuation">;</span>
+
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>is <span class="token keyword">instanceof</span> <span class="token class-name">AssetManager<span class="token punctuation">.</span>AssetInputStream</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">final</span> <span class="token keyword">long</span> asset <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>AssetManager<span class="token punctuation">.</span>AssetInputStream<span class="token punctuation">)</span> is<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getNativeAsset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                bm <span class="token operator">=</span> <span class="token function">nativeDecodeAsset</span><span class="token punctuation">(</span>asset<span class="token punctuation">,</span> outPadding<span class="token punctuation">,</span> opts<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                bm <span class="token operator">=</span> <span class="token function">decodeStreamInternal</span><span class="token punctuation">(</span>is<span class="token punctuation">,</span> outPadding<span class="token punctuation">,</span> opts<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>bm <span class="token operator">==</span> null <span class="token operator">&amp;&amp;</span> opts <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> opts<span class="token punctuation">.</span>inBitmap <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Problem decoding into existing bitmap"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token function">setDensityFromOptions</span><span class="token punctuation">(</span>bm<span class="token punctuation">,</span> opts<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            Trace<span class="token punctuation">.</span><span class="token function">traceEnd</span><span class="token punctuation">(</span>Trace<span class="token punctuation">.</span>TRACE_TAG_GRAPHICS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> bm<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setDensityFromOptions</span><span class="token punctuation">(</span>Bitmap outputBitmap<span class="token punctuation">,</span> Options opts<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>outputBitmap <span class="token operator">==</span> null <span class="token operator">||</span> opts <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">final</span> <span class="token keyword">int</span> density <span class="token operator">=</span> opts<span class="token punctuation">.</span>inDensity<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>density <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            outputBitmap<span class="token punctuation">.</span><span class="token function">setDensity</span><span class="token punctuation">(</span>density<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">final</span> <span class="token keyword">int</span> targetDensity <span class="token operator">=</span> opts<span class="token punctuation">.</span>inTargetDensity<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>targetDensity <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> density <span class="token operator">==</span> targetDensity <span class="token operator">||</span> density <span class="token operator">==</span> opts<span class="token punctuation">.</span>inScreenDensity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> np <span class="token operator">=</span> outputBitmap<span class="token punctuation">.</span><span class="token function">getNinePatchChunk</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">final</span> <span class="token keyword">boolean</span> isNinePatch <span class="token operator">=</span> np <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> NinePatch<span class="token punctuation">.</span><span class="token function">isNinePatchChunk</span><span class="token punctuation">(</span>np<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>opts<span class="token punctuation">.</span>inScaled <span class="token operator">||</span> isNinePatch<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                outputBitmap<span class="token punctuation">.</span><span class="token function">setDensity</span><span class="token punctuation">(</span>targetDensity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>opts<span class="token punctuation">.</span>inBitmap <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// bitmap was reused, ensure density is reset</span>
+            outputBitmap<span class="token punctuation">.</span><span class="token function">setDensity</span><span class="token punctuation">(</span>Bitmap<span class="token punctuation">.</span><span class="token function">getDefaultDensity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这段代码，给opts.inDensity 和opts.inTargetDensity进行赋值。</p>
+<p>opts.inDensity=value.density，这个值是根据资源文件的容器动态改变的，比如在xxhdpi中 值为480，在xxxhdpi中值为640。</p>
+<p>而opts.inTargetDensity=res.getDisplayMetrics().densityDpi，这个值则是固定的屏幕密度值，根据每台手机获取不同，但是不会变的值，是固定的。</p>
+<p>在把值赋给options之后，调用native方法解析bitmap，而在解析完成之后，又调用了setDensityFromOptions，先把density赋值给Bitmap，然后判断targetDensity是否为0，density 是否等于targetDensity，density是否等于屏幕密度，如果满足，就不会把targetDensity设置给Bitmap，总之这段代码，通过inScaled，inDensity，inTargetDensity来给bitmap的inDensity参数经行赋值。</p>
+<h5 id="公式：输出图片的宽高-原图片的宽高-inSampleSize-inTargetDensity-inDensity"><a href="#公式：输出图片的宽高-原图片的宽高-inSampleSize-inTargetDensity-inDensity" class="headerlink" title="公式：输出图片的宽高= 原图片的宽高 / inSampleSize * (inTargetDensity / inDensity)"></a>公式：输出图片的宽高= 原图片的宽高 / inSampleSize * (inTargetDensity / inDensity)</h5><pre class="line-numbers language-java"><code class="language-java">
+BitmapFactory<span class="token punctuation">.</span>Options options<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">BitmapFactory<span class="token punctuation">.</span>Options</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        options<span class="token punctuation">.</span>inDensity<span class="token operator">=</span><span class="token number">160</span><span class="token punctuation">;</span>
+        options<span class="token punctuation">.</span>inTargetDensity<span class="token operator">=</span><span class="token number">480</span><span class="token punctuation">;</span>
+        Bitmap bitmap <span class="token operator">=</span> BitmapFactory<span class="token punctuation">.</span><span class="token function">decodeResource</span><span class="token punctuation">(</span><span class="token function">getResources</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> R<span class="token punctuation">.</span>drawable<span class="token punctuation">.</span>zan1<span class="token punctuation">,</span> options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           Log<span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span><span class="token string">"AAA"</span><span class="token punctuation">,</span><span class="token string">"width "</span><span class="token operator">+</span>bitmap<span class="token punctuation">.</span><span class="token function">getWidth</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">=</span><span class="token number">192</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Log<span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span><span class="token string">"AAA"</span><span class="token punctuation">,</span><span class="token string">"height "</span><span class="token operator">+</span>bitmap<span class="token punctuation">.</span><span class="token function">getHeight</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">=</span><span class="token number">192</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2、Bitmap的优化策略"><a href="#2、Bitmap的优化策略" class="headerlink" title="2、Bitmap的优化策略"></a>2、Bitmap的优化策略</h3><p>这里主要用到BitmapFactory.options的inSampleSize的属性，也就是采样率。</p>
+<p>举个例子，如一个ImageView的尺寸只有100x100，但是图片的大小为200x200，如果不经处理加载给imageView，是完全没必要的，我们可以将它缩小为100x100之后再加载给imageView,从而有效提高Bitmap加载时的性能。</p>
+<p>inSampleSize默认为1，最小也是1，采样的大小跟原图一样大。Google文档中指出，inSampleSize的取值为2的指数，也就是1，2，4，8等。</p>
+<p>如inSampleSize为2，图片的宽高就是一半也就是1/2，那图片的大小就缩小了1/4。</p>
+<p>以ARGB888为例，一个像素占用4字节。一张1024x1024像素的图片占用内存为 1024x1024x4=4M。采样率为2时，就为512x512x4=1M。</p>
+<p>直接上代码</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">public</span> Bitmap <span class="token function">decodeResource</span><span class="token punctuation">(</span>Resources res<span class="token punctuation">,</span><span class="token keyword">int</span> resId<span class="token punctuation">,</span><span class="token keyword">int</span> rWidth<span class="token punctuation">,</span><span class="token keyword">int</span> rHeight<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        BitmapFactory<span class="token punctuation">.</span>Options options<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">BitmapFactory<span class="token punctuation">.</span>Options</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//为true，表示只获取参数信息，如宽高等，而不会把bitmap加载到内存.</span>
+        options<span class="token punctuation">.</span>inJustDecodeBounds<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">;</span>
+        BitmapFactory<span class="token punctuation">.</span><span class="token function">decodeResource</span><span class="token punctuation">(</span><span class="token function">getResources</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>R<span class="token punctuation">.</span>drawable<span class="token punctuation">.</span>image<span class="token punctuation">,</span>options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//计算inSampleSize</span>
+        options<span class="token punctuation">.</span>inSampleSize<span class="token operator">=</span> <span class="token function">caculateInSampleSize</span><span class="token punctuation">(</span>options<span class="token punctuation">,</span>rWidth<span class="token punctuation">,</span>rHeight<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+        options<span class="token punctuation">.</span>inJustDecodeBounds<span class="token operator">=</span><span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> BitmapFactory<span class="token punctuation">.</span><span class="token function">decodeResource</span><span class="token punctuation">(</span><span class="token function">getResources</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>R<span class="token punctuation">.</span>drawable<span class="token punctuation">.</span>image<span class="token punctuation">,</span>options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">int</span> <span class="token function">caculateInSampleSize</span><span class="token punctuation">(</span>BitmapFactory<span class="token punctuation">.</span>Options options<span class="token punctuation">,</span> <span class="token keyword">int</span> rWidth<span class="token punctuation">,</span> <span class="token keyword">int</span> rHeight<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>rWidth<span class="token operator">==</span><span class="token number">1</span><span class="token operator">||</span>rHeight<span class="token operator">==</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">int</span> inSampleSize<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> width <span class="token operator">=</span> options<span class="token punctuation">.</span>outWidth<span class="token punctuation">;</span>
+        <span class="token keyword">int</span> height <span class="token operator">=</span> options<span class="token punctuation">.</span>outHeight<span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span>width<span class="token operator">></span>rWidth<span class="token operator">||</span>height<span class="token operator">></span>rHeight<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword">int</span> halfWidth <span class="token operator">=</span> width <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">;</span>
+            <span class="token keyword">int</span> haflHeight <span class="token operator">=</span> height <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">;</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>halfWidth<span class="token operator">/</span>inSampleSize<span class="token punctuation">)</span><span class="token operator">>=</span>rWidth<span class="token operator">&amp;&amp;</span>
+                    <span class="token punctuation">(</span>haflHeight<span class="token operator">/</span>inSampleSize<span class="token punctuation">)</span><span class="token operator">>=</span>rHeight<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                inSampleSize<span class="token operator">*=</span><span class="token number">2</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> inSampleSize<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后，放上BitmapFactory.Options的属性解析，以备查阅</p>
+<pre class="line-numbers language-java"><code class="language-java">inBitmap——在解析Bitmap时重用该Bitmap，不过必须等大的Bitmap而且inMutable须为<span class="token boolean">true</span>
+inMutable——配置Bitmap是否可以更改，比如：在Bitmap上隔几个像素加一条线段
+inJustDecodeBounds——为<span class="token boolean">true</span>仅返回Bitmap的宽高等属性
+inSampleSize——须<span class="token operator">&amp;</span>gt<span class="token punctuation">;</span><span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span>表示Bitmap的压缩比例，如：inSampleSize<span class="token operator">=</span><span class="token number">4</span>，将返回一个是原始图的<span class="token number">1</span><span class="token operator">/</span><span class="token number">16</span>大小的Bitmap
+inPreferredConfig——Bitmap<span class="token punctuation">.</span>Config<span class="token punctuation">.</span>ARGB_8888等
+inDither——是否抖动，默认为<span class="token boolean">false</span>
+inPremultiplied——默认为<span class="token boolean">true</span>，一般不改变它的值
+inDensity——Bitmap的像素密度
+inTargetDensity——Bitmap最终的像素密度
+inScreenDensity——当前屏幕的像素密度
+inScaled——是否支持缩放，默认为<span class="token boolean">true</span>，当设置了这个，Bitmap将会以inTargetDensity的值进行缩放
+inPurgeable——当存储Pixel的内存空间在系统内存不足时是否可以被回收
+inInputShareable——inPurgeable为<span class="token boolean">true</span>情况下才生效，是否可以共享一个InputStream
+inPreferQualityOverSpeed——为<span class="token boolean">true</span>则优先保证Bitmap质量其次是解码速度
+outWidth——返回的Bitmap的宽
+outHeight——返回的Bitmap的高
+inTempStorage——解码时的临时空间，建议<span class="token number">16</span><span class="token operator">*</span><span class="token number">1024</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
       
 
       
@@ -184,7 +377,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/设计模式/" class="article-tag-list-link color5">设计模式</a>
+        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
         		</li>
       		
 		</ul>
@@ -192,16 +385,75 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/08/pattern_strategy/">阅读全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://livesun.github.io/2017/10/20/Bitmap1/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/10/11/ParallaxViewPager/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">通过拦截View的创建，实现视差效果框架</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -216,174 +468,46 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-插件换肤及Resoureces源码分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/07/插件换肤及Resoureces源码分析/">插件换肤以及Resources源码分析（一）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/07/插件换肤及Resoureces源码分析/" class="archive-article-date">
-  	<time datetime="2017-06-07T07:06:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="插件换肤以及Resources源码分析（一）"><a href="#插件换肤以及Resources源码分析（一）" class="headerlink" title="插件换肤以及Resources源码分析（一）"></a>插件换肤以及Resources源码分析（一）</h2><p>插件换肤：从后台下载的皮肤文件，其实都是一个打包的apk，接着在它没有安装以及运行的情况下，获取改皮肤文件中的资源属性，并且不需要重启当前app即可更换资源。</p>
-<h4 id="所以我们面临一个这样的问题："><a href="#所以我们面临一个这样的问题：" class="headerlink" title="所以我们面临一个这样的问题："></a>所以我们面临一个这样的问题：</h4><blockquote>
-<p>如何获取另一个apk中的资源？</p>
-</blockquote>
-<p>在这之前，我们先看看系统是怎么加载资源文件的，以ImageView为例。</p>
-        
-          <a class="article-more-a" href="/2017/06/07/插件换肤及Resoureces源码分析/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/07/插件换肤及Resoureces源码分析/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、屏幕密度，DPI，PX，DP"><span class="toc-number">1.</span> <span class="toc-text">1、屏幕密度，DPI，PX，DP</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、屏幕密度"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、屏幕密度</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、DPI"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、DPI</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3、PX"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、PX</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4、DP"><span class="toc-number">1.0.4.</span> <span class="toc-text">4、DP</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5、具体的数据"><span class="toc-number">1.0.5.</span> <span class="toc-text">5、具体的数据</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、BitmapFactory解析Bitmap的原理。"><span class="toc-number">2.</span> <span class="toc-text">2、BitmapFactory解析Bitmap的原理。</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#公式：输出图片的宽高-原图片的宽高-inSampleSize-inTargetDensity-inDensity"><span class="toc-number">2.0.1.</span> <span class="toc-text">公式：输出图片的宽高= 原图片的宽高 / inSampleSize * (inTargetDensity / inDensity)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、Bitmap的优化策略"><span class="toc-number">3.</span> <span class="toc-text">2、Bitmap的优化策略</span></a></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
-  
-    <article id="post-自定义渐变颜色的textView " class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/06/自定义渐变颜色的textView /">自定义渐变颜色的textView --GradienTextView</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/06/自定义渐变颜色的textView /" class="archive-article-date">
-  	<time datetime="2017-06-06T07:06:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="上图"><a href="#上图" class="headerlink" title="上图"></a>上图</h4><p> <img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/gradedem.png" alt="image"></p>
-<h4 id="首先我们分析做出类似这种效果需要什么条件"><a href="#首先我们分析做出类似这种效果需要什么条件" class="headerlink" title="首先我们分析做出类似这种效果需要什么条件"></a>首先我们分析做出类似这种效果需要什么条件</h4>
-        
-          <a class="article-more-a" href="/2017/06/06/自定义渐变颜色的textView /#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/06/自定义渐变颜色的textView /">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span>
-    </nav>
+  
+
+  
+
+  
+    <section id="comments">
+      <div id="disqus_thread"></div>
+        <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'true'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </section>
   
 
 
@@ -406,8 +530,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

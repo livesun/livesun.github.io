@@ -145,6 +145,88 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ViewTouchCombat" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/14/ViewTouchCombat/">View的Touch事件分发实战应用</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/14/ViewTouchCombat/" class="archive-article-date">
+  	<time datetime="2017-08-14T10:43:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="先上最终效果图："><a href="#先上最终效果图：" class="headerlink" title="先上最终效果图："></a>先上最终效果图：</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/viewtouch.gif" alt="此处输入图片的描述"></p>
+<p>分析一下要解决的Touch事件</p>
+<ul>
+<li>当流布局展示时，流布局消费事件，ListView不能消费事件</li>
+<li>当流布局关闭时，ListView消费事件，并且当滑倒顶部时，下拉的滑动事件交由父控件消费，而上滑的滑动事件依然自己消费。</li>
+</ul>
+<p>看代码</p>
+        
+          <a class="article-more-a" href="/2017/08/14/ViewTouchCombat/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/14/ViewTouchCombat/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-ViewTouchEventEnd" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -516,83 +598,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/07/27/viewTouchEvent/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-TagLayout" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/25/TagLayout/">流布局与Adapter设计模式的结合</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/25/TagLayout/" class="archive-article-date">
-  	<time datetime="2017-07-25T07:57:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>流式布局,相信很多项目中都有这样的需求，比如各大软件的标签呀，小说，热搜等，网上现成的有很多，不过普通的流布局并不难，今天闲来无事，我们就来实现一下。</p>
-<p>下面的这种效果就是典型的流式布局。<br><img src="http://upload-images.jianshu.io/upload_images/1234624-cf6abdeb578a7bb8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/07/25/TagLayout/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/25/TagLayout/">阅读全文 >></a>
         </p>
       
 
