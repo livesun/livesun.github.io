@@ -152,7 +152,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/20/Bitmap1/">高效加载Bitmap(一)---BitmapFactory加载bitmap</a>
+      <a class="article-title" href="/2017/10/20/Bitmap1/">高效加载Bitmap(一) --BitmapFactory加载bitmap</a>
     </h1>
   
 
@@ -165,17 +165,22 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="1、屏幕密度，DPI，PX，DP"><a href="#1、屏幕密度，DPI，PX，DP" class="headerlink" title="1、屏幕密度，DPI，PX，DP"></a>1、屏幕密度，DPI，PX，DP</h3><h5 id="1、屏幕密度"><a href="#1、屏幕密度" class="headerlink" title="1、屏幕密度"></a>1、屏幕密度</h5><p>（Screen density）指的是屏幕里像素值浓度，分辨率/屏幕尺寸可以反映出手机密度。为了方便，Android将屏幕密度分为6种，low, medium, high, extra-high, extra-extra-high, and extra-extra-extra-high.</p>
-<h5 id="2、DPI"><a href="#2、DPI" class="headerlink" title="2、DPI"></a>2、DPI</h5><p>每英寸像素数，可以反映屏幕的清晰度，计算公式为屏幕对角线的像素点/对角线的长度（物理长度）</p>
-<p>如 小米2s 屏幕分辨率为720px*1280px，4.3英寸。</p>
-<p>dpi=√ (720^2 +1280^2) /4.3 = 342ppi。</p>
-<h5 id="3、PX"><a href="#3、PX" class="headerlink" title="3、PX"></a>3、PX</h5><p>像素，电子屏幕上组成一幅图画或照片的最基本单元，如分辨率为720px*1280px，就是横向720个像素，纵向1280个像素。</p>
-<h5 id="4、DP"><a href="#4、DP" class="headerlink" title="4、DP"></a>4、DP</h5><p>是安卓开发用的长度单位，1dp表示的是在每英寸像素数为160时1px的长度。</p>
-<p>举个例子，在一个屏幕密度为480dpi的手机上。</p>
-<p>1px=dp*(dpi/160)=3dp。</p>
-<p>在屏幕密度为160dpi的手机上。</p>
-<p>1px=dp*(dpi/160)=1dp。</p>
-<p>所以Android一般用dp来作为单位，从而动态适配控件的大小，已达到最佳效果。</p>
+        <p>有一张64x64的图片，(手机为480dpi)我们先放在drawable-xhdpi目录下。</p>
+<p>效果如下</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry1.png" alt="image"></p>
+<p>同样的手机，我们把图片放到drawable-xxxhdpi目录下。</p>
+<p>效果如下</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry2.png" alt="image"></p>
+<p>图片很明显变小了。</p>
+<pre><code class="java">
+    BitmapFactory.Options options=new BitmapFactory.Options();
+    options.inDensity=320;
+    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.zan1, options);
+
+    imageView.setImageBitmap(bitmap);
+</code></pre>
+<p>但是，如果我们更改inDensity的值，它又变回来了。</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry1.png" alt="image"></p>
         
           <a class="article-more-a" href="/2017/10/20/Bitmap1/#more">more >></a>
         
