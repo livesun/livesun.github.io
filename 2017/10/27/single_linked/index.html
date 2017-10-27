@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="http://livesun.github.io">
   <title>学习单链表 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="概念：链表结构，是基于指针实现的，由一个个节点组成，每个节点包含数据域和指针域，节点通过指针域进行关联。 链表既可以是连续的，也可以是不连续的，总之都是线性表结构。 链表类型可以分这几类：  单链表 循环链表 双向链表 双向循环链表  我打算从最简单的单链表开始学习。 单链表链表的每个节点中只包含一个指针域，叫做单链表 单链表中的节点结构  数据域 指针域  如图：  用代码表示：  //链表中的">
+  <meta name="description" content="概念：链表结构，是基于指针实现的，由一个个节点组成，每个节点包含数据域和指针域，节点通过指针域进行关联。 链表既可以是连续的，也可以是不连续的，总之都是线性表结构。 链表类型可以分这几类：  单链表 循环链表 双向链表 双向循环链表  我打算从最简单的单链表开始学习。 单链表链表的每个节点中只包含一个指针域，叫做单链表 单链表中的节点结构  数据域 指针域  如图：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="学习单链表">
 <meta property="og:url" content="http://livesun.github.io/2017/10/27/single_linked/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="概念：链表结构，是基于指针实现的，由一个个节点组成，每个节点包含数据域和指针域，节点通过指针域进行关联。 链表既可以是连续的，也可以是不连续的，总之都是线性表结构。 链表类型可以分这几类：  单链表 循环链表 双向链表 双向循环链表  我打算从最简单的单链表开始学习。 单链表链表的每个节点中只包含一个指针域，叫做单链表 单链表中的节点结构  数据域 指针域  如图：  用代码表示：  //链表中的">
+<meta property="og:description" content="概念：链表结构，是基于指针实现的，由一个个节点组成，每个节点包含数据域和指针域，节点通过指针域进行关联。 链表既可以是连续的，也可以是不连续的，总之都是线性表结构。 链表类型可以分这几类：  单链表 循环链表 双向链表 双向循环链表  我打算从最简单的单链表开始学习。 单链表链表的每个节点中只包含一个指针域，叫做单链表 单链表中的节点结构  数据域 指针域  如图：">
 <meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/dataStruceture/linked_node.png">
 <meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/dataStruceture/linked.png">
 <meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/dataStruceture/linked_result.png">
-<meta property="og:updated_time" content="2017-10-27T09:49:05.132Z">
+<meta property="og:updated_time" content="2017-10-27T09:51:19.594Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="学习单链表">
-<meta name="twitter:description" content="概念：链表结构，是基于指针实现的，由一个个节点组成，每个节点包含数据域和指针域，节点通过指针域进行关联。 链表既可以是连续的，也可以是不连续的，总之都是线性表结构。 链表类型可以分这几类：  单链表 循环链表 双向链表 双向循环链表  我打算从最简单的单链表开始学习。 单链表链表的每个节点中只包含一个指针域，叫做单链表 单链表中的节点结构  数据域 指针域  如图：  用代码表示：  //链表中的">
+<meta name="twitter:description" content="概念：链表结构，是基于指针实现的，由一个个节点组成，每个节点包含数据域和指针域，节点通过指针域进行关联。 链表既可以是连续的，也可以是不连续的，总之都是线性表结构。 链表类型可以分这几类：  单链表 循环链表 双向链表 双向循环链表  我打算从最简单的单链表开始学习。 单链表链表的每个节点中只包含一个指针域，叫做单链表 单链表中的节点结构  数据域 指针域  如图：">
 <meta name="twitter:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/dataStruceture/linked_node.png">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
@@ -186,6 +186,7 @@
 </ul>
 <p>如图：</p>
 <p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/dataStruceture/linked_node.png" alt="image"></p>
+<a id="more"></a>
 <p>用代码表示：</p>
 <pre class="line-numbers language-java"><code class="language-java">
 <span class="token comment" spellcheck="true">//链表中的节点</span>
