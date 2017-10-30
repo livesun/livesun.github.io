@@ -6,17 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>孙俊卿的博客</title>
+  <title>顺序表---ArrayList源码分析 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="孙俊卿的博客">
-<meta property="og:url" content="http://livesun.github.io/page/2/index.html">
+  <meta name="description" content="成员变量   /**      * 初始容量      */     private static final int DEFAULT_CAPACITY = 10;      /**      * 空数组容器      */     private static final Object[] EMPTY_ELEMENTDATA = {};      /**      * 用于默认大小的空数组实例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="顺序表---ArrayList源码分析">
+<meta property="og:url" content="http://livesun.github.io/2017/10/29/order_list/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="成员变量   /**      * 初始容量      */     private static final int DEFAULT_CAPACITY = 10;      /**      * 空数组容器      */     private static final Object[] EMPTY_ELEMENTDATA = {};      /**      * 用于默认大小的空数组实例">
+<meta property="og:updated_time" content="2017-10-30T02:51:46.235Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="孙俊卿的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="顺序表---ArrayList源码分析">
+<meta name="twitter:description" content="成员变量   /**      * 初始容量      */     private static final int DEFAULT_CAPACITY = 10;      /**      * 空数组容器      */     private static final Object[] EMPTY_ELEMENTDATA = {};      /**      * 用于默认大小的空数组实例">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -143,148 +144,249 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-webview_upload" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-order_list" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/26/webview_upload/">WebView（一）上传文件</a>
+    <h1 class="article-title" itemprop="name">
+      顺序表---ArrayList源码分析
     </h1>
   
 
         
-        <a href="/2017/09/26/webview_upload/" class="archive-article-date">
-  	<time datetime="2017-09-26T07:58:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-26</time>
+        <a href="/2017/10/29/order_list/" class="archive-article-date">
+  	<time datetime="2017-10-29T02:51:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>默认情况下，Android的WebView不支持文件上传，需要手动适配，原理就是获取到选择文件的uri,然后传给页面去上传。</p>
-<p>做的时候遇到不少坑，这里记录一下。</p>
-<p>效果截图：</p>
-<p>在小米上：</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/webview_file2.png?x-oss-process=image/resize,w_340" alt="img-w150"></p>
-<p>在原生上：</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/webview_file1.png" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/09/26/webview_upload/#more">more >></a>
-        
-      
+        <h4 id="成员变量"><a href="#成员变量" class="headerlink" title="成员变量"></a>成员变量</h4><pre class="line-numbers language-java"><code class="language-java">   <span class="token comment" spellcheck="true">/**
+     * 初始容量
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> DEFAULT_CAPACITY <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/日常踩坑/" class="article-tag-list-link color5">日常踩坑</a>
-        		</li>
-      		
-		</ul>
-	</div>
+    <span class="token comment" spellcheck="true">/**
+     * 空数组容器
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span> EMPTY_ELEMENTDATA <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 用于默认大小的空数组实例 和EMPTY_ELEMENTDATA是用不同的扩展策略
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span> DEFAULTCAPACITY_EMPTY_ELEMENTDATA <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 存储ArrayList元素的数组缓冲区
+     */</span>
+
+    <span class="token keyword">transient</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span> elementData<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// non-private to simplify nested class access</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * The size of the ArrayList (the number of elements it contains).
+     * 大小
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> size<span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h4><pre class="line-numbers language-java"><code class="language-java">
+<span class="token comment" spellcheck="true">//initialCapacity 容量</span>
+ <span class="token keyword">public</span> <span class="token function">ArrayList</span><span class="token punctuation">(</span><span class="token keyword">int</span> initialCapacity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//根据容量创建数组</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>initialCapacity <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>elementData <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">[</span>initialCapacity<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//如果为0，就把    EMPTY_ELEMENTDATA空数组赋值给elementData</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>initialCapacity <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>elementData <span class="token operator">=</span> EMPTY_ELEMENTDATA<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//抛异常</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Illegal Capacity: "</span><span class="token operator">+</span>
+                                               initialCapacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">//空参构造方法  elementData为默认大小的空数组   </span>
+  <span class="token keyword">public</span> <span class="token function">ArrayList</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>elementData <span class="token operator">=</span> DEFAULTCAPACITY_EMPTY_ELEMENTDATA<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+ <span class="token keyword">public</span> <span class="token function">ArrayList</span><span class="token punctuation">(</span>Collection<span class="token operator">&lt;</span><span class="token operator">?</span> <span class="token keyword">extends</span> <span class="token class-name">E</span><span class="token operator">></span> c<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+ <span class="token comment" spellcheck="true">//把Collection（集合）转成数组</span>
+        elementData <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">toArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>size <span class="token operator">=</span> elementData<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span>
+            <span class="token comment" spellcheck="true">//有可能出错，没有转成Object数组</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>elementData<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+            <span class="token comment" spellcheck="true">//copy一份</span>
+                elementData <span class="token operator">=</span> Arrays<span class="token punctuation">.</span><span class="token function">copyOf</span><span class="token punctuation">(</span>elementData<span class="token punctuation">,</span> size<span class="token punctuation">,</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//空数组</span>
+            <span class="token comment" spellcheck="true">// replace with empty array.</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>elementData <span class="token operator">=</span> EMPTY_ELEMENTDATA<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="add方法"><a href="#add方法" class="headerlink" title="add方法"></a>add方法</h4><pre class="line-numbers language-java"><code class="language-java">
+ <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">add</span><span class="token punctuation">(</span>E e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//确定内部容量</span>
+        <span class="token function">ensureCapacityInternal</span><span class="token punctuation">(</span>size <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// Increments modCount!!</span>
+        <span class="token comment" spellcheck="true">//添加数据，更新size</span>
+        elementData<span class="token punctuation">[</span>size<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> e<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+ <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">int</span> index<span class="token punctuation">,</span> E element<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">></span> size <span class="token operator">||</span> index <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IndexOutOfBoundsException</span><span class="token punctuation">(</span><span class="token function">outOfBoundsMsg</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">ensureCapacityInternal</span><span class="token punctuation">(</span>size <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// Increments modCount!!</span>
+        <span class="token comment" spellcheck="true">//从index开始（包括），数据向后移动一位（这里的效率低）</span>
+        System<span class="token punctuation">.</span><span class="token function">arraycopy</span><span class="token punctuation">(</span>elementData<span class="token punctuation">,</span> index<span class="token punctuation">,</span> elementData<span class="token punctuation">,</span> index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span>
+                         size <span class="token operator">-</span> index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        elementData<span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">=</span> element<span class="token punctuation">;</span>
+        size<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">//确定内部容量</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">ensureCapacityInternal</span><span class="token punctuation">(</span><span class="token keyword">int</span> minCapacity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token comment" spellcheck="true">// 第一次就会走这个</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>elementData <span class="token operator">==</span> DEFAULTCAPACITY_EMPTY_ELEMENTDATA<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//添加一条--九条，minCapacity最小容量都是10。</span>
+            minCapacity <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>DEFAULT_CAPACITY<span class="token punctuation">,</span> minCapacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token function">ensureExplicitCapacity</span><span class="token punctuation">(</span>minCapacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//确定明确的容量</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">ensureExplicitCapacity</span><span class="token punctuation">(</span><span class="token keyword">int</span> minCapacity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 修改次数</span>
+        modCount<span class="token operator">++</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// overflow-conscious code</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>minCapacity <span class="token operator">-</span> elementData<span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token function">grow</span><span class="token punctuation">(</span>minCapacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+  <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> MAX_ARRAY_SIZE <span class="token operator">=</span> Integer<span class="token punctuation">.</span>MAX_VALUE <span class="token operator">-</span> <span class="token number">8</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">//扩充容器</span>
+  <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">grow</span><span class="token punctuation">(</span><span class="token keyword">int</span> minCapacity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//当前数组的大小</span>
+        <span class="token keyword">int</span> oldCapacity <span class="token operator">=</span> elementData<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//当前数组的大小+当前数组大小的一半也就是扩充1.5倍</span>
+        <span class="token keyword">int</span> newCapacity <span class="token operator">=</span> oldCapacity <span class="token operator">+</span> <span class="token punctuation">(</span>oldCapacity <span class="token operator">>></span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//如果小于minCapacity</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>newCapacity <span class="token operator">-</span> minCapacity <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token comment" spellcheck="true">//重新设置容器大小</span>
+            newCapacity <span class="token operator">=</span> minCapacity<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//大于Integer.MAX_VALUE - 8;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>newCapacity <span class="token operator">-</span> MAX_ARRAY_SIZE <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span>
+            newCapacity <span class="token operator">=</span> <span class="token function">hugeCapacity</span><span class="token punctuation">(</span>minCapacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// minCapacity is usually close to size, so this is a win:</span>
+        <span class="token comment" spellcheck="true">//数据复制到新容器中--效率缓慢</span>
+        elementData <span class="token operator">=</span> Arrays<span class="token punctuation">.</span><span class="token function">copyOf</span><span class="token punctuation">(</span>elementData<span class="token punctuation">,</span> newCapacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/26/webview_upload/">阅读全文 >></a>
-        </p>
-      
+    <span class="token comment" spellcheck="true">//处理容量巨大时的情况</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">hugeCapacity</span><span class="token punctuation">(</span><span class="token keyword">int</span> minCapacity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//超过int的最大值，抛出异常</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>minCapacity <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> 
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">OutOfMemoryError</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+    <span class="token comment" spellcheck="true">//根据情况设置为int的最大值或者MAX_ARRAY_SIZE</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>minCapacity <span class="token operator">></span> MAX_ARRAY_SIZE<span class="token punctuation">)</span> <span class="token operator">?</span>
+        Integer<span class="token punctuation">.</span>MAX_VALUE <span class="token operator">:</span>
+        MAX_ARRAY_SIZE<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里大概描述一下流程</p>
+<p>如果默认new ArrayList();—&gt;此刻elementData==DEFAULTCAPACITY_EMPTY_ELEMENTDATA–&gt;我们添加第一条数据，minCapacity=size+1=1;—&gt; minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity) =10;—&gt;10-elementData.length &gt; 0成立–&gt;grow(10)–&gt;newCapacity经过一些列计算最终赋值为10–&gt;通过copyOf方法，把当前null的elementData变成一个容量为10的新的数组赋值给elementData—&gt;最后 elementData[size++] = e（执行顺序，先elementData[0]=e;再size=1），把数据添加进去。</p>
+<h4 id="get-方法"><a href="#get-方法" class="headerlink" title="get()方法"></a>get()方法</h4><pre class="line-numbers language-java"><code class="language-java">
+<span class="token comment" spellcheck="true">//获取指定位置上的数据</span>
+<span class="token keyword">public</span> E <span class="token function">get</span><span class="token punctuation">(</span><span class="token keyword">int</span> index<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//非法参数校验</span>
+     <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">>=</span> size<span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IndexOutOfBoundsException</span><span class="token punctuation">(</span><span class="token function">outOfBoundsMsg</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
+    <span class="token comment" spellcheck="true">//返回数据</span>
+    <span class="token keyword">return</span> <span class="token function">elementData</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>直接根据index锁定内存。效率很高</p>
+<h4 id="set-方法"><a href="#set-方法" class="headerlink" title="set()方法"></a>set()方法</h4><pre><code>public E set(int index, E element) {
+        if (index &gt;= size)
+            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 
-
-
-
-  
-    <article id="post-intercept" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/25/intercept/">通过AppCompateActivity,学习View的拦截</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/25/intercept/" class="archive-article-date">
-  	<time datetime="2017-09-25T10:13:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>再开始之前，我们有必要先看这么一个问题，同样一个TextView,如果我们的MainActivity 分别继承Activity，AppCompatActivity，我们打印一下我们的TextView。</p>
-<pre><code class="java">
-&lt;!--继承自Activity：--&gt;
-
-android.widget.TextView id/text_view
-
-&lt;!--继承自AppCompatActivity： --&gt;
-
-android.support.v7.widget.AppCompatTextView id/text_view
-</code></pre>
-<p>发现一个很有趣的现象，明明是TextView，为什么继承AppCompatActivity 就变成AppCompatTextView了？到底发生了什么？</p>
-<p><a href="https://livesun.github.io/2017/06/28/setContentView%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">setContentView源码分析</a></p>
-<p>可以看到，setContentView所做的事情，就是通过PhoneWindow实例化一个DecorView，同时解析一系列系统自带的资源文件，把它添加到DecorView中，这里面有一个id为 android.R.id.content的FrameLayout,这个正是我们的activity的直接父容器，而setContentView把自己的资源文件添加进去。</p>
-<p>也可以看到继承AppComatActivity的setContentView方法其实跟继承Activity的实现没什么太大的区别。<br>到这里，我们还是没发现是什么导致TextView变成AppCompatTextView的。</p>
-<p>我们看AppCompatActivity onCreate方法（）</p>
-<pre><code class="java"> @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        final AppCompatDelegate delegate = getDelegate();
-        delegate.installViewFactory();
-        delegate.onCreate(savedInstanceState);
-        if (delegate.applyDayNight() &amp;&amp; mThemeId != 0) {
-            // If DayNight has been applied, we need to re-apply the theme for
-            // the changes to take effect. On API 23+, we should bypass
-            // setTheme(), which will no-op if the theme ID is identical to the
-            // current theme ID.
-            if (Build.VERSION.SDK_INT &gt;= 23) {
-                onApplyThemeResource(getTheme(), mThemeId, false);
-            } else {
-                setTheme(mThemeId);
-            }
-        }
-        super.onCreate(savedInstanceState);
+        E oldValue = (E) elementData[index];
+        elementData[index] = element;
+        return oldValue;
     }
-</code></pre>
-<p>在调用super.onCreate(savedInstanceState)之前，其实调用了delegate.installViewFactory()和 delegate.onCreate(savedInstanceState)这两个方法。</p>
-        
-          <a class="article-more-a" href="/2017/09/25/intercept/#more">more >></a>
-        
+</code></pre><p>也比较简单就能看明白，先通过index查找出旧的数据，再把新数据进行替换返回出去。</p>
+<h4 id="remove-方法"><a href="#remove-方法" class="headerlink" title="remove()方法"></a>remove()方法</h4><pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">public</span> E <span class="token function">remove</span><span class="token punctuation">(</span><span class="token keyword">int</span> index<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">>=</span> size<span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IndexOutOfBoundsException</span><span class="token punctuation">(</span><span class="token function">outOfBoundsMsg</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        modCount<span class="token operator">++</span><span class="token punctuation">;</span>
+        E oldValue <span class="token operator">=</span> <span class="token punctuation">(</span>E<span class="token punctuation">)</span> elementData<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//计算要移动数据的个数</span>
+        <span class="token keyword">int</span> numMoved <span class="token operator">=</span> size <span class="token operator">-</span> index <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>numMoved <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span>
+         <span class="token comment" spellcheck="true">//从index+1开始，所有数据向前移动一位，这样，index位置上的数据就被覆盖了，相当于移除了</span>
+            System<span class="token punctuation">.</span><span class="token function">arraycopy</span><span class="token punctuation">(</span>elementData<span class="token punctuation">,</span> index<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">,</span> elementData<span class="token punctuation">,</span> index<span class="token punctuation">,</span>
+                             numMoved<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//容器的最后一位置null；应为每次都要移动空一位，同时更新size</span>
+        elementData<span class="token punctuation">[</span><span class="token operator">--</span>size<span class="token punctuation">]</span> <span class="token operator">=</span> null<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// clear to let GC do its work</span>
+
+        <span class="token keyword">return</span> oldValue<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">//根据数据移除</span>
+ <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">remove</span><span class="token punctuation">(</span>Object o<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+ <span class="token comment" spellcheck="true">//从头到尾遍历数组</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>o <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> index <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> index <span class="token operator">&lt;</span> size<span class="token punctuation">;</span> index<span class="token operator">++</span><span class="token punctuation">)</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>elementData<span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token function">fastRemove</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> index <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> index <span class="token operator">&lt;</span> size<span class="token punctuation">;</span> index<span class="token operator">++</span><span class="token punctuation">)</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>o<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>elementData<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token function">fastRemove</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//跟remove(int index)其实一样</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">fastRemove</span><span class="token punctuation">(</span><span class="token keyword">int</span> index<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        modCount<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> numMoved <span class="token operator">=</span> size <span class="token operator">-</span> index <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>numMoved <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span>
+            System<span class="token punctuation">.</span><span class="token function">arraycopy</span><span class="token punctuation">(</span>elementData<span class="token punctuation">,</span> index<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">,</span> elementData<span class="token punctuation">,</span> index<span class="token punctuation">,</span>
+                             numMoved<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        elementData<span class="token punctuation">[</span><span class="token operator">--</span>size<span class="token punctuation">]</span> <span class="token operator">=</span> null<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// clear to let GC do its work</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="clear-方法"><a href="#clear-方法" class="headerlink" title="clear()方法"></a>clear()方法</h4><pre class="line-numbers language-java"><code class="language-java">
+ <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        modCount<span class="token operator">++</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// clear to let GC do its work</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> size<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+            elementData<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> null<span class="token punctuation">;</span>
+
+        size <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
       
 
       
@@ -298,7 +400,7 @@ android.support.v7.widget.AppCompatTextView id/text_view
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
+        			<a href="/categories/数据结构/" class="article-tag-list-link color5">数据结构</a>
         		</li>
       		
 		</ul>
@@ -306,16 +408,75 @@ android.support.v7.widget.AppCompatTextView id/text_view
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/25/intercept/">阅读全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://livesun.github.io/2017/10/29/order_list/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/10/27/single_linked/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">学习单链表</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -330,255 +491,46 @@ android.support.v7.widget.AppCompatTextView id/text_view
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-RecyclerFourStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/22/RecyclerFourStep/">RecyclerView进阶（四）万能Adapter</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/22/RecyclerFourStep/" class="archive-article-date">
-  	<time datetime="2017-09-22T03:47:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>这次对RecylcerView的adapter经行封装，以减少重复代码的调用。</p>
-<p>实现的功能：</p>
-<ul>
-<li>返回统一数据的点击事件</li>
-<li>多条目布局</li>
-<li>统一的图片加载</li>
-<li>极度简洁的调用流程</li>
-</ul>
-        
-          <a class="article-more-a" href="/2017/09/22/RecyclerFourStep/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/22/RecyclerFourStep/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#成员变量"><span class="toc-number">1.</span> <span class="toc-text">成员变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#构造方法"><span class="toc-number">2.</span> <span class="toc-text">构造方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#add方法"><span class="toc-number">3.</span> <span class="toc-text">add方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#get-方法"><span class="toc-number">4.</span> <span class="toc-text">get()方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#set-方法"><span class="toc-number">5.</span> <span class="toc-text">set()方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#remove-方法"><span class="toc-number">6.</span> <span class="toc-text">remove()方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#clear-方法"><span class="toc-number">7.</span> <span class="toc-text">clear()方法</span></a></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
-  
-    <article id="post-RecyclerThreeStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/RecyclerThreeStep/">RecyclerView进阶（三）拖拽排序--仿新闻客户端</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/01/RecyclerThreeStep/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:46:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_swip5.gif" alt="image"></p>
-<p>长按进入编辑模式，编辑模式下，我的频道可以拖拽排序，同时，可以移除我的频道栏目，并添加到其他频道中，也可以从其他频道添加进我的频道，同时移除其他频道的该模块。</p>
-<p>这个效果，相信在不少app中看到过，这个拖拽排序的实现方式有好几种，如WindowManager，利用他的updateViewLayout，不断更新view的位置。</p>
-<p>这里，我们使用RecyclerView的ItemTouchHelper辅助类，来实现</p>
-        
-          <a class="article-more-a" href="/2017/09/01/RecyclerThreeStep/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/RecyclerThreeStep/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-RecylcerTwoStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/30/RecylcerTwoStep/">RecyclerView进阶（二）实现悬浮吸顶</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/30/RecylcerTwoStep/" class="archive-article-date">
-  	<time datetime="2017-08-30T02:56:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_xuanguxiding.gif" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/08/30/RecylcerTwoStep/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/30/RecylcerTwoStep/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
+  
+    <section id="comments">
+      <div id="disqus_thread"></div>
+        <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'true'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </section>
   
 
 
@@ -601,8 +553,8 @@ android.support.v7.widget.AppCompatTextView id/text_view
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

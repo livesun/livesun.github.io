@@ -145,6 +145,83 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-RecyclerOneStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/24/RecyclerOneStep/">RecyclerView进阶（一）通过装饰者模式添加头部底部</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/24/RecyclerOneStep/" class="archive-article-date">
+  	<time datetime="2017-08-24T07:26:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_warpperhead.gif" alt="image"></p>
+<h3 id="通过装饰者模式添加头部底部"><a href="#通过装饰者模式添加头部底部" class="headerlink" title="通过装饰者模式添加头部底部"></a>通过装饰者模式添加头部底部</h3><p>ListView提供了addHeadView和addFootView方法，使用起来非常方便，而ReyclerView则需要我们自己在adapter中判断，常规做法无外乎判断position==0，来添加头布局，不过这个做法只适合单个，而且不通用。<br>我们看下ListView.addHeadView是如何实现的</p>
+        
+          <a class="article-more-a" href="/2017/08/24/RecyclerOneStep/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/24/RecyclerOneStep/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-ViewTouchCombat" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -474,130 +551,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/07/28/QQZoomListView/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-viewTouchEvent" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/27/viewTouchEvent/">View的Touch事件分发以及源码分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/27/viewTouchEvent/" class="archive-article-date">
-  	<time datetime="2017-07-27T10:50:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Touch事件分发中有两个主角:ViewGroup和View。<br>为了方便理解，今天我们先单独讲View的Touch事件分发，我们先看下实例代码</p>
-<p>首先，我们自定义一个view</p>
-<pre><code class="java">public class TouchView extends View {
-    private  Context context;
-    private  AttributeSet attrs;
-
-    public TouchView(Context context) {
-        super(context);
-    }
-
-    public TouchView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        this.context = context;
-        this.attrs = attrs;
-    }
-
-    public TouchView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        addTextView(&quot;onTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
-        return super.onTouchEvent(event);
-    }
-
-    /**
-     * 用来做事件分发
-     * @param event
-     * @return
-     */
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        addTextView(&quot;dispatchTouchEvent--&gt;&quot;+event.getAction(),(LinearLayout)getParent());
-        return super.dispatchTouchEvent(event);
-    }
-
-    public void addTextView(String tag, ViewGroup viewGroup){
-        TextView textView=new TextView(context);
-        textView.setText(tag);
-        textView.setTextSize(18);
-        textView.setTextColor(Color.BLACK);
-        viewGroup.addView(textView);
-        TextView text=new TextView(context);
-        text.setText(&quot;↓&quot;);
-        viewGroup.addView(text);
-    }
-}
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/07/27/viewTouchEvent/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/27/viewTouchEvent/">阅读全文 >></a>
         </p>
       
 
