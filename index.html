@@ -145,6 +145,86 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-MesssageQueue" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/31/MesssageQueue/">Android消息机制（一）---MessageQueue源码分析</a>
+    </h1>
+  
+
+        
+        <a href="/2017/10/31/MesssageQueue/" class="archive-article-date">
+  	<time datetime="2017-10-31T07:00:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="MessageQueue是什么结构："><a href="#MessageQueue是什么结构：" class="headerlink" title="MessageQueue是什么结构："></a>MessageQueue是什么结构：</h4><ul>
+<li><a href="https://livesun.github.io/2017/10/27/single_linked/">是一个单链表</a></li>
+<li>链表节点的排序方式以时间（when）来排序</li>
+</ul>
+<p>因为个人水平问题，对native方法没有能力进行分析，只能根据链表的添加移除以及查找方面对MessageQueue进行分析。</p>
+        
+          <a class="article-more-a" href="/2017/10/31/MesssageQueue/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/10/31/MesssageQueue/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-order_list" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -487,96 +567,6 @@ new int[]{R.layout.activity_test,R.layout.activity_kotlin,R.layout.activity_user
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/10/10/LikeLayout/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-webview_setCookie" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/26/webview_setCookie/">WebView（二）设置Cookie</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/26/webview_setCookie/" class="archive-article-date">
-  	<time datetime="2017-09-26T08:32:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>百度了很多，但是大都是同样的代码 </p>
-<pre><code class="java">
- public  void synCookies( String url,String cookie) {
-        CookieSyncManager.createInstance(UiUtils.getContext());
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.setAcceptCookie(true);
-        cookieManager.setCookie(url, cookie);
-        CookieSyncManager.getInstance().sync();
-    }
-</code></pre>
-<p>这样肯定没错，但是很多情况下，它不起作用。</p>
-<p>首先，最好先清空cookie，防止切换用户导致cookie混乱。</p>
-<p>其次，当cookie的信息不止一条是，上面的代码是失效的。</p>
-<p>还有，如果存在path，和domain，需要带回去，拼接的时候用分号拼接，通过StringBuilder的方式合成一个字符串。</p>
-<p>多个cookie信息，一定要分开对应自己的path和domain，for循环，多次setCookie。</p>
-        
-          <a class="article-more-a" href="/2017/09/26/webview_setCookie/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/日常踩坑/" class="article-tag-list-link color5">日常踩坑</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/26/webview_setCookie/">阅读全文 >></a>
         </p>
       
 

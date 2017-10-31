@@ -6,17 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>孙俊卿的博客</title>
+  <title>Android消息机制（一）---MessageQueue源码分析 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="孙俊卿的博客">
-<meta property="og:url" content="http://livesun.github.io/page/5/index.html">
+  <meta name="description" content="MessageQueue是什么结构： 是一个单链表 链表节点的排序方式以时间（when）来排序  因为个人水平问题，对native方法没有能力进行分析，只能根据链表的添加移除以及查找方面对MessageQueue进行分析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android消息机制（一）---MessageQueue源码分析">
+<meta property="og:url" content="http://livesun.github.io/2017/10/31/MesssageQueue/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="MessageQueue是什么结构： 是一个单链表 链表节点的排序方式以时间（when）来排序  因为个人水平问题，对native方法没有能力进行分析，只能根据链表的添加移除以及查找方面对MessageQueue进行分析。">
+<meta property="og:updated_time" content="2017-10-31T07:01:15.757Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="孙俊卿的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="Android消息机制（一）---MessageQueue源码分析">
+<meta name="twitter:description" content="MessageQueue是什么结构： 是一个单链表 链表节点的排序方式以时间（when）来排序  因为个人水平问题，对native方法没有能力进行分析，只能根据链表的添加移除以及查找方面对MessageQueue进行分析。">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -143,123 +144,529 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-ioc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-MesssageQueue" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ioc/">手写一个ioc注解框架</a>
+    <h1 class="article-title" itemprop="name">
+      Android消息机制（一）---MessageQueue源码分析
     </h1>
   
 
         
-        <a href="/2017/07/03/ioc/" class="archive-article-date">
-  	<time datetime="2017-07-03T07:21:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
+        <a href="/2017/10/31/MesssageQueue/" class="archive-article-date">
+  	<time datetime="2017-10-31T07:00:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-31</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>今天这个小框架的功能跟xutils的一样，通过注解的方式，让我们不用在使用findviewById，以及new OnClickListener。其实他的实现原理，就都是利用的反射和注解来实现。</p>
-<p>这里我们先了解一下注解</p>
-<h4 id="元注解："><a href="#元注解：" class="headerlink" title="元注解："></a>元注解：</h4><ul>
-<li>@Target</li>
-<li>@Retention</li>
-<li>@Documented</li>
-<li>@Inherited</li>
+        <h4 id="MessageQueue是什么结构："><a href="#MessageQueue是什么结构：" class="headerlink" title="MessageQueue是什么结构："></a>MessageQueue是什么结构：</h4><ul>
+<li><a href="https://livesun.github.io/2017/10/27/single_linked/">是一个单链表</a></li>
+<li>链表节点的排序方式以时间（when）来排序</li>
 </ul>
-<h4 id="Target"><a href="#Target" class="headerlink" title="@Target"></a>@Target</h4><p>Target –目标，把…作为目标</p>
-<h4 id="顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。"><a href="#顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。" class="headerlink" title="顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。"></a>顾名思义，他的作用就是：被描述的注解可以用在什么地方，也就是说该注解的使用范围。</h4><p>看下例子：</p>
-        
-          <a class="article-more-a" href="/2017/07/03/ioc/#more">more >></a>
-        
-      
+<p>因为个人水平问题，对native方法没有能力进行分析，只能根据链表的添加移除以及查找方面对MessageQueue进行分析。</p>
+<a id="more"></a>
+<h4 id="成员变量"><a href="#成员变量" class="headerlink" title="成员变量"></a>成员变量</h4><pre class="line-numbers language-java"><code class="language-java">
+<span class="token comment" spellcheck="true">// True if the message queue can be quit.</span>
+    <span class="token comment" spellcheck="true">//如果消息可以退出，则为真</span>
+    <span class="token comment" spellcheck="true">//系统创建的UI线程的MessageQueue是不运行的 其他的都是允许的</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> mQuitAllowed<span class="token punctuation">;</span>
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Android架构/" class="article-tag-list-link color5">Android架构</a>
-        		</li>
-      		
-		</ul>
-	</div>
+    <span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unused"</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">//nativie方法相关</span>
+    <span class="token keyword">private</span> <span class="token keyword">long</span> mPtr<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// used by native code</span>
 
+    <span class="token comment" spellcheck="true">//消息队列的头Head</span>
+    Message mMessages<span class="token punctuation">;</span>
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ioc/">阅读全文 >></a>
-        </p>
-      
+    <span class="token comment" spellcheck="true">//存放IdleHandler的集合</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> ArrayList<span class="token operator">&lt;</span>IdleHandler<span class="token operator">></span> mIdleHandlers <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span>IdleHandler<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+    <span class="token comment" spellcheck="true">//存放IdleHandler的数组</span>
+    <span class="token keyword">private</span> IdleHandler<span class="token punctuation">[</span><span class="token punctuation">]</span> mPendingIdleHandlers<span class="token punctuation">;</span>
 
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
+    <span class="token comment" spellcheck="true">//当前队列是否处于正在退出的状态</span>
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> mQuitting<span class="token punctuation">;</span>
 
+    <span class="token comment" spellcheck="true">//当前列队是否正在等待被激活以获取消息</span>
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> mBlocked<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// The next barrier token.</span>
+    <span class="token comment" spellcheck="true">// Barriers are indicated by messages with a null target whose arg1 field carries the token.</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> mNextBarrierToken<span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面这些成员变量中，需要注意的是mMessages，mIdleHandlers，mPendingIdleHandlers<br>mQuitting，mBlocked。</p>
+<h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><p>MessageQueue 的构造函数非常简单</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token function">MessageQueue</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> quitAllowed<span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    mQuitAllowed <span class="token operator">=</span> quitAllowed<span class="token punctuation">;</span>  
+    <span class="token comment" spellcheck="true">//创建了NativeMessageQueue对象</span>
+    <span class="token function">nativeInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="IdleHandler"><a href="#IdleHandler" class="headerlink" title="IdleHandler"></a>IdleHandler</h4><pre class="line-numbers language-java"><code class="language-java">
+ <span class="token comment" spellcheck="true">/**
+   *以用来在线程空闲的时候，指定一个操作
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">interface</span> <span class="token class-name">IdleHandler</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">/**
+         * MessageQueue发现当前没有更多消息处理时，可以顺带执行queueIdle里面的方法。
+         * 如果返回false，调用完毕后会从mIdleHandlers中移除。
+         * 如果返回true，调用完毕之后还会保留
+         */</span>
+        <span class="token keyword">boolean</span> <span class="token function">queueIdle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
 
+<span class="token comment" spellcheck="true">//添加方法</span>
 
-  
-    <article id="post-setContentView源码分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/28/setContentView源码分析/">setContentView源码分析（一）</a>
-    </h1>
-  
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addIdleHandler</span><span class="token punctuation">(</span><span class="token annotation punctuation">@NonNull</span> IdleHandler handler<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>handler <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">NullPointerException</span><span class="token punctuation">(</span><span class="token string">"Can't add a null IdleHandler"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            mIdleHandlers<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>handler<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
 
-        
-        <a href="/2017/06/28/setContentView源码分析/" class="archive-article-date">
-  	<time datetime="2017-06-28T02:03:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Activity-setContentView源码分析"><a href="#Activity-setContentView源码分析" class="headerlink" title="Activity setContentView源码分析"></a>Activity setContentView源码分析</h2><p>当我们创建一个Activity，只需要在onCreate方法中，调用setContentView方法，把我们的布局id传进去，系统机会自动帮我们把布局展示出来，那setContentView方法究竟都做了什么工作，还有我们的布局添加进了哪里？</p>
-<p>我们今天的问题：</p>
+<span class="token comment" spellcheck="true">//移除方法</span>
+
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">removeIdleHandler</span><span class="token punctuation">(</span><span class="token annotation punctuation">@NonNull</span> IdleHandler handler<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            mIdleHandlers<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>handler<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>举个简单的用法：</p>
+<pre class="line-numbers language-java"><code class="language-java">
+ <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span>Bundle savedInstanceState<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>savedInstanceState<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">setContentView</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>layout<span class="token punctuation">.</span>main_activity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+     <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+      Looper<span class="token punctuation">.</span><span class="token function">myQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addIdleHandler</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">MessageQueue<span class="token punctuation">.</span>IdleHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">queueIdle</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+                <span class="token comment" spellcheck="true">//TODO</span>
+
+                <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+ <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>它可以保证在线程空闲状态时才调用该方法，比如页面复杂的情况下，绘制的比较慢，绑定数据就可以放在这里面进行操作。（onResume 中你的行为会在绘制之前执行，页面还是会出现卡顿）</p>
+<p>这里有篇干货：<a href="https://cloud.tencent.com/community/article/711098" target="_blank" rel="external">你知道 android 的 MessageQueue.IdleHandler 吗？</a></p>
+<h4 id="enqueueMessage方法"><a href="#enqueueMessage方法" class="headerlink" title="enqueueMessage方法"></a>enqueueMessage方法</h4><p>也就是add方法，它会对加入的message进行排序。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+  <span class="token keyword">boolean</span> <span class="token function">enqueueMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">,</span> <span class="token keyword">long</span> when<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>msg<span class="token punctuation">.</span>target <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Message must have a target."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>msg<span class="token punctuation">.</span><span class="token function">isInUse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span>msg <span class="token operator">+</span> <span class="token string">" This message is already in use."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//如果正在退出队列 </span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>mQuitting<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                IllegalStateException e <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span>
+                        msg<span class="token punctuation">.</span>target <span class="token operator">+</span> <span class="token string">" sending message to a Handler on a dead thread"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                Log<span class="token punctuation">.</span><span class="token function">w</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                msg<span class="token punctuation">.</span><span class="token function">recycle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            msg<span class="token punctuation">.</span><span class="token function">markInUse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            msg<span class="token punctuation">.</span>when <span class="token operator">=</span> when<span class="token punctuation">;</span>
+            Message p <span class="token operator">=</span> mMessages<span class="token punctuation">;</span>
+            <span class="token keyword">boolean</span> needWake<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>p <span class="token operator">==</span> null <span class="token operator">||</span> when <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> when <span class="token operator">&lt;</span> p<span class="token punctuation">.</span>when<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// New head, wake up the event queue if blocked.</span>
+                msg<span class="token punctuation">.</span>next <span class="token operator">=</span> p<span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">//新头</span>
+                mMessages <span class="token operator">=</span> msg<span class="token punctuation">;</span>
+                needWake <span class="token operator">=</span> mBlocked<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">//进入这里，p!=null when>=p.when</span>
+
+                <span class="token comment" spellcheck="true">// Inserted within the middle of the queue.  Usually we don't have to wake</span>
+                <span class="token comment" spellcheck="true">// up the event queue unless there is a barrier at the head of the queue</span>
+                <span class="token comment" spellcheck="true">// and the message is the earliest asynchronous message in the queue.</span>
+                needWake <span class="token operator">=</span> mBlocked <span class="token operator">&amp;&amp;</span> p<span class="token punctuation">.</span>target <span class="token operator">==</span> null <span class="token operator">&amp;&amp;</span> msg<span class="token punctuation">.</span><span class="token function">isAsynchronous</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                Message prev<span class="token punctuation">;</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span><span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    prev <span class="token operator">=</span> p<span class="token punctuation">;</span>
+                    p <span class="token operator">=</span> p<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>p <span class="token operator">==</span> null <span class="token operator">||</span> when <span class="token operator">&lt;</span> p<span class="token punctuation">.</span>when<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">break</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>needWake <span class="token operator">&amp;&amp;</span> p<span class="token punctuation">.</span><span class="token function">isAsynchronous</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        needWake <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+                msg<span class="token punctuation">.</span>next <span class="token operator">=</span> p<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// invariant: p == prev.next</span>
+                prev<span class="token punctuation">.</span>next <span class="token operator">=</span> msg<span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">//                插入在prev后面,p的前面.时按照时间来排序的</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">// We can assume mPtr != 0 because mQuitting is false.</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>needWake<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">nativeWake</span><span class="token punctuation">(</span>mPtr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>msg.target 就是handler，when是执行时间，mMessages是链表的头结点。</p>
+<p>经过一系列参数检查，开始入队。</p>
+<p>代码逻辑如下：</p>
+<p>if的第一个条件如果成立</p>
+<p>如果p（此刻p为头结点）==null 或者传入的参数为0，或者when&lt;p.when 就是小于头结点的时间，把传入的msg做为p的前一个节点插入（msg.next=p），同时把msg赋值给mMessages做为头结点。</p>
 <ul>
-<li>setContentView的源码都做了哪些工作？</li>
-<li>我们的布局添加到了哪里？</li>
-<li>继承Activity和AppCompatActivity有什么不同？</li>
+<li>假如目前链表没有任何数据，此时p==null成立，那msg插入进来就直接是头节点了。</li>
+<li>假如p做为头结点不为null p.when=1000 when=300 此时条件依然成立，msg.next=p，把msg的指针域指向前头结点p，同时把msg赋值给mMessages，成为头节点，而p则成为了第二个节点。</li>
 </ul>
-        
-          <a class="article-more-a" href="/2017/06/28/setContentView源码分析/#more">more >></a>
-        
+<p>然后可以发现，第三个添加如果满足该条件 依然会插在头结点前面，成为新的头结点。</p>
+<p>else 成立</p>
+<p>此时，p!=null when&gt;=p.when</p>
+<p>死循环开始，从p开始，把p做为prev就是前一个节点，p.next p的下个节点做为当前节点，开始从头到尾进行遍历，如果满足，p==null(遍历完了)或者when&lt;p.when(时间小于p的时间)，就退出死循环。</p>
+<ul>
+<li>进入for循环，有头结点，先把头节点做为上个节点，第二个节点做为当前节点p=p.next，如果p==null说明链表已经遍历完毕，而when&gt;=p.when，所以msg.next=p，prev.next=msg，msg插入在p的后面，变成最后的节点。</li>
+<li>p!=null 但是when&lt;p.when，假设p=p.next可能是第三个节点，而传入的when&lt;p.when，比第三个节点的时间小，跳出死循环。msg.next=p 把msg放在p的前面，prev.next=msg 同时，把msg放在第二个节点的后面。完成按时间顺序的插入排序。</li>
+</ul>
+<h4 id="next方法"><a href="#next方法" class="headerlink" title="next方法"></a>next方法</h4><pre class="line-numbers language-java"><code class="language-java">
+ Message <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token keyword">int</span> pendingIdleHandlerCount <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// -1 only during first iteration</span>
+        <span class="token keyword">int</span> nextPollTimeoutMillis <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span><span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>nextPollTimeoutMillis <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                Binder<span class="token punctuation">.</span><span class="token function">flushPendingCommands</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token function">nativePollOnce</span><span class="token punctuation">(</span>ptr<span class="token punctuation">,</span> nextPollTimeoutMillis<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// Try to retrieve the next message.  Return if found.</span>
+                <span class="token keyword">final</span> <span class="token keyword">long</span> now <span class="token operator">=</span> SystemClock<span class="token punctuation">.</span><span class="token function">uptimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                Message prevMsg <span class="token operator">=</span> null<span class="token punctuation">;</span>
+                Message msg <span class="token operator">=</span> mMessages<span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>msg <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> msg<span class="token punctuation">.</span>target <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// Stalled by a barrier.  Find the next asynchronous message in the queue.</span>
+                    <span class="token keyword">do</span> <span class="token punctuation">{</span>
+                        prevMsg <span class="token operator">=</span> msg<span class="token punctuation">;</span>
+                        msg <span class="token operator">=</span> msg<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">//如果消息不为null 并且不是异步的 会一直循环，，，</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span>msg <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>msg<span class="token punctuation">.</span><span class="token function">isAsynchronous</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">//跳出循环，并找到一条异步消息</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>msg <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">//如果当前事件，比msg.when就是handler定时的事件小，</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>now <span class="token operator">&lt;</span> msg<span class="token punctuation">.</span>when<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token comment" spellcheck="true">//下一条信息还没有准备好。设置一个超时，在它准备好时唤醒。</span>
+                        <span class="token comment" spellcheck="true">// Next message is not ready.  Set a timeout to wake up when it is ready.</span>
+                        nextPollTimeoutMillis <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>when <span class="token operator">-</span> now<span class="token punctuation">,</span> Integer<span class="token punctuation">.</span>MAX_VALUE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                        <span class="token comment" spellcheck="true">// Got a message.</span>
+                        <span class="token comment" spellcheck="true">//</span>
+                        mBlocked <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>prevMsg <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">//把链表的next指向当前的next，就是把它从列队中移除出去</span>
+                            prevMsg<span class="token punctuation">.</span>next <span class="token operator">=</span> msg<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">//如果prevMsg 那msg肯定是头结点，把头结点的next 赋值给mMessage头结点。</span>
+                            mMessages <span class="token operator">=</span> msg<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                        <span class="token comment" spellcheck="true">//移除当前msg的next指针域的引用</span>
+                        msg<span class="token punctuation">.</span>next <span class="token operator">=</span> null<span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>DEBUG<span class="token punctuation">)</span> Log<span class="token punctuation">.</span><span class="token function">v</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"Returning message: "</span> <span class="token operator">+</span> msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        msg<span class="token punctuation">.</span><span class="token function">markInUse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token keyword">return</span> msg<span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// No more messages.</span>
+                    nextPollTimeoutMillis <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment" spellcheck="true">// Process the quit message now that all pending messages have been handled.</span>
+                <span class="token comment" spellcheck="true">//如果处于正在退出队列，就是停止处理消息时，调用dispose</span>
+                <span class="token comment" spellcheck="true">//Looper的loop方法，检查到message为null 回退出loop</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>mQuitting<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token function">dispose</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment" spellcheck="true">// If first time idle, then get the number of idlers to run.</span>
+                <span class="token comment" spellcheck="true">// Idle handles only run if the queue is empty or if the first message</span>
+                <span class="token comment" spellcheck="true">// in the queue (possibly a barrier) is due to be handled in the future.</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>pendingIdleHandlerCount <span class="token operator">&lt;</span> <span class="token number">0</span>
+                        <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>mMessages <span class="token operator">==</span> null <span class="token operator">||</span> now <span class="token operator">&lt;</span> mMessages<span class="token punctuation">.</span>when<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    pendingIdleHandlerCount <span class="token operator">=</span> mIdleHandlers<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>pendingIdleHandlerCount <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// No idle handlers to run.  Loop and wait some more.</span>
+                    mBlocked <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                    <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>mPendingIdleHandlers <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    mPendingIdleHandlers <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IdleHandler</span><span class="token punctuation">[</span>Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>pendingIdleHandlerCount<span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                mPendingIdleHandlers <span class="token operator">=</span> mIdleHandlers<span class="token punctuation">.</span><span class="token function">toArray</span><span class="token punctuation">(</span>mPendingIdleHandlers<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">// Run the idle handlers.</span>
+            <span class="token comment" spellcheck="true">// We only ever reach this code block during the first iteration.</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pendingIdleHandlerCount<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">final</span> IdleHandler idler <span class="token operator">=</span> mPendingIdleHandlers<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                mPendingIdleHandlers<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> null<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// release the reference to the handler</span>
+
+                <span class="token keyword">boolean</span> keep <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    keep <span class="token operator">=</span> idler<span class="token punctuation">.</span><span class="token function">queueIdle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    Log<span class="token punctuation">.</span><span class="token function">wtf</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"IdleHandler threw exception"</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">//移除出去</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>keep<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        mIdleHandlers<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>idler<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">// Reset the idle handler count to 0 so we do not run them again.</span>
+            pendingIdleHandlerCount <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// While calling an idle handler, a new message could have been delivered</span>
+            <span class="token comment" spellcheck="true">// so go back and look again for a pending message without waiting.</span>
+            nextPollTimeoutMillis <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>next方法，是一个读取异步信息，并从队列取出删除的方法。</p>
+<p>首先，给pendingIdleHandlerCount=-1，nextPollTimeoutMillis=0；</p>
+<p>接着进入无限循环中，如果nextPollTimeoutMillis！=0；调用的Binder的flushPendingCommands()方法，把绑定在当前线程中的命令，刷新到内核中，用来阻塞线程。进入到同步代码块中，获取当前系统启动时间，如果msg不为null,并且handler==null,进入do while循环，如果，msg为null,或者msg是个异步信息，就跳出选好，目的是为了获取第一个异步消息。</p>
+<ul>
+<li>msg不为null，进入下面第一if中，判断如果当前时间比，msg.when的时间小，说明还没到执行时间，设置一个超时时间，等代时间到了再唤醒。如果now&gt;=msg.when到了执行时间，如果prevMsg!=null，通过prevMsg.next = msg.next 移除msg msg.next = null msg.markInUse(); 同时return出去。</li>
+<li>msg为null，表示没有更多要处理的信息，nextPollTimeoutMillis = -1;</li>
+</ul>
+<p>如果msg为null，同时mQuitting不为true，则表示队列处比较空闲，此时就会执行到下面的代码，经过一系参数判断，对mPendingIdleHandlers和mIdleHandlers进行处理。</p>
+<p>也就是上面提到的IdleHandler的接口回调。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+ <span class="token comment" spellcheck="true">// Run the idle handlers.</span>
+            <span class="token comment" spellcheck="true">// We only ever reach this code block during the first iteration.</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pendingIdleHandlerCount<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">final</span> IdleHandler idler <span class="token operator">=</span> mPendingIdleHandlers<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                mPendingIdleHandlers<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> null<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// release the reference to the handler</span>
+
+                <span class="token keyword">boolean</span> keep <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    keep <span class="token operator">=</span> idler<span class="token punctuation">.</span><span class="token function">queueIdle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    Log<span class="token punctuation">.</span><span class="token function">wtf</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"IdleHandler threw exception"</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">//移除出去</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>keep<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        mIdleHandlers<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>idler<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="removeMessages方法"><a href="#removeMessages方法" class="headerlink" title="removeMessages方法"></a>removeMessages方法</h4><pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">void</span> <span class="token function">removeMessages</span><span class="token punctuation">(</span>Handler h<span class="token punctuation">,</span> <span class="token keyword">int</span> what<span class="token punctuation">,</span> Object object<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>h <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Message p <span class="token operator">=</span> mMessages<span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// Remove all messages at front.</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>p <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> p<span class="token punctuation">.</span>target <span class="token operator">==</span> h <span class="token operator">&amp;&amp;</span> p<span class="token punctuation">.</span>what <span class="token operator">==</span> what
+                   <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>object <span class="token operator">==</span> null <span class="token operator">||</span> p<span class="token punctuation">.</span>obj <span class="token operator">==</span> object<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                Message n <span class="token operator">=</span> p<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                mMessages <span class="token operator">=</span> n<span class="token punctuation">;</span>
+                p<span class="token punctuation">.</span><span class="token function">recycleUnchecked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                p <span class="token operator">=</span> n<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">// Remove all messages after front.</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>p <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                Message n <span class="token operator">=</span> p<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>n<span class="token punctuation">.</span>target <span class="token operator">==</span> h <span class="token operator">&amp;&amp;</span> n<span class="token punctuation">.</span>what <span class="token operator">==</span> what
+                        <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>object <span class="token operator">==</span> null <span class="token operator">||</span> n<span class="token punctuation">.</span>obj <span class="token operator">==</span> object<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        Message nn <span class="token operator">=</span> n<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                        n<span class="token punctuation">.</span><span class="token function">recycleUnchecked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        p<span class="token punctuation">.</span>next <span class="token operator">=</span> nn<span class="token punctuation">;</span>
+                        <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+                p <span class="token operator">=</span> n<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">void</span> <span class="token function">removeMessages</span><span class="token punctuation">(</span>Handler h<span class="token punctuation">,</span> Runnable r<span class="token punctuation">,</span> Object object<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>h <span class="token operator">==</span> null <span class="token operator">||</span> r <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Message p <span class="token operator">=</span> mMessages<span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// Remove all messages at front.</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>p <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> p<span class="token punctuation">.</span>target <span class="token operator">==</span> h <span class="token operator">&amp;&amp;</span> p<span class="token punctuation">.</span>callback <span class="token operator">==</span> r
+                   <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>object <span class="token operator">==</span> null <span class="token operator">||</span> p<span class="token punctuation">.</span>obj <span class="token operator">==</span> object<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                Message n <span class="token operator">=</span> p<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                mMessages <span class="token operator">=</span> n<span class="token punctuation">;</span>
+                p<span class="token punctuation">.</span><span class="token function">recycleUnchecked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                p <span class="token operator">=</span> n<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">// Remove all messages after front.</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>p <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                Message n <span class="token operator">=</span> p<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>n<span class="token punctuation">.</span>target <span class="token operator">==</span> h <span class="token operator">&amp;&amp;</span> n<span class="token punctuation">.</span>callback <span class="token operator">==</span> r
+                        <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>object <span class="token operator">==</span> null <span class="token operator">||</span> n<span class="token punctuation">.</span>obj <span class="token operator">==</span> object<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        Message nn <span class="token operator">=</span> n<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                        n<span class="token punctuation">.</span><span class="token function">recycleUnchecked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        p<span class="token punctuation">.</span>next <span class="token operator">=</span> nn<span class="token punctuation">;</span>
+                        <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+                p <span class="token operator">=</span> n<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这两个移除方法基本一样，只是参数不一样，逻辑相同。</p>
+<ul>
+<li>首先先判断handler为不为null，为null直接return。进入同步代码块，两个while循环。</li>
+<li>第一个while，是删除前面的，就是从头部开始，如果符合条件，就一直更换头部，确保头节点的next不符合条件。</li>
+<li>第二个while循环，则从不符合条件的第一个节点开始往后删除所有符合条件的节点。</li>
+</ul>
+<p>这里有个疑问，不清楚第一个while循环的意义，直接第二个循环删除到底不久OK了。可能是因为头结点要特殊处理？？？</p>
+<h4 id="hasMessages方法"><a href="#hasMessages方法" class="headerlink" title="hasMessages方法"></a>hasMessages方法</h4><pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">boolean</span> <span class="token function">hasMessages</span><span class="token punctuation">(</span>Handler h<span class="token punctuation">,</span> <span class="token keyword">int</span> what<span class="token punctuation">,</span> Object object<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>h <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Message p <span class="token operator">=</span> mMessages<span class="token punctuation">;</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>p <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>p<span class="token punctuation">.</span>target <span class="token operator">==</span> h <span class="token operator">&amp;&amp;</span> p<span class="token punctuation">.</span>what <span class="token operator">==</span> what <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>object <span class="token operator">==</span> null <span class="token operator">||</span> p<span class="token punctuation">.</span>obj <span class="token operator">==</span> object<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                p <span class="token operator">=</span> p<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">boolean</span> <span class="token function">hasMessages</span><span class="token punctuation">(</span>Handler h<span class="token punctuation">,</span> Runnable r<span class="token punctuation">,</span> Object object<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>h <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Message p <span class="token operator">=</span> mMessages<span class="token punctuation">;</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>p <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>p<span class="token punctuation">.</span>target <span class="token operator">==</span> h <span class="token operator">&amp;&amp;</span> p<span class="token punctuation">.</span>callback <span class="token operator">==</span> r <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>object <span class="token operator">==</span> null <span class="token operator">||</span> p<span class="token punctuation">.</span>obj <span class="token operator">==</span> object<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                p <span class="token operator">=</span> p<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这2个方法都是根据message中的字段（target、what、callback、obj）来查找相应的message。唯一要注意的就是如果h为null的话，方法直接返回false。</p>
+<p>还有一点要注意的是如果object传null的话，则忽略匹配obj字段。</p>
+<h4 id="quit方法"><a href="#quit方法" class="headerlink" title="quit方法"></a>quit方法</h4><p>队列退出的方法。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">void</span> <span class="token function">quit</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> safe<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>mQuitAllowed<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Main thread not allowed to quit."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//如果正在出队 返回</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>mQuitting<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            mQuitting <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>safe<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">removeAllFutureMessagesLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token function">removeAllMessagesLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">// We can assume mPtr != 0 because mQuitting was previously false.</span>
+            <span class="token function">nativeWake</span><span class="token punctuation">(</span>mPtr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>根据safe的值来选择不同的退出策略。</p>
+<ul>
+<li>如果是安全退出，执行removeAllFutureMessagesLocked()，逻辑是，如果队头的时间已经超过当前时间（说明其余的成员全都超过了改时间），则直接执行removeAllMessagesLocked()的退出策略。 反之，则进行循环遍历找到第一个p.when&gt;now的结点message（从该message节点之后，所有的元素都必将大于now），先将前一个节点p的指针域指向null，接着do while循环，对该节点之后的元素都进行回收，如果先前的for死循环 遍历到最后一位也没查到符合条件的节点，则直接return。</li>
+</ul>
+<h5 id="removeAllFutureMessagesLocked-方法"><a href="#removeAllFutureMessagesLocked-方法" class="headerlink" title="removeAllFutureMessagesLocked()方法"></a>removeAllFutureMessagesLocked()方法</h5><pre><code>private void removeAllFutureMessagesLocked() {
+        final long now = SystemClock.uptimeMillis();
+        Message p = mMessages;
+        if (p != null) {
+            if (p.when &gt; now) {
+                removeAllMessagesLocked();
+            } else {
+                Message n;
+                for (;;) {
+                    n = p.next;
+                    if (n == null) {
+                        return;
+                    }
+                    if (n.when &gt; now) {
+                        break;
+                    }
+                    p = n;
+                }
+                p.next = null;
+                do {
+                    p = n;
+                    n = p.next;
+                    //回收消息
+                    p.recycleUnchecked();
+                } while (n != null);
+            }
+        }
+    }
+</code></pre><ul>
+<li>如果不是安全退出，则执行removeAllMessagesLocked()方法，方法简单粗暴，从头遍历回收message。</li>
+<li><h5 id="removeAllMessagesLocked-方法"><a href="#removeAllMessagesLocked-方法" class="headerlink" title="removeAllMessagesLocked()方法"></a>removeAllMessagesLocked()方法</h5></li>
+</ul>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">removeAllMessagesLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Message p <span class="token operator">=</span> mMessages<span class="token punctuation">;</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>p <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Message n <span class="token operator">=</span> p<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+            p<span class="token punctuation">.</span><span class="token function">recycleUnchecked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            p <span class="token operator">=</span> n<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        mMessages <span class="token operator">=</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>至此，MessageQueue的大部分关键代码都已分析完毕，接下来，我们来分析一下Android消息机制中的Lopper。</p>
+
       
 
       
@@ -273,7 +680,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
+        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
         		</li>
       		
 		</ul>
@@ -281,16 +688,75 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/28/setContentView源码分析/">阅读全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://livesun.github.io/2017/10/31/MesssageQueue/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/10/29/order_list/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">顺序表---ArrayList源码分析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -305,255 +771,46 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-SparseArray_ArrayMap" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/25/SparseArray_ArrayMap/">Android内存优化---SparseArray和ArrayMap</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/25/SparseArray_ArrayMap/" class="archive-article-date">
-  	<time datetime="2017-06-25T01:17:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="SparseArray"><a href="#SparseArray" class="headerlink" title="SparseArray"></a>SparseArray</h2><p>SparseArray比HashMap 更省内存。</p>
-<p>在千级以下的数据处理中，比HashMap的性能更好，因为它避免了对key的自动装箱（int转为Integer类型），同时采取了压缩方式来表示稀疏的数组数据。</p>
-<p>SparseArray 的内部采用两个数组来维持key 和 value</p>
-<pre><code>private int[] mKeys;
-private Object[] mValues;
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/06/25/SparseArray_ArrayMap/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/设计模式/" class="article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/25/SparseArray_ArrayMap/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#MessageQueue是什么结构："><span class="toc-number">1.</span> <span class="toc-text">MessageQueue是什么结构：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#成员变量"><span class="toc-number">2.</span> <span class="toc-text">成员变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#构造函数"><span class="toc-number">3.</span> <span class="toc-text">构造函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#IdleHandler"><span class="toc-number">4.</span> <span class="toc-text">IdleHandler</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#enqueueMessage方法"><span class="toc-number">5.</span> <span class="toc-text">enqueueMessage方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#next方法"><span class="toc-number">6.</span> <span class="toc-text">next方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#removeMessages方法"><span class="toc-number">7.</span> <span class="toc-text">removeMessages方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#hasMessages方法"><span class="toc-number">8.</span> <span class="toc-text">hasMessages方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#quit方法"><span class="toc-number">9.</span> <span class="toc-text">quit方法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#removeAllFutureMessagesLocked-方法"><span class="toc-number">9.1.</span> <span class="toc-text">removeAllFutureMessagesLocked()方法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#removeAllMessagesLocked-方法"><span class="toc-number">9.2.</span> <span class="toc-text">removeAllMessagesLocked()方法</span></a></li></ol></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
-  
-    <article id="post-Proxy_Mode" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/19/Proxy_Mode/">设计模式(2)--代理模式之静态代理</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/19/Proxy_Mode/" class="archive-article-date">
-  	<time datetime="2017-06-19T10:17:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><p>什么是代理模式？</p>
-<p>代理模式就是我懒，有工作我不想做，我找别人帮我做。但是我怎么知道他能帮我做呢？所以我们要彼此了解对方，我们要实现共同的接口。</p>
-<h3 id="上类图"><a href="#上类图" class="headerlink" title="上类图"></a>上类图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/Proxy_Mode.png" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/06/19/Proxy_Mode/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/设计模式/" class="article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/19/Proxy_Mode/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-cunstom_drawable" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/19/cunstom_drawable/">自定义Drawable(一) 实现图片圆角、圆形、椭圆形</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/19/cunstom_drawable/" class="archive-article-date">
-  	<time datetime="2017-06-19T04:40:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="什么是Drawable"><a href="#什么是Drawable" class="headerlink" title="什么是Drawable ?"></a>什么是Drawable ?</h3><p>Android 把所有显示出来的图形都抽象为drawable ，意思就是可绘制的，包括，图片、色块、背景等。</p>
-<p>简单的drawable都是静态的图形，当然也有其他的，比如StateListDrawable，可以根据不同的触摸来变换不同的图形。也是通常我们在drawable文件中创建的selector.xml</p>
-<p>我们通过简单三个例子来了解一下自定义drawable</p>
-<h3 id="效果图如下"><a href="#效果图如下" class="headerlink" title="效果图如下"></a>效果图如下</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/mydrawable.gif" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/06/19/cunstom_drawable/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/19/cunstom_drawable/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
+  
+    <section id="comments">
+      <div id="disqus_thread"></div>
+        <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'true'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </section>
   
 
 
@@ -576,8 +833,8 @@ private Object[] mValues;
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
