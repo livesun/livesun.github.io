@@ -145,6 +145,117 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ViewGroupTouchEvent" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/01/ViewGroupTouchEvent/">ViewGroup的Touch事件分发以及源码分析</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/01/ViewGroupTouchEvent/" class="archive-article-date">
+  	<time datetime="2017-08-01T08:36:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上一次我们创建了TouchView，这次我们创建一个TouchViewGroup</p>
+<pre><code class="java">public class TouchViewGroup extends LinearLayout {
+    public TouchViewGroup(Context context) {
+        this(context,null);
+    }
+
+    public TouchViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public TouchViewGroup(Context context, AttributeSet attrs) {
+        this(context, attrs,0);
+    }
+
+ //事件分发
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        Log.d(&quot;AAA&quot;,&quot;ViewGroup + dispatchTouchEvent--&gt;&quot;+ev.getAction());
+        return super.dispatchTouchEvent(ev);
+    }
+
+    //事件触摸
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Log.d(&quot;AAA&quot;,&quot;ViewGroup + onTouchEvent--&gt;&quot;+event.getAction());
+        return super.onTouchEvent(event);
+    }
+
+    //事件拦截
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        Log.d(&quot;AAA&quot;,&quot;ViewGroup + onInterceptTouchEvent--&gt;&quot;+ev.getAction());
+        return super.onInterceptTouchEvent(ev);
+    }
+}
+</code></pre>
+        
+          <a class="article-more-a" href="/2017/08/01/ViewGroupTouchEvent/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/01/ViewGroupTouchEvent/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-QQZoomListView" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -501,88 +612,9 @@
 
 
   
-    <article id="post-dynamicProxy_mode" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/06/dynamicProxy_mode/">设计模式(3)--动态代理模式以及源码分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/06/dynamicProxy_mode/" class="archive-article-date">
-  	<time datetime="2017-07-06T01:26:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h3><ul>
-<li>静态代理：在代码运行之前代理类的class文件就存在了</li>
-<li>动态代理：刚刚相反，通过反射来动态生成代理对象，也就是说编码的时候不知道代理谁，只有执行的时候才知道。</li>
-</ul>
-        
-          <a class="article-more-a" href="/2017/07/06/dynamicProxy_mode/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/设计模式/" class="article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/06/dynamicProxy_mode/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 

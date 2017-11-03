@@ -6,17 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>Android消息机制（一）---MessageQueue源码分析 | 孙俊卿的博客</title>
+  <title>Android消息机制（一）--- MessageQueue源码分析 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="MessageQueue是什么结构： 是一个单链表 链表节点的排序方式以时间（when）来排序  因为个人水平问题，对native方法没有能力进行分析，只能根据链表的添加移除以及查找方面对MessageQueue进行分析。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android消息机制（一）---MessageQueue源码分析">
+<meta property="og:title" content="Android消息机制（一）--- MessageQueue源码分析">
 <meta property="og:url" content="http://livesun.github.io/2017/10/31/MesssageQueue/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
 <meta property="og:description" content="MessageQueue是什么结构： 是一个单链表 链表节点的排序方式以时间（when）来排序  因为个人水平问题，对native方法没有能力进行分析，只能根据链表的添加移除以及查找方面对MessageQueue进行分析。">
-<meta property="og:updated_time" content="2017-10-31T07:01:15.757Z">
+<meta property="og:updated_time" content="2017-11-03T02:22:13.364Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android消息机制（一）---MessageQueue源码分析">
+<meta name="twitter:title" content="Android消息机制（一）--- MessageQueue源码分析">
 <meta name="twitter:description" content="MessageQueue是什么结构： 是一个单链表 链表节点的排序方式以时间（when）来排序  因为个人水平问题，对native方法没有能力进行分析，只能根据链表的添加移除以及查找方面对MessageQueue进行分析。">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
@@ -151,7 +151,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Android消息机制（一）---MessageQueue源码分析
+      Android消息机制（一）--- MessageQueue源码分析
     </h1>
   
 
@@ -207,7 +207,7 @@
     <span class="token function">nativeInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="IdleHandler"><a href="#IdleHandler" class="headerlink" title="IdleHandler"></a>IdleHandler</h4><pre class="line-numbers language-java"><code class="language-java">
+<h4 id="接口IdleHandler"><a href="#接口IdleHandler" class="headerlink" title="接口IdleHandler"></a>接口IdleHandler</h4><pre class="line-numbers language-java"><code class="language-java">
  <span class="token comment" spellcheck="true">/**
    *以用来在线程空闲的时候，指定一个操作
      */</span>
@@ -262,7 +262,7 @@
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>它可以保证在线程空闲状态时才调用该方法，比如页面复杂的情况下，绘制的比较慢，绑定数据就可以放在这里面进行操作。（onResume 中你的行为会在绘制之前执行，页面还是会出现卡顿）</p>
 <p>这里有篇干货：<a href="https://cloud.tencent.com/community/article/711098" target="_blank" rel="external">你知道 android 的 MessageQueue.IdleHandler 吗？</a></p>
-<h4 id="enqueueMessage方法"><a href="#enqueueMessage方法" class="headerlink" title="enqueueMessage方法"></a>enqueueMessage方法</h4><p>也就是add方法，它会对加入的message进行排序。</p>
+<h4 id="入队方法enqueueMessage"><a href="#入队方法enqueueMessage" class="headerlink" title="入队方法enqueueMessage"></a>入队方法enqueueMessage</h4><p>也就是add方法，它会对加入的message进行排序。</p>
 <pre class="line-numbers language-java"><code class="language-java">
   <span class="token keyword">boolean</span> <span class="token function">enqueueMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">,</span> <span class="token keyword">long</span> when<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>msg<span class="token punctuation">.</span>target <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -340,7 +340,7 @@
 <li>进入for循环，有头结点，先把头节点做为上个节点，第二个节点做为当前节点p=p.next，如果p==null说明链表已经遍历完毕，而when&gt;=p.when，所以msg.next=p，prev.next=msg，msg插入在p的后面，变成最后的节点。</li>
 <li>p!=null 但是when&lt;p.when，假设p=p.next可能是第三个节点，而传入的when&lt;p.when，比第三个节点的时间小，跳出死循环。msg.next=p 把msg放在p的前面，prev.next=msg 同时，把msg放在第二个节点的后面。完成按时间顺序的插入排序。</li>
 </ul>
-<h4 id="next方法"><a href="#next方法" class="headerlink" title="next方法"></a>next方法</h4><pre class="line-numbers language-java"><code class="language-java">
+<h4 id="查询方法next"><a href="#查询方法next" class="headerlink" title="查询方法next"></a>查询方法next</h4><pre class="line-numbers language-java"><code class="language-java">
  Message <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
         <span class="token keyword">int</span> pendingIdleHandlerCount <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// -1 only during first iteration</span>
@@ -480,7 +480,7 @@
                 <span class="token punctuation">}</span>
             <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="removeMessages方法"><a href="#removeMessages方法" class="headerlink" title="removeMessages方法"></a>removeMessages方法</h4><pre class="line-numbers language-java"><code class="language-java">
+<h4 id="移除方法removeMessages"><a href="#移除方法removeMessages" class="headerlink" title="移除方法removeMessages"></a>移除方法removeMessages</h4><pre class="line-numbers language-java"><code class="language-java">
 <span class="token keyword">void</span> <span class="token function">removeMessages</span><span class="token punctuation">(</span>Handler h<span class="token punctuation">,</span> <span class="token keyword">int</span> what<span class="token punctuation">,</span> Object object<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>h <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token keyword">return</span><span class="token punctuation">;</span>
@@ -555,7 +555,7 @@
 <li>第二个while循环，则从不符合条件的第一个节点开始往后删除所有符合条件的节点。</li>
 </ul>
 <p>这里有个疑问，不清楚第一个while循环的意义，直接第二个循环删除到底不久OK了。可能是因为头结点要特殊处理？？？</p>
-<h4 id="hasMessages方法"><a href="#hasMessages方法" class="headerlink" title="hasMessages方法"></a>hasMessages方法</h4><pre class="line-numbers language-java"><code class="language-java">
+<h4 id="判断是否有消息hasMessages"><a href="#判断是否有消息hasMessages" class="headerlink" title="判断是否有消息hasMessages"></a>判断是否有消息hasMessages</h4><pre class="line-numbers language-java"><code class="language-java">
 <span class="token keyword">boolean</span> <span class="token function">hasMessages</span><span class="token punctuation">(</span>Handler h<span class="token punctuation">,</span> <span class="token keyword">int</span> what<span class="token punctuation">,</span> Object object<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>h <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
@@ -592,8 +592,7 @@
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这2个方法都是根据message中的字段（target、what、callback、obj）来查找相应的message。唯一要注意的就是如果h为null的话，方法直接返回false。</p>
 <p>还有一点要注意的是如果object传null的话，则忽略匹配obj字段。</p>
-<h4 id="quit方法"><a href="#quit方法" class="headerlink" title="quit方法"></a>quit方法</h4><p>队列退出的方法。</p>
-<pre class="line-numbers language-java"><code class="language-java">
+<h4 id="退出队列方法quit"><a href="#退出队列方法quit" class="headerlink" title="退出队列方法quit"></a>退出队列方法quit</h4><pre class="line-numbers language-java"><code class="language-java">
 <span class="token keyword">void</span> <span class="token function">quit</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> safe<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>mQuitAllowed<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Main thread not allowed to quit."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -622,7 +621,7 @@
 <ul>
 <li>如果是安全退出，执行removeAllFutureMessagesLocked()，逻辑是，如果队头的时间已经超过当前时间（说明其余的成员全都超过了改时间），则直接执行removeAllMessagesLocked()的退出策略。 反之，则进行循环遍历找到第一个p.when&gt;now的结点message（从该message节点之后，所有的元素都必将大于now），先将前一个节点p的指针域指向null，接着do while循环，对该节点之后的元素都进行回收，如果先前的for死循环 遍历到最后一位也没查到符合条件的节点，则直接return。</li>
 </ul>
-<h5 id="removeAllFutureMessagesLocked-方法"><a href="#removeAllFutureMessagesLocked-方法" class="headerlink" title="removeAllFutureMessagesLocked()方法"></a>removeAllFutureMessagesLocked()方法</h5><pre><code>private void removeAllFutureMessagesLocked() {
+<h5 id="方法removeAllFutureMessagesLocked"><a href="#方法removeAllFutureMessagesLocked" class="headerlink" title="方法removeAllFutureMessagesLocked()"></a>方法removeAllFutureMessagesLocked()</h5><pre><code>private void removeAllFutureMessagesLocked() {
         final long now = SystemClock.uptimeMillis();
         Message p = mMessages;
         if (p != null) {
@@ -652,7 +651,7 @@
     }
 </code></pre><ul>
 <li>如果不是安全退出，则执行removeAllMessagesLocked()方法，方法简单粗暴，从头遍历回收message。</li>
-<li><h5 id="removeAllMessagesLocked-方法"><a href="#removeAllMessagesLocked-方法" class="headerlink" title="removeAllMessagesLocked()方法"></a>removeAllMessagesLocked()方法</h5></li>
+<li><h5 id="方法removeAllMessagesLocked"><a href="#方法removeAllMessagesLocked" class="headerlink" title="方法removeAllMessagesLocked()"></a>方法removeAllMessagesLocked()</h5></li>
 </ul>
 <pre class="line-numbers language-java"><code class="language-java">
 <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">removeAllMessagesLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -749,6 +748,15 @@
   
 <nav id="article-nav">
   
+    <a href="/2017/11/03/Threadlocal/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Android消息机制（二）--- ThreadLocal分析
+        
+      </div>
+    </a>
+  
   
     <a href="/2017/10/29/order_list/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">顺序表---ArrayList源码分析</div>
@@ -778,7 +786,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#MessageQueue是什么结构："><span class="toc-number">1.</span> <span class="toc-text">MessageQueue是什么结构：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#成员变量"><span class="toc-number">2.</span> <span class="toc-text">成员变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#构造函数"><span class="toc-number">3.</span> <span class="toc-text">构造函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#IdleHandler"><span class="toc-number">4.</span> <span class="toc-text">IdleHandler</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#enqueueMessage方法"><span class="toc-number">5.</span> <span class="toc-text">enqueueMessage方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#next方法"><span class="toc-number">6.</span> <span class="toc-text">next方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#removeMessages方法"><span class="toc-number">7.</span> <span class="toc-text">removeMessages方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#hasMessages方法"><span class="toc-number">8.</span> <span class="toc-text">hasMessages方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#quit方法"><span class="toc-number">9.</span> <span class="toc-text">quit方法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#removeAllFutureMessagesLocked-方法"><span class="toc-number">9.1.</span> <span class="toc-text">removeAllFutureMessagesLocked()方法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#removeAllMessagesLocked-方法"><span class="toc-number">9.2.</span> <span class="toc-text">removeAllMessagesLocked()方法</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#MessageQueue是什么结构："><span class="toc-number">1.</span> <span class="toc-text">MessageQueue是什么结构：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#成员变量"><span class="toc-number">2.</span> <span class="toc-text">成员变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#构造函数"><span class="toc-number">3.</span> <span class="toc-text">构造函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#接口IdleHandler"><span class="toc-number">4.</span> <span class="toc-text">接口IdleHandler</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#入队方法enqueueMessage"><span class="toc-number">5.</span> <span class="toc-text">入队方法enqueueMessage</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查询方法next"><span class="toc-number">6.</span> <span class="toc-text">查询方法next</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#移除方法removeMessages"><span class="toc-number">7.</span> <span class="toc-text">移除方法removeMessages</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#判断是否有消息hasMessages"><span class="toc-number">8.</span> <span class="toc-text">判断是否有消息hasMessages</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#退出队列方法quit"><span class="toc-number">9.</span> <span class="toc-text">退出队列方法quit</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#方法removeAllFutureMessagesLocked"><span class="toc-number">9.1.</span> <span class="toc-text">方法removeAllFutureMessagesLocked()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#方法removeAllMessagesLocked"><span class="toc-number">9.2.</span> <span class="toc-text">方法removeAllMessagesLocked()</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
