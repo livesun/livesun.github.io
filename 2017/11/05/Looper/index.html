@@ -8,16 +8,16 @@
   <link rel="dns-prefetch" href="http://livesun.github.io">
   <title>Android消息机制（三）--- Looper分析 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Looper的代码非常少 成员变量     // 静态的ThreadLocal对象，     static final ThreadLocal&amp;lt;Looper&amp;gt; sThreadLocal = new ThreadLocal&amp;lt;Looper&amp;gt;();      private static Looper sMainLooper;  //Ui 线程的Looper对象      //消息队列">
+  <meta name="description" content="Looper的代码非常少 成员变量     // 静态的ThreadLocal对象，     static final ThreadLocal&amp;lt;Looper&amp;gt; sThreadLocal = new ThreadLocal&amp;lt;Looper&amp;gt;();      private static Looper sMainLooper;  //Ui 线程的Looper对象      //消">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android消息机制（三）--- Looper分析">
 <meta property="og:url" content="http://livesun.github.io/2017/11/05/Looper/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="Looper的代码非常少 成员变量     // 静态的ThreadLocal对象，     static final ThreadLocal&amp;lt;Looper&amp;gt; sThreadLocal = new ThreadLocal&amp;lt;Looper&amp;gt;();      private static Looper sMainLooper;  //Ui 线程的Looper对象      //消息队列">
-<meta property="og:updated_time" content="2017-11-06T07:24:15.151Z">
+<meta property="og:description" content="Looper的代码非常少 成员变量     // 静态的ThreadLocal对象，     static final ThreadLocal&amp;lt;Looper&amp;gt; sThreadLocal = new ThreadLocal&amp;lt;Looper&amp;gt;();      private static Looper sMainLooper;  //Ui 线程的Looper对象      //消">
+<meta property="og:updated_time" content="2017-11-06T07:26:15.521Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android消息机制（三）--- Looper分析">
-<meta name="twitter:description" content="Looper的代码非常少 成员变量     // 静态的ThreadLocal对象，     static final ThreadLocal&amp;lt;Looper&amp;gt; sThreadLocal = new ThreadLocal&amp;lt;Looper&amp;gt;();      private static Looper sMainLooper;  //Ui 线程的Looper对象      //消息队列">
+<meta name="twitter:description" content="Looper的代码非常少 成员变量     // 静态的ThreadLocal对象，     static final ThreadLocal&amp;lt;Looper&amp;gt; sThreadLocal = new ThreadLocal&amp;lt;Looper&amp;gt;();      private static Looper sMainLooper;  //Ui 线程的Looper对象      //消">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -176,6 +176,7 @@
     <span class="token comment" spellcheck="true">//线程</span>
     <span class="token keyword">final</span> Thread mThread<span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<a id="more"></a>
 <h4 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h4><pre class="line-numbers language-java"><code class="language-java">
 <span class="token keyword">private</span> <span class="token function">Looper</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> quitAllowed<span class="token punctuation">)</span> <span class="token punctuation">{</span>
 

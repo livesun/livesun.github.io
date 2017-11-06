@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://livesun.github.io/2017/11/03/Threadlocal/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
 <meta property="og:description" content="ThreadLocal 并不是一个线程，它是线程内部的数据存储类，它的数据不是共享的，只有在当前线程才能获取到，在当前线程存储的数据，意思就是说，A,B两个线程，在A线程把数据存储进ThreadLocal，只有在A线程才能取出，B线程取不到。 举个例子      public static void main(String[] args) throws Exception {          s">
-<meta property="og:updated_time" content="2017-11-03T02:12:27.378Z">
+<meta property="og:updated_time" content="2017-11-06T07:26:26.028Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android消息机制（二）--- ThreadLocal分析">
 <meta name="twitter:description" content="ThreadLocal 并不是一个线程，它是线程内部的数据存储类，它的数据不是共享的，只有在当前线程才能获取到，在当前线程存储的数据，意思就是说，A,B两个线程，在A线程把数据存储进ThreadLocal，只有在A线程才能取出，B线程取不到。 举个例子      public static void main(String[] args) throws Exception {          s">
@@ -197,6 +197,7 @@ A <span class="token operator">--</span><span class="token operator">-</span> A�
 main <span class="token operator">--</span><span class="token operator">-</span> 主线程
 B <span class="token operator">--</span><span class="token operator">-</span> null
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<a id="more"></a>
 <p>是不是很奇妙，虽然大家公用一个ThreadLocal对象，但是取出的数据却完全不一样，这是因为通过get方法，ThreadLocal会先取出一个ThreadLocalMap.Entry对象，再从Entry中获取Value。</p>
 <pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">public</span> T <span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         Thread t <span class="token operator">=</span> Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
