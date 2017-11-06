@@ -6,17 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>孙俊卿的博客</title>
+  <title>Android消息机制（四）--- Handler分析 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="孙俊卿的博客">
-<meta property="og:url" content="http://livesun.github.io/page/6/index.html">
+  <meta name="description" content="Handler的作用 实现异步的消息处理 接收消息，调度消息，派发消息，处理消息 线程间的通信  最常用的用法，就是子线程不能更新UI，需要通过handler，把消息发送到主线程进行更新。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android消息机制（四）--- Handler分析">
+<meta property="og:url" content="http://livesun.github.io/2017/11/06/handler/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="Handler的作用 实现异步的消息处理 接收消息，调度消息，派发消息，处理消息 线程间的通信  最常用的用法，就是子线程不能更新UI，需要通过handler，把消息发送到主线程进行更新。">
+<meta property="og:updated_time" content="2017-11-06T08:50:03.017Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="孙俊卿的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="Android消息机制（四）--- Handler分析">
+<meta name="twitter:description" content="Handler的作用 实现异步的消息处理 接收消息，调度消息，派发消息，处理消息 线程间的通信  最常用的用法，就是子线程不能更新UI，需要通过handler，把消息发送到主线程进行更新。">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -143,693 +144,295 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-SparseArray_ArrayMap" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-handler" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/25/SparseArray_ArrayMap/">Android内存优化---SparseArray和ArrayMap</a>
+    <h1 class="article-title" itemprop="name">
+      Android消息机制（四）--- Handler分析
     </h1>
   
 
         
-        <a href="/2017/06/25/SparseArray_ArrayMap/" class="archive-article-date">
-  	<time datetime="2017-06-25T01:17:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-25</time>
+        <a href="/2017/11/06/handler/" class="archive-article-date">
+  	<time datetime="2017-11-06T08:50:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-06</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="SparseArray"><a href="#SparseArray" class="headerlink" title="SparseArray"></a>SparseArray</h2><p>SparseArray比HashMap 更省内存。</p>
-<p>在千级以下的数据处理中，比HashMap的性能更好，因为它避免了对key的自动装箱（int转为Integer类型），同时采取了压缩方式来表示稀疏的数组数据。</p>
-<p>SparseArray 的内部采用两个数组来维持key 和 value</p>
-<pre><code>private int[] mKeys;
-private Object[] mValues;
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/06/25/SparseArray_ArrayMap/#more">more >></a>
-        
-      
+        <h3 id="Handler的作用"><a href="#Handler的作用" class="headerlink" title="Handler的作用"></a>Handler的作用</h3><ul>
+<li>实现异步的消息处理</li>
+<li>接收消息，调度消息，派发消息，处理消息</li>
+<li>线程间的通信</li>
+</ul>
+<p>最常用的用法，就是子线程不能更新UI，需要通过handler，把消息发送到主线程进行更新。</p>
+<a id="more"></a>
+<p>比如这样</p>
+<pre class="line-numbers language-java"><code class="language-java">  <span class="token keyword">private</span> TextView mTextView<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> Handler mHandler<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">Handler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mTextView<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span><span class="token punctuation">(</span>String<span class="token punctuation">)</span> msg<span class="token punctuation">.</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/设计模式/" class="article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Nullable</span> Bundle savedInstanceState<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>savedInstanceState<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mTextView<span class="token operator">=</span><span class="token function">findViewById</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>test<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Runnable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           Message message<span class="token operator">=</span> Message<span class="token punctuation">.</span><span class="token function">obtain</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           message<span class="token punctuation">.</span>obj<span class="token operator">=</span><span class="token string">"handler"</span><span class="token punctuation">;</span>
+               mHandler<span class="token punctuation">.</span><span class="token function">sendMessage</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>mHandler.sendMessage(Message.obtain());干了什么？</p>
+<p>代码追踪一下</p>
+<pre class="line-numbers language-java"><code class="language-java">
+    <span class="token comment" spellcheck="true">//1 其实调用了sendMessageDelayed，只是第二个参数为0</span>
+    <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> <span class="token function">sendMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">sendMessageDelayed</span><span class="token punctuation">(</span>msg<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
+<span class="token comment" spellcheck="true">// 2</span>
+    <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> <span class="token function">sendMessageDelayed</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">,</span> <span class="token keyword">long</span> delayMillis<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>delayMillis <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            delayMillis <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">//当前系统时间+延迟时间。</span>
+        <span class="token keyword">return</span> <span class="token function">sendMessageAtTime</span><span class="token punctuation">(</span>msg<span class="token punctuation">,</span> SystemClock<span class="token punctuation">.</span><span class="token function">uptimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> delayMillis<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">// 3</span>
+     <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">sendMessageAtTime</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">,</span> <span class="token keyword">long</span> uptimeMillis<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token comment" spellcheck="true">//消息队列 mQueue是在构造函数中经行了赋值，是主线程中的looper对象中的MessageQueue</span>
+        MessageQueue queue <span class="token operator">=</span> mQueue<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>queue <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            RuntimeException e <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>
+                    <span class="token keyword">this</span> <span class="token operator">+</span> <span class="token string">" sendMessageAtTime() called with no mQueue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            Log<span class="token punctuation">.</span><span class="token function">w</span><span class="token punctuation">(</span><span class="token string">"Looper"</span><span class="token punctuation">,</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token function">enqueueMessage</span><span class="token punctuation">(</span>queue<span class="token punctuation">,</span> msg<span class="token punctuation">,</span> uptimeMillis<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">// 4 </span>
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">enqueueMessage</span><span class="token punctuation">(</span>MessageQueue queue<span class="token punctuation">,</span> Message msg<span class="token punctuation">,</span> <span class="token keyword">long</span> uptimeMillis<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//把Handler对象赋值给了MessageQueue的target属性</span>
+        msg<span class="token punctuation">.</span>target <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//这里默认的构造方法，传的是false。此处不成立。</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mAsynchronous<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            msg<span class="token punctuation">.</span><span class="token function">setAsynchronous</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> queue<span class="token punctuation">.</span><span class="token function">enqueueMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">,</span> uptimeMillis<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>调用流程是这样的，sendMessageDelayed–&gt;sendMessageAtTime –&gt; enqueueMessage –&gt; MessageQueue的enqueueMessage方法。</p>
+<p>也就是说，我们在子线程发送通过handler.sendMessage，其实就是往MessageQueue中插入了一条消息，以及时间when（SystemClock.uptimeMillis()，表示是系统开机到当前时间的总数），然后MessageQueue会把这条消息进行排队。</p>
+<p>其实，我们调用Handler.sendxxx方法，其实只是单纯的往队列里添加消息，但是，它是怎么在主线程中调用handler的handleMessage方法？</p>
+<p>看前面Looper的分析。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">loop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span><span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Message msg <span class="token operator">=</span> queue<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// might block</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>msg <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">//如果msg为null，跳出死循环</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+           <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//调用的就是handler的dispatchMessage(msg)-->handleMessage</span>
+                msg<span class="token punctuation">.</span>target<span class="token punctuation">.</span><span class="token function">dispatchMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> 
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/25/SparseArray_ArrayMap/">阅读全文 >></a>
-        </p>
-      
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+            <span class="token comment" spellcheck="true">//消息回收</span>
+            msg<span class="token punctuation">.</span><span class="token function">recycleUnchecked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在ActivityThread的main()方法中，调用了</p>
+<pre class="line-numbers language-java"><code class="language-java">
+Looper<span class="token punctuation">.</span><span class="token function">prepareMainLooper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+ Looper<span class="token punctuation">.</span><span class="token function">loop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>说明系统其实已经帮我们在主线程，配置好了Handler。Looper会从一启动就开始无限循环，而且主线程的Looper的MessageQueue又无法出队，会一直等着handler发送的消息，从而形成一个完整的线程通讯的过程。</p>
+<p>这里，又引出一个问题，在子线程new handler()会怎么样？</p>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Runnable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+                handler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Handler</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token annotation punctuation">@Override</span>
+                    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span><span class="token punctuation">;</span>
 
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>会报错，异常是：Can’t create handler inside thread that has not called Looper.prepare()。</p>
+<p>我们看构造方法</p>
+<pre class="line-numbers language-java"><code class="language-java">
+ <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span>Callback callback<span class="token punctuation">,</span> <span class="token keyword">boolean</span> async<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 
+        mLooper <span class="token operator">=</span> Looper<span class="token punctuation">.</span><span class="token function">myLooper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mLooper <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>
+                <span class="token string">"Can't create handler inside thread that has not called Looper.prepare()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建handler的时候，会检查当前线程的Looper对象（一个线程通过ThreadLocal绑定一个Looper对象，不清楚的可以看看前面的文章），很明显，我们并没用初始化当前子线程的Looper对象，自然会报错。</p>
+<p>解决方法跟ActivityThread的main方法一样。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">//1、初始化looper</span>
+                Looper<span class="token punctuation">.</span><span class="token function">prepare</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">//2、new Handler</span>
+                 mHandler<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">Handler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                    <span class="token annotation punctuation">@Override</span>
+                    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">//可以接收来自其他线程的消息--如子线程</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">//3、循环</span>
+                Looper<span class="token punctuation">.</span><span class="token function">loop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">" thread loop unexpectedly exited"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
+mButton<span class="token punctuation">.</span><span class="token function">setOnClickListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">View<span class="token punctuation">.</span>OnClickListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span>View v<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               mHandler<span class="token punctuation">.</span><span class="token function">sendMessage</span><span class="token punctuation">(</span>Message<span class="token punctuation">.</span><span class="token function">obtain</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="源码部分"><a href="#源码部分" class="headerlink" title="源码部分"></a>源码部分</h3><h4 id="1、构造方法"><a href="#1、构造方法" class="headerlink" title="1、构造方法"></a>1、构造方法</h4><pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-  
-    <article id="post-Proxy_Mode" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/19/Proxy_Mode/">设计模式(2)--代理模式之静态代理</a>
-    </h1>
-  
+ <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span>Callback callback<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">(</span>callback<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-        
-        <a href="/2017/06/19/Proxy_Mode/" class="archive-article-date">
-  	<time datetime="2017-06-19T10:17:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><p>什么是代理模式？</p>
-<p>代理模式就是我懒，有工作我不想做，我找别人帮我做。但是我怎么知道他能帮我做呢？所以我们要彼此了解对方，我们要实现共同的接口。</p>
-<h3 id="上类图"><a href="#上类图" class="headerlink" title="上类图"></a>上类图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/Proxy_Mode.png" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/06/19/Proxy_Mode/#more">more >></a>
-        
-      
+<span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span>Looper looper<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">(</span>looper<span class="token punctuation">,</span> null<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/设计模式/" class="article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
+    <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span>Looper looper<span class="token punctuation">,</span> Callback callback<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">(</span>looper<span class="token punctuation">,</span> callback<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+     <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> async<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> async<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
+ <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span>Callback callback<span class="token punctuation">,</span> <span class="token keyword">boolean</span> async<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>FIND_POTENTIAL_LEAKS<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">final</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span> <span class="token keyword">extends</span> <span class="token class-name">Handler</span><span class="token operator">></span> klass <span class="token operator">=</span> <span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>klass<span class="token punctuation">.</span><span class="token function">isAnonymousClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> klass<span class="token punctuation">.</span><span class="token function">isMemberClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> klass<span class="token punctuation">.</span><span class="token function">isLocalClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
+                    <span class="token punctuation">(</span>klass<span class="token punctuation">.</span><span class="token function">getModifiers</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> Modifier<span class="token punctuation">.</span>STATIC<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                Log<span class="token punctuation">.</span><span class="token function">w</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"The following Handler class should be static or leaks might occur: "</span> <span class="token operator">+</span>
+                    klass<span class="token punctuation">.</span><span class="token function">getCanonicalName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/19/Proxy_Mode/">阅读全文 >></a>
-        </p>
-      
+        mLooper <span class="token operator">=</span> Looper<span class="token punctuation">.</span><span class="token function">myLooper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mLooper <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>
+                <span class="token string">"Can't create handler inside thread that has not called Looper.prepare()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        mQueue <span class="token operator">=</span> mLooper<span class="token punctuation">.</span>mQueue<span class="token punctuation">;</span>
+        mCallback <span class="token operator">=</span> callback<span class="token punctuation">;</span>
+        mAsynchronous <span class="token operator">=</span> async<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-cunstom_drawable" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/19/cunstom_drawable/">自定义Drawable(一) 实现图片圆角、圆形、椭圆形</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/19/cunstom_drawable/" class="archive-article-date">
-  	<time datetime="2017-06-19T04:40:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="什么是Drawable"><a href="#什么是Drawable" class="headerlink" title="什么是Drawable ?"></a>什么是Drawable ?</h3><p>Android 把所有显示出来的图形都抽象为drawable ，意思就是可绘制的，包括，图片、色块、背景等。</p>
-<p>简单的drawable都是静态的图形，当然也有其他的，比如StateListDrawable，可以根据不同的触摸来变换不同的图形。也是通常我们在drawable文件中创建的selector.xml</p>
-<p>我们通过简单三个例子来了解一下自定义drawable</p>
-<h3 id="效果图如下"><a href="#效果图如下" class="headerlink" title="效果图如下"></a>效果图如下</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/mydrawable.gif" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/06/19/cunstom_drawable/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/19/cunstom_drawable/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-translucent" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/16/translucent/">app中的沉浸式</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/16/translucent/" class="archive-article-date">
-  	<time datetime="2017-06-16T01:16:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="app中的沉浸式"><a href="#app中的沉浸式" class="headerlink" title="app中的沉浸式"></a>app中的沉浸式</h3><p>官方的沉浸式的含义是指，APP沉浸(充斥了整个屏幕)在屏幕里面，没有显示状态栏，甚至没有显示底部导航栏。</p>
-<p>如：</p>
+ <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span>Looper looper<span class="token punctuation">,</span> Callback callback<span class="token punctuation">,</span> <span class="token keyword">boolean</span> async<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        mLooper <span class="token operator">=</span> looper<span class="token punctuation">;</span>
+        mQueue <span class="token operator">=</span> looper<span class="token punctuation">.</span>mQueue<span class="token punctuation">;</span>
+        mCallback <span class="token operator">=</span> callback<span class="token punctuation">;</span>
+        mAsynchronous <span class="token operator">=</span> async<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这几个构造方法，大致就那么几个变量，Looper，Callback，boolean async。</p>
 <ul>
-<li>全屏状态下的视频播放器</li>
-<li>全屏状态下的阅读器</li>
+<li>通常用到的空参构造器，默认获取的是当前线程的Looper，如果Looper为null抛异常。</li>
+<li>传入Callback的构造器，消息的处理，则会通过callback来处理，代替handleMessage。</li>
 </ul>
-<p>类似这样：</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_full_notitle.jpg" alt="image"></p>
-<h3 id="而我们一般所说的沉浸式是顶部状态栏和标题栏颜色一致，或者为一张图片。"><a href="#而我们一般所说的沉浸式是顶部状态栏和标题栏颜色一致，或者为一张图片。" class="headerlink" title="而我们一般所说的沉浸式是顶部状态栏和标题栏颜色一致，或者为一张图片。"></a>而我们一般所说的沉浸式是顶部状态栏和标题栏颜色一致，或者为一张图片。</h3><ul>
-<li>状态栏为图片延伸（4.4版本效果）</li>
-</ul>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_full.png" alt="image"></p>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">dispatchMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>msg<span class="token punctuation">.</span>callback <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">handleCallback</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>mCallback <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>mCallback<span class="token punctuation">.</span><span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">return</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <ul>
-<li>状态栏为纯颜色（4.4版本效果）</li>
+<li><p>传入一个boolean类型的async，如果true，则调用msg.setAsynchronous(true)，代表消息是异步的，默认是同步的（异步消息其实是这样的，我们可以通过enqueueBarrier往消息队列中插入一个Barrier，那么队列中执行时间在这个Barrier以后的同步消息都会被这个Barrier拦截住无法执行，直到我们调用removeBarrier移除了这个Barrier，而异步消息则没有影响，消息默认就是同步消息）。</p>
+</li>
+<li><p>传入一个Looper对象，则会用到当前线程的MessageQueue，可以用来在子线程接收信息。前面的代码，可以改为传入Looper对象。</p>
+</li>
 </ul>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_one.png" alt="image"></p>
+<h4 id="一系列方法"><a href="#一系列方法" class="headerlink" title="一系列方法"></a>一系列方法</h4><ul>
+<li>dispatchMessage</li>
+</ul>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">dispatchMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>msg<span class="token punctuation">.</span>callback <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">handleCallback</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>mCallback <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>mCallback<span class="token punctuation">.</span><span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">return</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">handleCallback</span><span class="token punctuation">(</span>Message message<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        message<span class="token punctuation">.</span>callback<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Callback</span> <span class="token punctuation">{</span>
+        <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">handleMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里，有两个判断，我们通常只会用到handleMessage这个方法，来执行message。</p>
+<p>第一，当message本身设置了callback，则会调用message本身的callback方法。</p>
+<p>第二，当我们在构造器时，传入了CallBack，则调用mCallback.handleMessage(msg)，消息处理了返回true，然后return，否则才会调用handlerMessage。</p>
 <ul>
-<li>导航栏和状态栏颜色一致（4.4版本效果）</li>
+<li>obtainMessage系列</li>
 </ul>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_two.png" alt="image"><br>支持版本：</p>
+<p>这系列方法就是调用Message.obtain()方法，让Message的性能更高。</p>
 <ul>
-<li>5.0+版本</li>
-<li>4.4以上版本</li>
+<li>post系列方法</li>
 </ul>
-<p>4.4以下版本是无法做到沉浸式，除非修改底层。</p>
-<h3 id="5-0-版本的实现方式"><a href="#5-0-版本的实现方式" class="headerlink" title="5.0+版本的实现方式"></a>5.0+版本的实现方式</h3><blockquote>
-<p>5.0+可以自动实现了沉浸式效果，状态栏的颜色跟随你的主题里面的colorPrimaryDark属性，相对来说非常简单，我们这里有三种方法：</p>
-</blockquote>
-<p>在此之前，我们需要把样式设为NoActionBar</p>
-<pre><code>    &lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
+<p>这系列方法，主要是给一个Runnable赋值给Message中，最终执行该Runnable的run方法。</p>
 
-        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
-        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;
-        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;
-    &lt;/style&gt;
-</code></pre><h4 id="一、状态栏"><a href="#一、状态栏" class="headerlink" title="一、状态栏"></a>一、状态栏</h4><p>1、设置style 文件中 colorPrimary 和 colorPrimaryDark的颜色值一样</p>
-<pre><code> &lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
-        &lt;!-- Customize your theme here. --&gt;
-        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
-        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimary&lt;/item&gt;
-        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;
-
-    &lt;/style&gt;
-</code></pre><p>2、设置style 文件中 属性样式 android:statusBarColor 的颜色值</p>
-<pre><code>&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
-        &lt;!-- Customize your theme here. --&gt;
-        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
-        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;
-        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;
-       &lt;item name=&quot;android:statusBarColor&quot;&gt;@color/colorAccent&lt;/item&gt;
-    &lt;/style&gt;
-</code></pre><p>3、通过代码设置，在setContentView之 后。getWindow().setStatusBarColor();</p>
-<pre><code>protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        getWindow().setNavigationBarColor(Color.GREEN);
-
-    }
-</code></pre><p>4、如果像设置图片在状态栏中</p>
-<pre><code> View decorView = getWindow().getDecorView();
- int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN| View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
- decorView.setSystemUiVisibility(option);
-
- //并且，需要动态计算statusbar的高度，设置进去。
- 这里下面再讲
-</code></pre><h4 id="二、底部导航栏"><a href="#二、底部导航栏" class="headerlink" title="二、底部导航栏"></a>二、底部导航栏</h4><p>1、在属性文件中，设置android:navigationBarColor的颜色值。</p>
-<pre><code>&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
-        &lt;!-- Customize your theme here. --&gt;
-        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
-        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;
-        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;
-       &lt;item name=&quot;android:navigationBarColor&quot;&gt;@color/colorAccent&lt;/item&gt;
-    &lt;/style&gt;
-</code></pre><p>2、通过代码设置，同样是在setContentView之后</p>
-<pre><code> getWindow().setNavigationBarColor(int color);
-</code></pre><p>5.0以上，都有专门提供的api,所以没什么难度，大家看看就行，选一种自己觉得方便的方法就行，我们着重讲一下，如何兼容4.4版本。</p>
-<h3 id="4-4-版本"><a href="#4-4-版本" class="headerlink" title="4.4+版本"></a>4.4+版本</h3><h2 id="首先，状态栏，我们可以分别在属性样式和代码中进行设置。"><a href="#首先，状态栏，我们可以分别在属性样式和代码中进行设置。" class="headerlink" title="首先，状态栏，我们可以分别在属性样式和代码中进行设置。"></a>首先，状态栏，我们可以分别在属性样式和代码中进行设置。</h2><p>1、在属性样式里（不推荐，需要建values-v19）</p>
-<pre><code>&lt;item name=&quot;android:windowTranslucentStatus&quot;&gt;true&lt;/item&gt;
-</code></pre><p>2、在代码中</p>
-<p>记住在 <strong>setContentView</strong> 之前设置。</p>
-<pre><code>getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-setContentView(R.layout.activity_main);
-</code></pre><p>然后发现会出现了副作用。</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_title_no.png" alt="image"></p>
-<h4 id="解决方法一："><a href="#解决方法一：" class="headerlink" title="解决方法一："></a>解决方法一：</h4><p>app的内容顶到最上面了，即状态栏遮挡一部分界面。</p>
-<p>这是因为，把状态栏掩藏掉，那部分高度被app顶上去了，如何解决？，我们只需要在布局文件中，这里以toolbar为例，设置android：fitsSystemWindows=”true” 。</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_title_yes.png" alt="image"></p>
-<p>解决。</p>
-<p>fitsSystemWindows这是什么意思呢？，他的意思是说，让view可以根据系统窗口(如statusBar)来调整自己的布局，如果值为true,就会调整view的paingding属性来给systemWindows留出空间。</p>
-<p>我们看看第二个解决办法。</p>
-<h4 id="解决方法二："><a href="#解决方法二：" class="headerlink" title="解决方法二："></a>解决方法二：</h4><p>系统文件的状态栏高度在sdk\platforms\android-23\data\res\values\demins.xml中我们可以找到系统文件中的状态栏高度。</p>
-<pre><code>&lt;!-- Height of the status bar --&gt;
-
-
-&lt;dimen name=&quot;status_bar_height&quot;&gt;24dp&lt;/dimen&gt;
-
-&lt;!-- Height of the bottom navigation / system bar. --&gt;
-
-
-&lt;dimen name=&quot;navigation_bar_height&quot;&gt;48dp&lt;/dimen
-</code></pre><p>默认为24dp，当然不同的手机厂商可能高度不一样，我们不能写死，需要动态获取这个值。</p>
-<p>这里有两种思路，一个是反射，一个是通过getResources.getIdentifier()。</p>
-<p>这里都写一遍出来。</p>
-<h4 id="通过反射"><a href="#通过反射" class="headerlink" title="通过反射"></a>通过反射</h4><pre><code>public int getStatusBarHeight(){
-    int statusHeight=-1;
-try {
-            Class&lt;?&gt; aClass = Class.forName(&quot;com.android.internal.R$dimen&quot;);
-            Object o = aClass.newInstance();
-            Field status_bar_height = aClass.getField(&quot;status_bar_height&quot;);
-            int statusBarHeightId = (int) status_bar_height.get(o);
-//          获取的其实是资源id 需要转换成px
-            statusHeight = getResources().getDimensionPixelSize(statusBarHeightId);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    return statusHeight==-1?dp2px(24):statusHeight;
-    }
-</code></pre><h4 id="通过getResources-getIdentifier"><a href="#通过getResources-getIdentifier" class="headerlink" title="通过getResources.getIdentifier()"></a>通过getResources.getIdentifier()</h4><pre><code> public int getStatusBarHeight(){
-
-        int statusBarId = getResources().getIdentifier(&quot;status_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);
-        int statusBarHeight=-1;
-        if(statusBarId&gt;0){
-             statusBarHeight = getResources().getDimensionPixelSize(statusBarId);
-        }
-        //代码默认为24dp
-        return statusBarHeight==-1?dp2px(24):statusBarHeight;
-    }
-</code></pre><p>获取到状态栏的高度之后，我们是不是可以把Toolbar的高度增加相同的高度，app顶到状态的问题不就可以轻松解决了。</p>
-<pre><code>  ViewGroup.LayoutParams params = toolbar.getLayoutParams();
-   params.height+=getStatusBarHeight();
-   titleBar.setLayoutParams(params);
-   titleBar.setPadding(toolbar.getPaddingLeft(),
-                       toolbar.getPaddingRight(),
-                       toolbar.getPaddingTop()+getStatusBarHeight(),
-                       toolbar.getPaddingBottom()
-                     );
-</code></pre><h2 id="接着，4-4版本的导航条"><a href="#接着，4-4版本的导航条" class="headerlink" title="接着，4.4版本的导航条"></a>接着，4.4版本的导航条</h2><p>1、显示导航条，并且自定义颜色。</p>
-<p>因为4.4并没有提供对应的方法，这里的思路是，让它透明，然后再布局中写一个高度一样的view，置底，重合navigationBar的位置。</p>
-<p>首先，计算navigationBar的高度，这个和状态栏statusBar是一样的。</p>
-<h4 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h4><pre><code>public int getNavigationBarHeight(){
-    int navigationHeight=-1;
-try {
-            Class&lt;?&gt; aClass = Class.forName(&quot;com.android.internal.R$dimen&quot;);
-            Object o = aClass.newInstance();
-            Field status_bar_height = aClass.getField(&quot;navigation_bar_height&quot;);
-            int statusBarHeightId = (int) status_bar_height.get(o);
-//          获取的其实是资源id 需要转换成px
-            navigationHeight = getResources().getDimensionPixelSize(statusBarHeightId);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    return navigationHeight==-1?dp2px(24):navigationHeight;
-    }
-</code></pre><h4 id="getResources-getIdentifier"><a href="#getResources-getIdentifier" class="headerlink" title="getResources.getIdentifier()"></a>getResources.getIdentifier()</h4><pre><code>    //获取底部的导航条的高度
-    public int getNavigationBarHeight(){
-        int navigationId = getResources().getIdentifier(&quot;navigation_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);
-        int navigationBaHeight=-1;
-        if(navigationId&gt;0){
-            navigationBaHeight = getResources().getDimensionPixelSize(navigationId);
-        }
-        //代码默认为48dp
-        return navigationBaHeight==-1?dp2px(48):navigationBaHeight;
-    }
-</code></pre><p>我们的xml布局</p>
-<pre><code>
-&lt;RelativeLayout 
-    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
-    android:id=&quot;@+id/activity_main&quot;
-    android:orientation=&quot;vertical&quot;
-    android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot;
-    &gt;
-
-   &lt;android.support.v7.widget.Toolbar
-       android:id=&quot;@+id/toolbar&quot;
-       android:fitsSystemWindows=&quot;true&quot;
-       android:layout_width=&quot;match_parent&quot;
-       android:layout_height=&quot;?actionBarSize&quot;
-       app:title=&quot;测试&quot;
-       app:titleTextColor=&quot;#fff&quot;
-       android:background=&quot;@color/colorAccent&quot;
-       &gt;&lt;/android.support.v7.widget.Toolbar&gt;
-
-   &lt;View
-       android:layout_alignParentBottom=&quot;true&quot;
-       android:id=&quot;@+id/nivagtion&quot;
-       android:layout_width=&quot;match_parent&quot;
-       android:layout_height=&quot;0dp&quot;/&gt;
-&lt;/RelativeLayout&gt;
-</code></pre><p>View是关键，这里我们把它置底，并且让他的高度尽可能的小，接着我们重设他的高度</p>
-<pre><code>View nivagtionBar = findViewById(R.id.nivagtion);
-nivagtionBar.getLayoutParams();
-
-  ViewGroup.LayoutParams bootomParams = nivagtionBar.getLayoutParams();
-  //这里需要 判断是否存在，不存在，4.4设置会报错，同时，设置nivagtionBar的高度为0
-        if(isBootomBarShow()){
-            bootomParams.height+=getNavigationBarHeight();
-            bootomBar.setBackgroundColor(primaryColor);
-            bootomBar.setLayoutParams(bootomParams);
-        }else{
-            bootomParams.height=0;
-            nivagtionBar.setLayoutParams(bootomParams);
-         }
-</code></pre><pre><code> //判断是否打开底部导航条 5.1以上没有导航栏也可以设置颜色。
-    public    boolean isBootomBarShow(){
-        Display display = getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics=new DisplayMetrics();
-        //获取整个屏幕的高度
-        display.getRealMetrics(outMetrics);
-        int realHeight = outMetrics.heightPixels;
-        int realWidth = outMetrics.widthPixels;
-        //获取内容展示的高度
-        outMetrics=new DisplayMetrics();
-        display.getMetrics(outMetrics);
-        int contentHeight = outMetrics.heightPixels;
-        int contentWidth = outMetrics.widthPixels;
-
-        int h = realHeight - contentHeight;
-        int w = realWidth - contentWidth;
-
-        return h&gt;0||w&gt;0;//竖屏情况和横屏情况。
-    }
-</code></pre><p>上效果图：</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_navigation.png" alt="image"></p>
-<p>2、不显示导航条。</p>
-<p>这个比较简单，直接上代码，这是一个可以藏显示导航条的开关方法。</p>
-<pre><code> public void toggleHideyBar() {
-
-        int uiOptions = getWindow().getDecorView().getSystemUiVisibility();
-        int newUiOptions = uiOptions;
-        boolean isImmersiveModeEnabled =
-                ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
-        if (isImmersiveModeEnabled) {
-            Log.d(TAG,&quot;打开&quot;);
-        } else {
-            Log.d(TAG,&quot;关闭&quot;);
-        }
-
-        if (Build.VERSION.SDK_INT &gt;= 14) {
-            newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        }
-
-        if (Build.VERSION.SDK_INT &gt;= 16) {
-            newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-        }
-
-        if (Build.VERSION.SDK_INT &gt;= 18) {
-            newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        }
-
-        getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
-    }
-</code></pre><p>效果图：</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/steep_toggel2.gif" alt="image"></p>
-<p>稍后我会把代码封装好的上传到github。</p>
-<p>github已更新，地址：<a href="https://github.com/livesun/translucent" target="_blank" rel="external">https://github.com/livesun/translucent</a></p>
-<h2 id="比较凌乱的代码分享"><a href="#比较凌乱的代码分享" class="headerlink" title="比较凌乱的代码分享:"></a>比较凌乱的代码分享:</h2><pre><code>public class BaseTranslucentActivity extends AppCompatActivity {
-
-
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        //判断当前版本如果大于4.4 并且小于5.0
-        if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.KITKAT
-                &amp;&amp;Build.VERSION.SDK_INT&lt;Build.VERSION_CODES.LOLLIPOP
-                ){
-            //设置状态栏透明
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //设置导航栏透明
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
-    }
-
-    /**
-     *
-     * @param titleBar 顶布局
-     * @param bootomBar 导航条
-     * @param primaryColor 背景颜色
-     * @param resId 图片
-     */
-    public void setOrChangeTranslucentColor(View titleBar,@Nullable View bootomBar,int primaryColor,int resId){
-        if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.KITKAT
-                &amp;&amp;Build.VERSION.SDK_INT&lt;Build.VERSION_CODES.LOLLIPOP
-                ){
-            //顶部
-                if(titleBar!=null){
-                    ViewGroup.LayoutParams params = titleBar.getLayoutParams();
-                    params.height+=getStatusBarHeight();
-                    titleBar.setLayoutParams(params);
-                    titleBar.setPadding(titleBar.getPaddingLeft(),
-                                        titleBar.getPaddingRight(),
-                                        titleBar.getPaddingTop()+getStatusBarHeight(),
-                                        titleBar.getPaddingBottom()
-                                        );
-                    if(primaryColor!=Color.TRANSPARENT){
-                        titleBar.setBackgroundColor(primaryColor);
-                    }else{
-                        titleBar.setBackground(getResources().getDrawable(resId));
-                    }
-
-
-                }
-            //底部
-                if(bootomBar!=null){
-                    ViewGroup.LayoutParams bootomParams = bootomBar.getLayoutParams();
-                    if(isBootomBarShow()){
-                        bootomParams.height+=getNavigationBarHeight();
-                        bootomBar.setBackgroundColor(primaryColor);
-                        bootomBar.setLayoutParams(bootomParams);
-                    }else{
-                        bootomParams.height=0;
-                        bootomBar.setLayoutParams(bootomParams);
-                    }
-                }
-            toggleHideyBar();
-            //5.0
-        }else if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.LOLLIPOP){
-            //如果颜色为透明，则用图片
-            if(primaryColor== Color.TRANSPARENT){
-                View decorView = getWindow().getDecorView();
-                int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-                decorView.setSystemUiVisibility(option);
-
-                ViewGroup.LayoutParams params = titleBar.getLayoutParams();
-                params.height+=getStatusBarHeight();
-                titleBar.setLayoutParams(params);
-                titleBar.setPadding(titleBar.getPaddingLeft(),
-                        titleBar.getPaddingRight(),
-                        titleBar.getPaddingTop()+getStatusBarHeight(),
-                        titleBar.getPaddingBottom()
-                );
-            }
-            if(bootomBar!=null){
-                getWindow().setNavigationBarColor(primaryColor);
-            }
-            getWindow().setStatusBarColor(primaryColor);
-            toggleHideyBar();
-        }
-    }
-
-    //获取顶部状态栏的高度
-    public int getStatusBarHeight(){
-        int statusBarId = getResources().getIdentifier(&quot;status_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);
-        int statusBarHeight=-1;
-        if(statusBarId&gt;0){
-             statusBarHeight = getResources().getDimensionPixelSize(statusBarId);
-        }
-        //代码默认为24dp
-        return statusBarHeight==-1?dp2px(24):statusBarHeight;
-    }
-
-    //获取底部的导航条的高度
-    public int getNavigationBarHeight(){
-        int navigationId = getResources().getIdentifier(&quot;navigation_bar_height&quot;, &quot;dimen&quot;, &quot;android&quot;);
-        int navigationBaHeight=-1;
-        if(navigationId&gt;0){
-            navigationBaHeight = getResources().getDimensionPixelSize(navigationId);
-        }
-        //代码默认为48dp
-        return navigationBaHeight==-1?dp2px(48):navigationBaHeight;
-    }
-
-    //判断是否打开底部导航条 5.1以上没有导航栏也可以设置颜色。
-    public    boolean isBootomBarShow(){
-        Display display = getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics=new DisplayMetrics();
-        //获取整个屏幕的高度
-        display.getRealMetrics(outMetrics);
-        int realHeight = outMetrics.heightPixels;
-        int realWidth = outMetrics.widthPixels;
-        //获取内容展示的高度
-        outMetrics=new DisplayMetrics();
-        display.getMetrics(outMetrics);
-        int contentHeight = outMetrics.heightPixels;
-        int contentWidth = outMetrics.widthPixels;
-
-        int h = realHeight - contentHeight;
-        int w = realWidth - contentWidth;
-
-        return h&gt;0||w&gt;0;//竖屏情况和横屏情况。
-    }
-
-
-    private int dp2px(int dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dp,getResources().getDisplayMetrics());
-    }
-
-    public void toggleHideyBar() {
-
-        int uiOptions = getWindow().getDecorView().getSystemUiVisibility();
-        int newUiOptions = uiOptions;
-        boolean isImmersiveModeEnabled =
-                ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
-        if (isImmersiveModeEnabled) {
-
-        } else {
-        }
-
-        if (Build.VERSION.SDK_INT &gt;= 14) {
-            newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        }
-
-        if (Build.VERSION.SDK_INT &gt;= 16) {
-            newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-        }
-
-        if (Build.VERSION.SDK_INT &gt;= 18) {
-            newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        }
-
-        getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
-    }
-
-}
-</code></pre>
       
 
       
@@ -843,7 +446,7 @@ nivagtionBar.getLayoutParams();
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
+        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
         		</li>
       		
 		</ul>
@@ -851,16 +454,75 @@ nivagtionBar.getLayoutParams();
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/16/translucent/">阅读全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://livesun.github.io/2017/11/06/handler/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/11/05/Looper/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android消息机制（三）--- Looper分析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -875,94 +537,46 @@ nivagtionBar.getLayoutParams();
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-clippaading" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/14/clippaading/">android:clipToPadding属性应用</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/14/clippaading/" class="archive-article-date">
-  	<time datetime="2017-06-14T04:05:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="android-clipToPadding属性应用"><a href="#android-clipToPadding属性应用" class="headerlink" title="android:clipToPadding属性应用"></a>android:clipToPadding属性应用</h2><h3 id="效果如下"><a href="#效果如下" class="headerlink" title="效果如下"></a>效果如下</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/clippadding2.gif" alt="image"></p>
-<p>效果实现是非常简单的，只需要自定义scrollview的滑动监听，动态设置toolbar的透明度即可。</p>
-        
-          <a class="article-more-a" href="/2017/06/14/clippaading/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/14/clippaading/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Handler的作用"><span class="toc-number">1.</span> <span class="toc-text">Handler的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源码部分"><span class="toc-number">2.</span> <span class="toc-text">源码部分</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、构造方法"><span class="toc-number">2.1.</span> <span class="toc-text">1、构造方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#一系列方法"><span class="toc-number">2.2.</span> <span class="toc-text">一系列方法</span></a></li></ol></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
+  
+  
+  
 
   
+
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
-    </nav>
+    <section id="comments">
+      <div id="disqus_thread"></div>
+        <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'true'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </section>
   
 
 
@@ -985,8 +599,8 @@ nivagtionBar.getLayoutParams();
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

@@ -145,6 +145,87 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-handler" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/06/handler/">Android消息机制（四）--- Handler分析</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/06/handler/" class="archive-article-date">
+  	<time datetime="2017-11-06T08:50:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Handler的作用"><a href="#Handler的作用" class="headerlink" title="Handler的作用"></a>Handler的作用</h3><ul>
+<li>实现异步的消息处理</li>
+<li>接收消息，调度消息，派发消息，处理消息</li>
+<li>线程间的通信</li>
+</ul>
+<p>最常用的用法，就是子线程不能更新UI，需要通过handler，把消息发送到主线程进行更新。</p>
+        
+          <a class="article-more-a" href="/2017/11/06/handler/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/11/06/handler/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Looper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -493,99 +574,6 @@ B --- null
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/10/29/order_list/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-single_linked" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/27/single_linked/">学习单链表</a>
-    </h1>
-  
-
-        
-        <a href="/2017/10/27/single_linked/" class="archive-article-date">
-  	<time datetime="2017-10-27T09:48:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h5 id="概念："><a href="#概念：" class="headerlink" title="概念："></a>概念：</h5><p>链表结构，是基于指针实现的，由一个个节点组成，每个节点包含数据域和指针域，节点通过指针域进行关联。</p>
-<p>链表既可以是连续的，也可以是不连续的，总之都是线性表结构。</p>
-<p>链表类型可以分这几类：</p>
-<ul>
-<li>单链表</li>
-<li>循环链表</li>
-<li>双向链表</li>
-<li>双向循环链表</li>
-</ul>
-<p>我打算从最简单的单链表开始学习。</p>
-<h5 id="单链表"><a href="#单链表" class="headerlink" title="单链表"></a>单链表</h5><p>链表的每个节点中只包含一个指针域，叫做单链表</p>
-<p>单链表中的节点结构</p>
-<ul>
-<li>数据域</li>
-<li>指针域</li>
-</ul>
-<p>如图：</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/dataStruceture/linked_node.png" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/10/27/single_linked/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构/" class="article-tag-list-link color5">数据结构</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/10/27/single_linked/">阅读全文 >></a>
         </p>
       
 
