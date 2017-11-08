@@ -6,12 +6,12 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>孙俊卿的博客</title>
+  <title>Category: 线程线程池 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="记录生活点滴">
 <meta property="og:type" content="website">
 <meta property="og:title" content="孙俊卿的博客">
-<meta property="og:url" content="http://livesun.github.io/index.html">
+<meta property="og:url" content="http://livesun.github.io/categories/线程线程池/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
 <meta property="og:description" content="记录生活点滴">
 <meta name="twitter:card" content="summary">
@@ -145,46 +145,35 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-AsyncTask" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
     
-      <header class="article-header">
-        
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2017" class="archive-year">2017</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2017/11/08/AsyncTask/" class="archive-article-date">
+  	<time datetime="2017-11-08T04:08:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-08</time>
+</a>
+        </div>
+    	 
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/08/AsyncTask/">Android多线程（一）-- AsyncTask 分析</a>
+      <a class="archive-article-title" href="/2017/11/08/AsyncTask/">Android多线程（一）-- AsyncTask 分析</a>
     </h1>
   
 
-        
-        <a href="/2017/11/08/AsyncTask/" class="archive-article-date">
-  	<time datetime="2017-11-08T04:08:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="AsyncTask的使用"><a href="#AsyncTask的使用" class="headerlink" title="AsyncTask的使用"></a>AsyncTask的使用</h4><ul>
-<li>AsyncTask是对Thread和Handler的封装，它在线程池中执行后台任务，然后把任务的进度和最终结果传递给UI线程处理。</li>
-<li>AsyncTask并不适合非常耗时的任务（也就几分钟），如果是非常耗时的操作，还是使用Executor等线程池。</li>
-<li>AsyncTask 是一个抽象的类，有三个泛型，Params、Progress、Result。Params表示传入参数的类型，Progress表示后台任务执行的进度类型，Rsult表示后台任务的返回结果的类型，如果不需要传递具体类型，可以传递Void。<h5 id="四个核心的方法。"><a href="#四个核心的方法。" class="headerlink" title="四个核心的方法。"></a>四个核心的方法。</h5></li>
-<li>onPreExecute()，在UI线程中执行，在异步任务执行之前调用。</li>
-<li>doInBackground(Params…params)，在线程池中执行，用于执行异步任务。调用publishProgress方法，会调用onProgressUpdate方法。</li>
-<li>onProgressUpdate(Progress…values)方法在UI线程调用，一般用做更新进度条。</li>
-<li>onPostExecute(Result result)，result是doInBackground的返回值，在Ui线程执行。</li>
-</ul>
-        
-          <a class="article-more-a" href="/2017/11/08/AsyncTask/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
+        <div class="article-info info-on-right">
+          
+          
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -197,399 +186,17 @@
 	</div>
 
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/08/AsyncTask/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
-    <article id="post-handler" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
+    </div></section>
+  
+
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/06/handler/">Android消息机制（四）--- Handler分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/06/handler/" class="archive-article-date">
-  	<time datetime="2017-11-06T08:50:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="Handler的作用"><a href="#Handler的作用" class="headerlink" title="Handler的作用"></a>Handler的作用</h3><ul>
-<li>实现异步的消息处理</li>
-<li>接收消息，调度消息，派发消息，处理消息</li>
-<li>线程间的通信</li>
-</ul>
-<p>最常用的用法，就是子线程不能更新UI，需要通过handler，把消息发送到主线程进行更新。</p>
-        
-          <a class="article-more-a" href="/2017/11/06/handler/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/06/handler/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Looper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/05/Looper/">Android消息机制（三）--- Looper分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/05/Looper/" class="archive-article-date">
-  	<time datetime="2017-11-05T07:50:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Looper的代码非常少</p>
-<h4 id="成员变量"><a href="#成员变量" class="headerlink" title="成员变量"></a>成员变量</h4><pre><code class="java">
-    // 静态的ThreadLocal对象，
-    static final ThreadLocal&lt;Looper&gt; sThreadLocal = new ThreadLocal&lt;Looper&gt;();
-
-    private static Looper sMainLooper;  //Ui 线程的Looper对象
-
-    //消息队列
-    final MessageQueue mQueue;
-    //线程
-    final Thread mThread;
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/11/05/Looper/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/05/Looper/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Threadlocal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/03/Threadlocal/">Android消息机制（二）--- ThreadLocal分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/03/Threadlocal/" class="archive-article-date">
-  	<time datetime="2017-11-03T02:12:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>ThreadLocal 并不是一个线程，它是线程内部的数据存储类，它的数据不是共享的，只有在当前线程才能获取到，在当前线程存储的数据，意思就是说，A,B两个线程，在A线程把数据存储进ThreadLocal，只有在A线程才能取出，B线程取不到。</p>
-<p>举个例子</p>
-<pre><code class="java">
-    public static void main(String[] args) throws Exception {
-
-        sThreadLocal = new ThreadLocal&lt;&gt;();
-        sThreadLocal.set(&quot;主线程&quot;);
-        new Thread(&quot;A&quot;){
-            @Override
-            public void run() {
-                super.run();
-                sThreadLocal.set(&quot;A线程&quot;);
-                System.out.print(&quot;A --- &quot;+sThreadLocal.get()+&quot;\n&quot;);
-            }
-        }.start();
-
-        new Thread(&quot;B&quot;){
-            @Override
-            public void run() {
-                super.run();
-                System.out.print(&quot;B --- &quot;+sThreadLocal.get()+&quot;\n&quot;);
-            }
-        }.start();
-
-        System.out.print(&quot;main --- &quot;+sThreadLocal.get()+&quot;\n&quot;);
-    }
-</code></pre>
-<p>打印的日志如下：</p>
-<pre><code class="java">
-A --- A线程
-main --- 主线程
-B --- null
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/11/03/Threadlocal/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/03/Threadlocal/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-MesssageQueue" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/31/MesssageQueue/">Android消息机制（一）--- MessageQueue源码分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/10/31/MesssageQueue/" class="archive-article-date">
-  	<time datetime="2017-10-31T07:00:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="MessageQueue是什么结构："><a href="#MessageQueue是什么结构：" class="headerlink" title="MessageQueue是什么结构："></a>MessageQueue是什么结构：</h4><ul>
-<li><a href="https://livesun.github.io/2017/10/27/single_linked/">是一个单链表</a></li>
-<li>链表节点的排序方式以时间（when）来排序</li>
-</ul>
-<p>因为个人水平问题，对native方法没有能力进行分析，只能根据链表的添加移除以及查找方面对MessageQueue进行分析。</p>
-        
-          <a class="article-more-a" href="/2017/10/31/MesssageQueue/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/10/31/MesssageQueue/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
-  
 
 
           </div>
@@ -611,11 +218,11 @@ B --- null
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: true,
+		isHome: false,
 		isPost: false,
 		isArchive: false,
 		isTag: false,
-		isCategory: false,
+		isCategory: true,
 		open_in_new: true,
 		toc_hide_index: false,
 		root: "/",

@@ -145,6 +145,88 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-setContentView源码分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/28/setContentView源码分析/">setContentView源码分析（一）</a>
+    </h1>
+  
+
+        
+        <a href="/2017/06/28/setContentView源码分析/" class="archive-article-date">
+  	<time datetime="2017-06-28T02:03:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Activity-setContentView源码分析"><a href="#Activity-setContentView源码分析" class="headerlink" title="Activity setContentView源码分析"></a>Activity setContentView源码分析</h2><p>当我们创建一个Activity，只需要在onCreate方法中，调用setContentView方法，把我们的布局id传进去，系统机会自动帮我们把布局展示出来，那setContentView方法究竟都做了什么工作，还有我们的布局添加进了哪里？</p>
+<p>我们今天的问题：</p>
+<ul>
+<li>setContentView的源码都做了哪些工作？</li>
+<li>我们的布局添加到了哪里？</li>
+<li>继承Activity和AppCompatActivity有什么不同？</li>
+</ul>
+        
+          <a class="article-more-a" href="/2017/06/28/setContentView源码分析/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/06/28/setContentView源码分析/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-SparseArray_ArrayMap" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -853,83 +935,6 @@ nivagtionBar.getLayoutParams();
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/06/16/translucent/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-clippaading" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/14/clippaading/">android:clipToPadding属性应用</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/14/clippaading/" class="archive-article-date">
-  	<time datetime="2017-06-14T04:05:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="android-clipToPadding属性应用"><a href="#android-clipToPadding属性应用" class="headerlink" title="android:clipToPadding属性应用"></a>android:clipToPadding属性应用</h2><h3 id="效果如下"><a href="#效果如下" class="headerlink" title="效果如下"></a>效果如下</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/clippadding2.gif" alt="image"></p>
-<p>效果实现是非常简单的，只需要自定义scrollview的滑动监听，动态设置toolbar的透明度即可。</p>
-        
-          <a class="article-more-a" href="/2017/06/14/clippaading/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/14/clippaading/">阅读全文 >></a>
         </p>
       
 

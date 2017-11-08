@@ -6,17 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>孙俊卿的博客</title>
+  <title>Android多线程（一）-- AsyncTask 分析 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="孙俊卿的博客">
-<meta property="og:url" content="http://livesun.github.io/index.html">
+  <meta name="description" content="AsyncTask的使用 AsyncTask是对Thread和Handler的封装，它在线程池中执行后台任务，然后把任务的进度和最终结果传递给UI线程处理。 AsyncTask并不适合非常耗时的任务（也就几分钟），如果是非常耗时的操作，还是使用Executor等线程池。 AsyncTask 是一个抽象的类，有三个泛型，Params、Progress、Result。Params表示传入参数的类型，P">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android多线程（一）-- AsyncTask 分析">
+<meta property="og:url" content="http://livesun.github.io/2017/11/08/AsyncTask/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="AsyncTask的使用 AsyncTask是对Thread和Handler的封装，它在线程池中执行后台任务，然后把任务的进度和最终结果传递给UI线程处理。 AsyncTask并不适合非常耗时的任务（也就几分钟），如果是非常耗时的操作，还是使用Executor等线程池。 AsyncTask 是一个抽象的类，有三个泛型，Params、Progress、Result。Params表示传入参数的类型，P">
+<meta property="og:updated_time" content="2017-11-08T04:08:49.442Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="孙俊卿的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="Android多线程（一）-- AsyncTask 分析">
+<meta name="twitter:description" content="AsyncTask的使用 AsyncTask是对Thread和Handler的封装，它在线程池中执行后台任务，然后把任务的进度和最终结果传递给UI线程处理。 AsyncTask并不适合非常耗时的任务（也就几分钟），如果是非常耗时的操作，还是使用Executor等线程池。 AsyncTask 是一个抽象的类，有三个泛型，Params、Progress、Result。Params表示传入参数的类型，P">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -143,16 +144,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-AsyncTask" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-AsyncTask" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/08/AsyncTask/">Android多线程（一）-- AsyncTask 分析</a>
+    <h1 class="article-title" itemprop="name">
+      Android多线程（一）-- AsyncTask 分析
     </h1>
   
 
@@ -174,9 +173,474 @@
 <li>onProgressUpdate(Progress…values)方法在UI线程调用，一般用做更新进度条。</li>
 <li>onPostExecute(Result result)，result是doInBackground的返回值，在Ui线程执行。</li>
 </ul>
-        
-          <a class="article-more-a" href="/2017/11/08/AsyncTask/#more">more >></a>
-        
+<a id="more"></a>
+<h4 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h4><p>从execute()方法进入</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token annotation punctuation">@MainThread</span>
+    <span class="token keyword">public</span> <span class="token keyword">final</span> AsyncTask<span class="token operator">&lt;</span>Params<span class="token punctuation">,</span> Progress<span class="token punctuation">,</span> Result<span class="token operator">></span> <span class="token function">execute</span><span class="token punctuation">(</span>Params<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> params<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">executeOnExecutor</span><span class="token punctuation">(</span>sDefaultExecutor<span class="token punctuation">,</span> params<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+     <span class="token annotation punctuation">@MainThread</span>
+    <span class="token keyword">public</span> <span class="token keyword">final</span> AsyncTask<span class="token operator">&lt;</span>Params<span class="token punctuation">,</span> Progress<span class="token punctuation">,</span> Result<span class="token operator">></span> <span class="token function">executeOnExecutor</span><span class="token punctuation">(</span>Executor exec<span class="token punctuation">,</span>
+            Params<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> params<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mStatus <span class="token operator">!=</span> Status<span class="token punctuation">.</span>PENDING<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">switch</span> <span class="token punctuation">(</span>mStatus<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">case</span> RUNNING<span class="token operator">:</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Cannot execute task:"</span>
+                            <span class="token operator">+</span> <span class="token string">" the task is already running."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> FINISHED<span class="token operator">:</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Cannot execute task:"</span>
+                            <span class="token operator">+</span> <span class="token string">" the task has already been executed "</span>
+                            <span class="token operator">+</span> <span class="token string">"(a task can be executed only once)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        mStatus <span class="token operator">=</span> Status<span class="token punctuation">.</span>RUNNING<span class="token punctuation">;</span>
+
+        <span class="token function">onPreExecute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        mWorker<span class="token punctuation">.</span>mParams <span class="token operator">=</span> params<span class="token punctuation">;</span>
+        exec<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span>mFuture<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里调用的是executeOnExecutor传入了sDefaultExecutor（默认线程池），和我们的参数params。</p>
+<p>sDefaultExecutor 变量</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">volatile</span> Executor sDefaultExecutor <span class="token operator">=</span> SERIAL_EXECUTOR<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">//串行线程池</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> Executor SERIAL_EXECUTOR <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SerialExecutor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>默认的线程池–sDefaultExecutor 是由SerialExecutor赋值，而SerialExecutor是一个串行线程池。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">SerialExecutor</span> <span class="token keyword">implements</span> <span class="token class-name">Executor</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//双端队列</span>
+        <span class="token keyword">final</span> ArrayDeque<span class="token operator">&lt;</span>Runnable<span class="token operator">></span> mTasks <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayDeque</span><span class="token operator">&lt;</span>Runnable<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Runnable mActive<span class="token punctuation">;</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token keyword">final</span> Runnable r<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//往双端队列队尾插入元素。</span>
+            mTasks<span class="token punctuation">.</span><span class="token function">offer</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Runnable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">//串行机制</span>
+                        r<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">//从队头开始执行</span>
+                        <span class="token function">scheduleNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 第一次入队列时mActivie为空，因此需要手动调用scheduleNext方法</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>mActive <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">scheduleNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">protected</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">scheduleNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//从双端队列队头中取出,执行execute</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>mActive <span class="token operator">=</span> mTasks<span class="token punctuation">.</span><span class="token function">poll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token comment" spellcheck="true">//                /最终执行在并行线程池中</span>
+                THREAD_POOL_EXECUTOR<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span>mActive<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+ <span class="token comment" spellcheck="true">/**
+     * An {@link Executor} that can be used to execute tasks in parallel.
+     * 并行线程池
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> Executor THREAD_POOL_EXECUTOR<span class="token punctuation">;</span>
+
+    <span class="token keyword">static</span> <span class="token punctuation">{</span>
+        ThreadPoolExecutor threadPoolExecutor <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ThreadPoolExecutor</span><span class="token punctuation">(</span>
+                CORE_POOL_SIZE<span class="token punctuation">,</span> MAXIMUM_POOL_SIZE<span class="token punctuation">,</span> KEEP_ALIVE_SECONDS<span class="token punctuation">,</span> TimeUnit<span class="token punctuation">.</span>SECONDS<span class="token punctuation">,</span>
+                sPoolWorkQueue<span class="token punctuation">,</span> sThreadFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        threadPoolExecutor<span class="token punctuation">.</span><span class="token function">allowCoreThreadTimeOut</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        THREAD_POOL_EXECUTOR <span class="token operator">=</span> threadPoolExecutor<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>SerialExecutor实现了Executor的接口，mTasks是一个存储Runnable的双端队列，在execute()方法中，先往mTasks中插入Runnable元素，第一次进入队列时，mActivity为null，所以需要手动调用scheduleNext方法。</p>
+<p>而scheduleNext方法，则是将插入的Runnable对象从队列中取出并传给THREAD_POOL_EXECUTOR并行线程池来执行该Runnable对象，然后利用try finally机制，先执行完try代码块中的代码，在执行完毕之后必然再执行finally代码块中的代码，然后以此往复循环，达到串行运行的目的，当然线程的具体执行还是再并行线程池中进行的。</p>
+<p>同时，因为是静态的成员变量，会被所有实例共享，这也就造成了，整个进程中的所有AsyncTask都是串行执行。这个需要注意。</p>
+<h5 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h5><pre class="line-numbers language-java"><code class="language-java"> <span class="token comment" spellcheck="true">//</span>
+        <span class="token keyword">new</span> <span class="token class-name">MyAsyncTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token string">"MyAsyncTask 1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">MyAsyncTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token string">"MyAsyncTask 2"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">MyAsyncTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token string">"MyAsyncTask 3"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">MyAsyncTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token string">"MyAsyncTask 4"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">MyAsyncTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token string">"MyAsyncTask 5"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+ <span class="token keyword">class</span> <span class="token class-name">MyAsyncTask</span> <span class="token keyword">extends</span> <span class="token class-name">AsyncTask</span><span class="token operator">&lt;</span>String<span class="token punctuation">,</span>Integer<span class="token punctuation">,</span>String<span class="token operator">></span><span class="token punctuation">{</span>
+
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">protected</span> String <span class="token function">doInBackground</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> strings<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                Thread<span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">2000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> strings<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onPostExecute</span><span class="token punctuation">(</span>String s<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onPostExecute</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            SimpleDateFormat dateFormat<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">SimpleDateFormat</span><span class="token punctuation">(</span><span class="token string">"yyyy-MM-dd HH:mm:ss"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            Log<span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span><span class="token string">"AAA"</span><span class="token punctuation">,</span>s<span class="token operator">+</span><span class="token string">" 执行结束 ："</span><span class="token operator">+</span>dateFormat<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//====================== 执行结果 ====================</span>
+ MyAsyncTask <span class="token number">1</span> 执行结束 ：<span class="token number">2017</span><span class="token operator">-</span><span class="token number">11</span><span class="token operator">-</span><span class="token number">08</span> <span class="token number">10</span><span class="token operator">:</span><span class="token number">37</span><span class="token operator">:</span><span class="token number">29</span>
+ MyAsyncTask <span class="token number">2</span> 执行结束 ：<span class="token number">2017</span><span class="token operator">-</span><span class="token number">11</span><span class="token operator">-</span><span class="token number">08</span> <span class="token number">10</span><span class="token operator">:</span><span class="token number">37</span><span class="token operator">:</span><span class="token number">31</span>
+ MyAsyncTask <span class="token number">3</span> 执行结束 ：<span class="token number">2017</span><span class="token operator">-</span><span class="token number">11</span><span class="token operator">-</span><span class="token number">08</span> <span class="token number">10</span><span class="token operator">:</span><span class="token number">37</span><span class="token operator">:</span><span class="token number">33</span>
+ MyAsyncTask <span class="token number">4</span> 执行结束 ：<span class="token number">2017</span><span class="token operator">-</span><span class="token number">11</span><span class="token operator">-</span><span class="token number">08</span> <span class="token number">10</span><span class="token operator">:</span><span class="token number">37</span><span class="token operator">:</span><span class="token number">35</span>
+ MyAsyncTask <span class="token number">5</span> 执行结束 ：<span class="token number">2017</span><span class="token operator">-</span><span class="token number">11</span><span class="token operator">-</span><span class="token number">08</span> <span class="token number">10</span><span class="token operator">:</span><span class="token number">37</span><span class="token operator">:</span><span class="token number">37</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>枚举Status</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">enum</span> Status <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">/**
+         * Indicates that the task has not been executed yet.
+         *表明尚未执行的任务。
+         */</span>
+        PENDING<span class="token punctuation">,</span>
+        <span class="token comment" spellcheck="true">/**
+         * Indicates that the task is running.
+         *表明任务正在执行。
+         */</span>
+        RUNNING<span class="token punctuation">,</span>
+        <span class="token comment" spellcheck="true">/**
+         * Indicates that {@link AsyncTask#onPostExecute} has finished.
+         *表明任务已经结束。
+         */</span>
+        FINISHED<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在executeOnExecutor方法中，先判断了当前的状态是不是不等于PENDING，如果不是就会抛异常，这也说明了为什么一个对象只能execute一次，把状态改为RUNNING，开始执行onPreExecute()方法。</p>
+<p>将我们传入的params赋值给mWorker对象，再把mFuture给sDefaultExecutor串行线程池串行执行，这里也是比较绕的一部分。</p>
+<p>首先，我们先看mWorker对象。</p>
+<p>在构造方法中</p>
+<pre class="line-numbers language-java"><code class="language-java">
+ <span class="token keyword">public</span> <span class="token function">AsyncTask</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Nullable</span> Looper callbackLooper<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+ <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+  mWorker <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WorkerRunnable</span><span class="token operator">&lt;</span>Params<span class="token punctuation">,</span> Result<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">public</span> Result <span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">//当前任务已经被调用了,</span>
+                mTaskInvoked<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                Result result <span class="token operator">=</span> null<span class="token punctuation">;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    Process<span class="token punctuation">.</span><span class="token function">setThreadPriority</span><span class="token punctuation">(</span>Process<span class="token punctuation">.</span>THREAD_PRIORITY_BACKGROUND<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">//执行doInBackground函数</span>
+                    result <span class="token operator">=</span> <span class="token function">doInBackground</span><span class="token punctuation">(</span>mParams<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    Binder<span class="token punctuation">.</span><span class="token function">flushPendingCommands</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> tr<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    mCancelled<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">throw</span> tr<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                    <span class="token function">postResult</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+ <span class="token punctuation">}</span>
+
+
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">WorkerRunnable</span><span class="token operator">&lt;</span>Params<span class="token punctuation">,</span> Result<span class="token operator">></span> <span class="token keyword">implements</span> <span class="token class-name">Callable</span><span class="token operator">&lt;</span>Result<span class="token operator">></span> <span class="token punctuation">{</span>
+        Params<span class="token punctuation">[</span><span class="token punctuation">]</span> mParams<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>mWoker是一个实现Callable接口WorkerRunnable对象，将传入的params赋值给mWorker对象的mParams，在call方法中，先将mTaskInvoked设置为true，表示当前任务已经被调用，然后执行doInBackground(mParams)，最后在finally中将返回的结果result交给postResult执行。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token comment" spellcheck="true">//通过handler 发送消息</span>
+    <span class="token keyword">private</span> Result <span class="token function">postResult</span><span class="token punctuation">(</span>Result result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
+        Message message <span class="token operator">=</span> <span class="token function">getHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">obtainMessage</span><span class="token punctuation">(</span>MESSAGE_POST_RESULT<span class="token punctuation">,</span>
+                <span class="token keyword">new</span> <span class="token class-name">AsyncTaskResult</span><span class="token operator">&lt;</span>Result<span class="token operator">></span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        message<span class="token punctuation">.</span><span class="token function">sendToTarget</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+  <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">InternalHandler</span> <span class="token keyword">extends</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
+        <span class="token keyword">public</span> <span class="token function">InternalHandler</span><span class="token punctuation">(</span>Looper looper<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">super</span><span class="token punctuation">(</span>looper<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"unchecked"</span><span class="token punctuation">,</span> <span class="token string">"RawUseOfParameterizedType"</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            AsyncTaskResult<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> result <span class="token operator">=</span> <span class="token punctuation">(</span>AsyncTaskResult<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">)</span> msg<span class="token punctuation">.</span>obj<span class="token punctuation">;</span>
+            <span class="token keyword">switch</span> <span class="token punctuation">(</span>msg<span class="token punctuation">.</span>what<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">case</span> MESSAGE_POST_RESULT<span class="token operator">:</span>
+                    <span class="token comment" spellcheck="true">// 调用AsyncTask的finish方法。</span>
+                    result<span class="token punctuation">.</span>mTask<span class="token punctuation">.</span><span class="token function">finish</span><span class="token punctuation">(</span>result<span class="token punctuation">.</span>mData<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> MESSAGE_POST_PROGRESS<span class="token operator">:</span>
+                    result<span class="token punctuation">.</span>mTask<span class="token punctuation">.</span><span class="token function">onProgressUpdate</span><span class="token punctuation">(</span>result<span class="token punctuation">.</span>mData<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+  <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">finish</span><span class="token punctuation">(</span>Result result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isCancelled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//如果被取消，则调用onCancelled</span>
+            <span class="token function">onCancelled</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//否则调用onPostExecute</span>
+            <span class="token function">onPostExecute</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">//更改状态</span>
+        mStatus <span class="token operator">=</span> Status<span class="token punctuation">.</span>FINISHED<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里面其实差不多就跑通了整个AsyncTask的关键方法的调用逻辑了，通过handler发送消息，然后执行onPostExecute。</p>
+<p>问题是，mWorker的call方法是什么时候调用的 ？</p>
+<p>mFuture对象</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">private</span> <span class="token keyword">final</span> FutureTask<span class="token operator">&lt;</span>Result<span class="token operator">></span> mFuture<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token function">AsyncTask</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Nullable</span> Looper callbackLooper<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    mFuture <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FutureTask</span><span class="token operator">&lt;</span>Result<span class="token operator">></span><span class="token punctuation">(</span>mWorker<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">done</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token function">postResultIfNotInvoked</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    android<span class="token punctuation">.</span>util<span class="token punctuation">.</span>Log<span class="token punctuation">.</span><span class="token function">w</span><span class="token punctuation">(</span>LOG_TAG<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ExecutionException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"An error occurred while executing doInBackground()"</span><span class="token punctuation">,</span>
+                            e<span class="token punctuation">.</span><span class="token function">getCause</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">CancellationException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token function">postResultIfNotInvoked</span><span class="token punctuation">(</span>null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span> 
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>FutureTask 是一个并发类，它实现了RunnableFuture接口，而RunnableFuture又实现了<br>Runnable, Future接口。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FutureTask</span><span class="token operator">&lt;</span>V<span class="token operator">></span> <span class="token keyword">implements</span> <span class="token class-name">RunnableFuture</span><span class="token operator">&lt;</span>V<span class="token operator">></span> <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">RunnableFuture</span><span class="token operator">&lt;</span>V<span class="token operator">></span> <span class="token keyword">extends</span> <span class="token class-name">Runnable</span><span class="token punctuation">,</span> Future<span class="token operator">&lt;</span>V<span class="token operator">></span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在构造方法中，将mWokder传了进去，其实是给内部的callable赋值。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">public</span> <span class="token function">FutureTask</span><span class="token punctuation">(</span>Callable<span class="token operator">&lt;</span>V<span class="token operator">></span> callable<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>callable <span class="token operator">==</span> null<span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">NullPointerException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>callable <span class="token operator">=</span> callable<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> NEW<span class="token punctuation">;</span>      
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当我们调用execute方法时–最终调用了 exec.execute(mFuture)。</p>
+<p>这里时把mFuture做为Runnable的作用来执行它的run()方法。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//成员变量callable，在构造方法中赋值了</span>
+            Callable<span class="token operator">&lt;</span>V<span class="token operator">></span> c <span class="token operator">=</span> callable<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>c <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> state <span class="token operator">==</span> NEW<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                V result<span class="token punctuation">;</span>
+                <span class="token keyword">boolean</span> ran<span class="token punctuation">;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">//执行call方法</span>
+                    result <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    ran <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    result <span class="token operator">=</span> null<span class="token punctuation">;</span>
+                    ran <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+                    <span class="token function">setException</span><span class="token punctuation">(</span>ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>ran<span class="token punctuation">)</span>
+                    <span class="token function">set</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            runner <span class="token operator">=</span> null<span class="token punctuation">;</span>
+            <span class="token keyword">int</span> s <span class="token operator">=</span> state<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>s <span class="token operator">>=</span> INTERRUPTING<span class="token punctuation">)</span>
+                <span class="token function">handlePossibleCancellationInterrupt</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在执行mFuture的run方法时，就会执行mWorker的call方法，接着就巴拉巴拉完成了整个操作。</p>
+<p>这里说一下mFuture的done方法是什么时候执行的。</p>
+<p>调用run方法如果成功执行,最终都会执行到done方法。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+       result <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ran <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         result <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        ran <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token function">setException</span><span class="token punctuation">(</span>ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>ran<span class="token punctuation">)</span>
+      <span class="token function">set</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">setException</span><span class="token punctuation">(</span>Throwable t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>U<span class="token punctuation">.</span><span class="token function">compareAndSwapInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> STATE<span class="token punctuation">,</span> NEW<span class="token punctuation">,</span> COMPLETING<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            outcome <span class="token operator">=</span> t<span class="token punctuation">;</span>
+            U<span class="token punctuation">.</span><span class="token function">putOrderedInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> STATE<span class="token punctuation">,</span> EXCEPTIONAL<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// final state</span>
+            <span class="token function">finishCompletion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+   <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span>V v<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>U<span class="token punctuation">.</span><span class="token function">compareAndSwapInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> STATE<span class="token punctuation">,</span> NEW<span class="token punctuation">,</span> COMPLETING<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            outcome <span class="token operator">=</span> v<span class="token punctuation">;</span>
+            U<span class="token punctuation">.</span><span class="token function">putOrderedInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> STATE<span class="token punctuation">,</span> NORMAL<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// final state</span>
+            <span class="token function">finishCompletion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+     <span class="token comment" spellcheck="true">/**
+     * 删除和发信号给所有等待结果的线程
+     * Removes and signals all waiting threads, invokes done(), and
+     * nulls out callable.
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">finishCompletion</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// assert state > COMPLETING;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span>WaitNode q<span class="token punctuation">;</span> <span class="token punctuation">(</span>q <span class="token operator">=</span> waiters<span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>U<span class="token punctuation">.</span><span class="token function">compareAndSwapObject</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> WAITERS<span class="token punctuation">,</span> q<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span><span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    Thread t <span class="token operator">=</span> q<span class="token punctuation">.</span>thread<span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>t <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        q<span class="token punctuation">.</span>thread <span class="token operator">=</span> null<span class="token punctuation">;</span>
+                        LockSupport<span class="token punctuation">.</span><span class="token function">unpark</span><span class="token punctuation">(</span>t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    WaitNode next <span class="token operator">=</span> q<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>next <span class="token operator">==</span> null<span class="token punctuation">)</span>
+                        <span class="token keyword">break</span><span class="token punctuation">;</span>
+                    q<span class="token punctuation">.</span>next <span class="token operator">=</span> null<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// unlink to help gc</span>
+                    q <span class="token operator">=</span> next<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//在这里执行done()方法。</span>
+        <span class="token function">done</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        callable <span class="token operator">=</span> null<span class="token punctuation">;</span>       
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在这done方法中，AsyncTask做了一个保险操作。</p>
+<p>如果mWorker call方法失败了，就会来到这里，同样调用了postResult方法</p>
+<pre class="line-numbers language-java"><code class="language-java">
+ mFuture <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FutureTask</span><span class="token operator">&lt;</span>Result<span class="token operator">></span><span class="token punctuation">(</span>mWorker<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">done</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token function">postResultIfNotInvoked</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">postResultIfNotInvoked</span><span class="token punctuation">(</span>Result result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//</span>
+        <span class="token keyword">final</span> <span class="token keyword">boolean</span> wasTaskInvoked <span class="token operator">=</span> mTaskInvoked<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>wasTaskInvoked<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">postResult</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>还有一个publishProgress方法，其实也是通过handler来实现的。</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">protected</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">publishProgress</span><span class="token punctuation">(</span>Progress<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> values<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isCancelled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">getHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">obtainMessage</span><span class="token punctuation">(</span>MESSAGE_POST_PROGRESS<span class="token punctuation">,</span>
+                    <span class="token keyword">new</span> <span class="token class-name">AsyncTaskResult</span><span class="token operator">&lt;</span>Progress<span class="token operator">></span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> values<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">sendToTarget</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>至此，AsyncTask的工作原理大致分析完毕。</p>
+<p>这里面还涉及双端队列ArrayDeque，线程池以及并发类FeatureTask都是值得深究和学习的。</p>
+<p>这里还学到了招，如何串行线程池。</p>
+<p>抽一下代码</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SerialExecutor</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> Runnable mActive<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> ArrayDeque<span class="token operator">&lt;</span>Runnable<span class="token operator">></span> mArrayDeque <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayDeque</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> CPU_COUNT <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">availableProcessors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> CORE_POOL_SIZE <span class="token operator">=</span> CPU_COUNT <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> MAXIMUM_POOL_SIZE <span class="token operator">=</span> CPU_COUNT <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> KEEP_ALIVE <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> BlockingQueue<span class="token operator">&lt;</span>Runnable<span class="token operator">></span> sPoolWorkQueue <span class="token operator">=</span>
+            <span class="token keyword">new</span> <span class="token class-name">LinkedBlockingDeque</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> ThreadFactory sThreadFactory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ThreadFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">private</span> <span class="token keyword">final</span> AtomicInteger mCount <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicInteger</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">public</span> Thread <span class="token function">newThread</span><span class="token punctuation">(</span>Runnable r<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span>r<span class="token punctuation">,</span> <span class="token string">"Serial thread #"</span> <span class="token operator">+</span> mCount<span class="token punctuation">.</span><span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> ThreadPoolExecutor THREAD_EXECUTOR <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ThreadPoolExecutor</span><span class="token punctuation">(</span>CORE_POOL_SIZE<span class="token punctuation">,</span>
+            MAXIMUM_POOL_SIZE<span class="token punctuation">,</span> KEEP_ALIVE<span class="token punctuation">,</span> TimeUnit<span class="token punctuation">.</span>SECONDS<span class="token punctuation">,</span> sPoolWorkQueue<span class="token punctuation">,</span> sThreadFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token keyword">final</span> Runnable r<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        mArrayDeque<span class="token punctuation">.</span><span class="token function">offer</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Runnable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    r<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                    <span class="token function">scheduleNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 第一次入队列时mActivie为空，因此需要手动调用scheduleNext方法</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mActive <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">scheduleNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">scheduleNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>mActive <span class="token operator">=</span> mArrayDeque<span class="token punctuation">.</span><span class="token function">poll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            THREAD_EXECUTOR<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span>mActive<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>测试一下</p>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        SerialExecutor serialExecutor <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SerialExecutor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">;</span> i <span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">final</span> <span class="token keyword">int</span> j <span class="token operator">=</span> i<span class="token punctuation">;</span>
+            serialExecutor<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Runnable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token annotation punctuation">@Override</span>
+                <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"The num is :"</span> <span class="token operator">+</span> <span class="token punctuation">(</span>j <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                        Thread<span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">2000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>执行结果</p>
+<pre class="line-numbers language-java"><code class="language-java">The num is <span class="token operator">:</span><span class="token number">1</span>
+The num is <span class="token operator">:</span><span class="token number">2</span>
+The num is <span class="token operator">:</span><span class="token number">3</span>
+The num is <span class="token operator">:</span><span class="token number">4</span>
+The num is <span class="token operator">:</span><span class="token number">5</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>完美。。。</p>
+
       
 
       
@@ -198,16 +662,75 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/08/AsyncTask/">阅读全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://livesun.github.io/2017/11/08/AsyncTask/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/11/06/handler/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android消息机制（四）--- Handler分析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -222,373 +745,46 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-handler" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/06/handler/">Android消息机制（四）--- Handler分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/06/handler/" class="archive-article-date">
-  	<time datetime="2017-11-06T08:50:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="Handler的作用"><a href="#Handler的作用" class="headerlink" title="Handler的作用"></a>Handler的作用</h3><ul>
-<li>实现异步的消息处理</li>
-<li>接收消息，调度消息，派发消息，处理消息</li>
-<li>线程间的通信</li>
-</ul>
-<p>最常用的用法，就是子线程不能更新UI，需要通过handler，把消息发送到主线程进行更新。</p>
-        
-          <a class="article-more-a" href="/2017/11/06/handler/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/06/handler/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#AsyncTask的使用"><span class="toc-number">1.</span> <span class="toc-text">AsyncTask的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#四个核心的方法。"><span class="toc-number">1.1.</span> <span class="toc-text">四个核心的方法。</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#源码分析"><span class="toc-number">2.</span> <span class="toc-text">源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#举个例子"><span class="toc-number">2.1.</span> <span class="toc-text">举个例子</span></a></li></ol></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
-  
-    <article id="post-Looper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/05/Looper/">Android消息机制（三）--- Looper分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/05/Looper/" class="archive-article-date">
-  	<time datetime="2017-11-05T07:50:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Looper的代码非常少</p>
-<h4 id="成员变量"><a href="#成员变量" class="headerlink" title="成员变量"></a>成员变量</h4><pre><code class="java">
-    // 静态的ThreadLocal对象，
-    static final ThreadLocal&lt;Looper&gt; sThreadLocal = new ThreadLocal&lt;Looper&gt;();
-
-    private static Looper sMainLooper;  //Ui 线程的Looper对象
-
-    //消息队列
-    final MessageQueue mQueue;
-    //线程
-    final Thread mThread;
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/11/05/Looper/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/05/Looper/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Threadlocal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/03/Threadlocal/">Android消息机制（二）--- ThreadLocal分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/03/Threadlocal/" class="archive-article-date">
-  	<time datetime="2017-11-03T02:12:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>ThreadLocal 并不是一个线程，它是线程内部的数据存储类，它的数据不是共享的，只有在当前线程才能获取到，在当前线程存储的数据，意思就是说，A,B两个线程，在A线程把数据存储进ThreadLocal，只有在A线程才能取出，B线程取不到。</p>
-<p>举个例子</p>
-<pre><code class="java">
-    public static void main(String[] args) throws Exception {
-
-        sThreadLocal = new ThreadLocal&lt;&gt;();
-        sThreadLocal.set(&quot;主线程&quot;);
-        new Thread(&quot;A&quot;){
-            @Override
-            public void run() {
-                super.run();
-                sThreadLocal.set(&quot;A线程&quot;);
-                System.out.print(&quot;A --- &quot;+sThreadLocal.get()+&quot;\n&quot;);
-            }
-        }.start();
-
-        new Thread(&quot;B&quot;){
-            @Override
-            public void run() {
-                super.run();
-                System.out.print(&quot;B --- &quot;+sThreadLocal.get()+&quot;\n&quot;);
-            }
-        }.start();
-
-        System.out.print(&quot;main --- &quot;+sThreadLocal.get()+&quot;\n&quot;);
-    }
-</code></pre>
-<p>打印的日志如下：</p>
-<pre><code class="java">
-A --- A线程
-main --- 主线程
-B --- null
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/11/03/Threadlocal/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/03/Threadlocal/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-MesssageQueue" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/31/MesssageQueue/">Android消息机制（一）--- MessageQueue源码分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/10/31/MesssageQueue/" class="archive-article-date">
-  	<time datetime="2017-10-31T07:00:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="MessageQueue是什么结构："><a href="#MessageQueue是什么结构：" class="headerlink" title="MessageQueue是什么结构："></a>MessageQueue是什么结构：</h4><ul>
-<li><a href="https://livesun.github.io/2017/10/27/single_linked/">是一个单链表</a></li>
-<li>链表节点的排序方式以时间（when）来排序</li>
-</ul>
-<p>因为个人水平问题，对native方法没有能力进行分析，只能根据链表的添加移除以及查找方面对MessageQueue进行分析。</p>
-        
-          <a class="article-more-a" href="/2017/10/31/MesssageQueue/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/10/31/MesssageQueue/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
+  
+    <section id="comments">
+      <div id="disqus_thread"></div>
+        <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'true'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </section>
   
 
 
@@ -611,8 +807,8 @@ B --- null
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

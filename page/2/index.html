@@ -145,6 +145,108 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-order_list" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/29/order_list/">顺序表---ArrayList源码分析</a>
+    </h1>
+  
+
+        
+        <a href="/2017/10/29/order_list/" class="archive-article-date">
+  	<time datetime="2017-10-29T02:51:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="成员变量"><a href="#成员变量" class="headerlink" title="成员变量"></a>成员变量</h4><pre><code class="java">   /**
+     * 初始容量
+     */
+    private static final int DEFAULT_CAPACITY = 10;
+
+    /**
+     * 空数组容器
+     */
+    private static final Object[] EMPTY_ELEMENTDATA = {};
+
+    /**
+     * 用于默认大小的空数组实例 和EMPTY_ELEMENTDATA是用不同的扩展策略
+     */
+    private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
+
+    /**
+     * 存储ArrayList元素的数组缓冲区
+     */
+
+    transient Object[] elementData; // non-private to simplify nested class access
+
+    /**
+     * The size of the ArrayList (the number of elements it contains).
+     * 大小
+     */
+    private int size;
+</code></pre>
+        
+          <a class="article-more-a" href="/2017/10/29/order_list/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/数据结构/" class="article-tag-list-link color5">数据结构</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/10/29/order_list/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-single_linked" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -475,88 +577,6 @@ new int[]{R.layout.activity_test,R.layout.activity_kotlin,R.layout.activity_user
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/09/26/webview_setCookie/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-webview_upload" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/26/webview_upload/">WebView（一）上传文件</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/26/webview_upload/" class="archive-article-date">
-  	<time datetime="2017-09-26T07:58:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>默认情况下，Android的WebView不支持文件上传，需要手动适配，原理就是获取到选择文件的uri,然后传给页面去上传。</p>
-<p>做的时候遇到不少坑，这里记录一下。</p>
-<p>效果截图：</p>
-<p>在小米上：</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/webview_file2.png?x-oss-process=image/resize,w_340" alt="img-w150"></p>
-<p>在原生上：</p>
-<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/webview_file1.png" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/09/26/webview_upload/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/日常踩坑/" class="article-tag-list-link color5">日常踩坑</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/26/webview_upload/">阅读全文 >></a>
         </p>
       
 
