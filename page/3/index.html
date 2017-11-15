@@ -145,6 +145,272 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ParallaxViewPager" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/11/ParallaxViewPager/">通过拦截View的创建，实现视差效果框架</a>
+    </h1>
+  
+
+        
+        <a href="/2017/10/11/ParallaxViewPager/" class="archive-article-date">
+  	<time datetime="2017-10-11T08:23:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="效果图："><a href="#效果图：" class="headerlink" title="效果图："></a>效果图：</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/ParallaxViewpager.gif" alt="image"></p>
+<h3 id="使用："><a href="#使用：" class="headerlink" title="使用："></a>使用：</h3><p>1、传入布局id数组。</p>
+<pre><code class="java">mViewPager.setLayout(getSupportFragmentManager(),
+new int[]{R.layout.activity_test,R.layout.activity_kotlin,R.layout.activity_user_info});
+</code></pre>
+<p>2、xml文件中，为需要移动的控件配置属性</p>
+<pre><code class="java">    &lt;ImageView
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        app:translationXIn=&quot;0.12&quot;
+        app:translationYIn=&quot;0.82&quot;
+        app:translationYOut=&quot;0.82&quot;
+        app:translationXOut=&quot;0.12&quot; /&gt;
+</code></pre>
+<p>这里的实现主要是通过拦截view的创建，来一一识别控件中的属性，从而不需要再像以往，需要手动一个个findViewById，而且写出的效果不具备复用性。</p>
+<p>关于拦截view的创建，可以前面这篇，<a href="https://livesun.github.io/2017/09/25/intercept/">通过AppCompateActivity,学习View的拦截</a></p>
+        
+          <a class="article-more-a" href="/2017/10/11/ParallaxViewPager/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/10/11/ParallaxViewPager/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LikeLayout" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/10/LikeLayout/">自定义TypeEvaluator实现炫酷的点赞效果</a>
+    </h1>
+  
+
+        
+        <a href="/2017/10/10/LikeLayout/" class="archive-article-date">
+  	<time datetime="2017-10-10T09:57:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/like_layout.gif" alt="image"></p>
+<p>原理是通过自定义TypeEvaluator，来实现三阶贝塞尔曲线的运动轨迹，重点是找到控制点，套入公式。</p>
+<h3 id="三阶贝塞尔曲线公式："><a href="#三阶贝塞尔曲线公式：" class="headerlink" title="三阶贝塞尔曲线公式："></a>三阶贝塞尔曲线公式：</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/beisaier.png" alt="image"></p>
+<ul>
+<li>t：为时间</li>
+<li>p0：起点</li>
+<li>p1：控制点1</li>
+<li>p2：控制点2</li>
+<li>p3：始点，终点</li>
+</ul>
+        
+          <a class="article-more-a" href="/2017/10/10/LikeLayout/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/10/10/LikeLayout/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-webview_setCookie" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/26/webview_setCookie/">WebView（二）设置Cookie</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/26/webview_setCookie/" class="archive-article-date">
+  	<time datetime="2017-09-26T08:32:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>百度了很多，但是大都是同样的代码 </p>
+<pre><code class="java">
+ public  void synCookies( String url,String cookie) {
+        CookieSyncManager.createInstance(UiUtils.getContext());
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.setCookie(url, cookie);
+        CookieSyncManager.getInstance().sync();
+    }
+</code></pre>
+<p>这样肯定没错，但是很多情况下，它不起作用。</p>
+<p>首先，最好先清空cookie，防止切换用户导致cookie混乱。</p>
+<p>其次，当cookie的信息不止一条是，上面的代码是失效的。</p>
+<p>还有，如果存在path，和domain，需要带回去，拼接的时候用分号拼接，通过StringBuilder的方式合成一个字符串。</p>
+<p>多个cookie信息，一定要分开对应自己的path和domain，for循环，多次setCookie。</p>
+        
+          <a class="article-more-a" href="/2017/09/26/webview_setCookie/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/日常踩坑/" class="article-tag-list-link color5">日常踩坑</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/26/webview_setCookie/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-webview_upload" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -337,247 +603,9 @@ android.support.v7.widget.AppCompatTextView id/text_view
 
 
   
-    <article id="post-RecyclerFourStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/22/RecyclerFourStep/">RecyclerView进阶（四）万能Adapter</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/22/RecyclerFourStep/" class="archive-article-date">
-  	<time datetime="2017-09-22T03:47:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>这次对RecylcerView的adapter经行封装，以减少重复代码的调用。</p>
-<p>实现的功能：</p>
-<ul>
-<li>返回统一数据的点击事件</li>
-<li>多条目布局</li>
-<li>统一的图片加载</li>
-<li>极度简洁的调用流程</li>
-</ul>
-        
-          <a class="article-more-a" href="/2017/09/22/RecyclerFourStep/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/22/RecyclerFourStep/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-RecyclerThreeStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/RecyclerThreeStep/">RecyclerView进阶（三）拖拽排序--仿新闻客户端</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/01/RecyclerThreeStep/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:46:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_swip5.gif" alt="image"></p>
-<p>长按进入编辑模式，编辑模式下，我的频道可以拖拽排序，同时，可以移除我的频道栏目，并添加到其他频道中，也可以从其他频道添加进我的频道，同时移除其他频道的该模块。</p>
-<p>这个效果，相信在不少app中看到过，这个拖拽排序的实现方式有好几种，如WindowManager，利用他的updateViewLayout，不断更新view的位置。</p>
-<p>这里，我们使用RecyclerView的ItemTouchHelper辅助类，来实现</p>
-        
-          <a class="article-more-a" href="/2017/09/01/RecyclerThreeStep/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/RecyclerThreeStep/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-RecylcerTwoStep" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/30/RecylcerTwoStep/">RecyclerView进阶（二）实现悬浮吸顶</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/30/RecylcerTwoStep/" class="archive-article-date">
-  	<time datetime="2017-08-30T02:56:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/recycler_xuanguxiding.gif" alt="image"></p>
-        
-          <a class="article-more-a" href="/2017/08/30/RecylcerTwoStep/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/30/RecylcerTwoStep/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 

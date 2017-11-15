@@ -145,6 +145,194 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Threadlocal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/03/Threadlocal/">Android消息机制（二）--- ThreadLocal分析</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/03/Threadlocal/" class="archive-article-date">
+  	<time datetime="2017-11-03T02:12:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ThreadLocal 并不是一个线程，它是线程内部的数据存储类，它的数据不是共享的，只有在当前线程才能获取到，在当前线程存储的数据，意思就是说，A,B两个线程，在A线程把数据存储进ThreadLocal，只有在A线程才能取出，B线程取不到。</p>
+<p>举个例子</p>
+<pre><code class="java">
+    public static void main(String[] args) throws Exception {
+
+        sThreadLocal = new ThreadLocal&lt;&gt;();
+        sThreadLocal.set(&quot;主线程&quot;);
+        new Thread(&quot;A&quot;){
+            @Override
+            public void run() {
+                super.run();
+                sThreadLocal.set(&quot;A线程&quot;);
+                System.out.print(&quot;A --- &quot;+sThreadLocal.get()+&quot;\n&quot;);
+            }
+        }.start();
+
+        new Thread(&quot;B&quot;){
+            @Override
+            public void run() {
+                super.run();
+                System.out.print(&quot;B --- &quot;+sThreadLocal.get()+&quot;\n&quot;);
+            }
+        }.start();
+
+        System.out.print(&quot;main --- &quot;+sThreadLocal.get()+&quot;\n&quot;);
+    }
+</code></pre>
+<p>打印的日志如下：</p>
+<pre><code class="java">
+A --- A线程
+main --- 主线程
+B --- null
+</code></pre>
+        
+          <a class="article-more-a" href="/2017/11/03/Threadlocal/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/11/03/Threadlocal/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-MesssageQueue" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/31/MesssageQueue/">Android消息机制（一）--- MessageQueue源码分析</a>
+    </h1>
+  
+
+        
+        <a href="/2017/10/31/MesssageQueue/" class="archive-article-date">
+  	<time datetime="2017-10-31T07:00:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="MessageQueue是什么结构："><a href="#MessageQueue是什么结构：" class="headerlink" title="MessageQueue是什么结构："></a>MessageQueue是什么结构：</h4><ul>
+<li><a href="https://livesun.github.io/2017/10/27/single_linked/">是一个单链表</a></li>
+<li>链表节点的排序方式以时间（when）来排序</li>
+</ul>
+<p>因为个人水平问题，对native方法没有能力进行分析，只能根据链表的添加移除以及查找方面对MessageQueue进行分析。</p>
+        
+          <a class="article-more-a" href="/2017/10/31/MesssageQueue/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/10/31/MesssageQueue/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-order_list" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -340,219 +528,44 @@
 
 
   
-    <article id="post-ParallaxViewPager" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Bitmap(一)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/11/ParallaxViewPager/">通过拦截View的创建，实现视差效果框架</a>
+      <a class="article-title" href="/2017/10/20/Bitmap(一)/">高效加载Bitmap(一) --BitmapFactory加载bitmap</a>
     </h1>
   
 
         
-        <a href="/2017/10/11/ParallaxViewPager/" class="archive-article-date">
-  	<time datetime="2017-10-11T08:23:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-11</time>
+        <a href="/2017/10/20/Bitmap(一)/" class="archive-article-date">
+  	<time datetime="2017-10-20T03:47:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-20</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="效果图："><a href="#效果图：" class="headerlink" title="效果图："></a>效果图：</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/ParallaxViewpager.gif" alt="image"></p>
-<h3 id="使用："><a href="#使用：" class="headerlink" title="使用："></a>使用：</h3><p>1、传入布局id数组。</p>
-<pre><code class="java">mViewPager.setLayout(getSupportFragmentManager(),
-new int[]{R.layout.activity_test,R.layout.activity_kotlin,R.layout.activity_user_info});
-</code></pre>
-<p>2、xml文件中，为需要移动的控件配置属性</p>
-<pre><code class="java">    &lt;ImageView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        app:translationXIn=&quot;0.12&quot;
-        app:translationYIn=&quot;0.82&quot;
-        app:translationYOut=&quot;0.82&quot;
-        app:translationXOut=&quot;0.12&quot; /&gt;
-</code></pre>
-<p>这里的实现主要是通过拦截view的创建，来一一识别控件中的属性，从而不需要再像以往，需要手动一个个findViewById，而且写出的效果不具备复用性。</p>
-<p>关于拦截view的创建，可以前面这篇，<a href="https://livesun.github.io/2017/09/25/intercept/">通过AppCompateActivity,学习View的拦截</a></p>
-        
-          <a class="article-more-a" href="/2017/10/11/ParallaxViewPager/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/10/11/ParallaxViewPager/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LikeLayout" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/10/LikeLayout/">自定义TypeEvaluator实现炫酷的点赞效果</a>
-    </h1>
-  
-
-        
-        <a href="/2017/10/10/LikeLayout/" class="archive-article-date">
-  	<time datetime="2017-10-10T09:57:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/like_layout.gif" alt="image"></p>
-<p>原理是通过自定义TypeEvaluator，来实现三阶贝塞尔曲线的运动轨迹，重点是找到控制点，套入公式。</p>
-<h3 id="三阶贝塞尔曲线公式："><a href="#三阶贝塞尔曲线公式：" class="headerlink" title="三阶贝塞尔曲线公式："></a>三阶贝塞尔曲线公式：</h3><p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/beisaier.png" alt="image"></p>
-<ul>
-<li>t：为时间</li>
-<li>p0：起点</li>
-<li>p1：控制点1</li>
-<li>p2：控制点2</li>
-<li>p3：始点，终点</li>
-</ul>
-        
-          <a class="article-more-a" href="/2017/10/10/LikeLayout/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/自定义view/" class="article-tag-list-link color3">自定义view</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/10/10/LikeLayout/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-webview_setCookie" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/26/webview_setCookie/">WebView（二）设置Cookie</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/26/webview_setCookie/" class="archive-article-date">
-  	<time datetime="2017-09-26T08:32:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>百度了很多，但是大都是同样的代码 </p>
+        <p>有一张64x64的图片，(手机为480dpi)我们先放在drawable-xhdpi目录下。</p>
+<p>效果如下</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry1.png" alt="image"></p>
+<p>同样的手机，我们把图片放到drawable-xxxhdpi目录下。</p>
+<p>效果如下</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry2.png" alt="image"></p>
+<p>图片很明显变小了。</p>
 <pre><code class="java">
- public  void synCookies( String url,String cookie) {
-        CookieSyncManager.createInstance(UiUtils.getContext());
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.setAcceptCookie(true);
-        cookieManager.setCookie(url, cookie);
-        CookieSyncManager.getInstance().sync();
-    }
+    BitmapFactory.Options options=new BitmapFactory.Options();
+    options.inDensity=320;
+    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.zan1, options);
+
+    imageView.setImageBitmap(bitmap);
 </code></pre>
-<p>这样肯定没错，但是很多情况下，它不起作用。</p>
-<p>首先，最好先清空cookie，防止切换用户导致cookie混乱。</p>
-<p>其次，当cookie的信息不止一条是，上面的代码是失效的。</p>
-<p>还有，如果存在path，和domain，需要带回去，拼接的时候用分号拼接，通过StringBuilder的方式合成一个字符串。</p>
-<p>多个cookie信息，一定要分开对应自己的path和domain，for循环，多次setCookie。</p>
+<p>但是，如果我们更改inDensity的值，它又变回来了。</p>
+<p><img src="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/bitmap_marry1.png" alt="image"></p>
         
-          <a class="article-more-a" href="/2017/09/26/webview_setCookie/#more">more >></a>
+          <a class="article-more-a" href="/2017/10/20/Bitmap(一)/#more">more >></a>
         
       
 
@@ -567,7 +580,7 @@ new int[]{R.layout.activity_test,R.layout.activity_kotlin,R.layout.activity_user
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/日常踩坑/" class="article-tag-list-link color5">日常踩坑</a>
+        			<a href="/categories/常用控件/" class="article-tag-list-link color5">常用控件</a>
         		</li>
       		
 		</ul>
@@ -576,7 +589,7 @@ new int[]{R.layout.activity_test,R.layout.activity_kotlin,R.layout.activity_user
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/26/webview_setCookie/">阅读全文 >></a>
+          <a class="article-more-a" href="/2017/10/20/Bitmap(一)/">阅读全文 >></a>
         </p>
       
 
@@ -608,7 +621,7 @@ new int[]{R.layout.activity_test,R.layout.activity_kotlin,R.layout.activity_user
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
