@@ -16,7 +16,7 @@
 <meta property="og:description" content="上一次我们创建了TouchView，这次我们创建一个TouchViewGroup public class TouchViewGroup extends LinearLayout {     public TouchViewGroup(Context context) {         this(context,null);     }      public TouchViewGroup(Co">
 <meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/viewGropu_touch2.png">
 <meta property="og:image" content="http://livesunhexo.oss-cn-shanghai.aliyuncs.com/hexo/viewTouch/viewGropu_touch1.png">
-<meta property="og:updated_time" content="2017-08-30T03:41:25.985Z">
+<meta property="og:updated_time" content="2017-11-28T08:22:00.840Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ViewGroup的Touch事件分发以及源码分析">
 <meta name="twitter:description" content="上一次我们创建了TouchView，这次我们创建一个TouchViewGroup public class TouchViewGroup extends LinearLayout {     public TouchViewGroup(Context context) {         this(context,null);     }      public TouchViewGroup(Co">
@@ -665,6 +665,58 @@
         <span class="token keyword">return</span> null<span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里需要注意的是，首先通过反序for循环，循环遍历出获取到焦点的子view，为什么使用反序循环，比如frameLayout 和RelativeLayout中，最后面的子控件会覆盖在前面的子控件上，也最优先获取到焦点和点击事件。</p>
+<p>这里说下大概流程，事件从Activity开始，到Window接着又分发给DecorView，DecorView的子控件是一个LinearLayout，接着又分为上下两部分，一个标题栏，一个id为content的FrameLayout，这里面装的就是我们的布局。</p>
+<p>点击我们布局中的一个view，此时事件从屏幕开始–&gt;一路从activity开始-到了DecorView的dispatchTouchEvent，走到了反序for循环这里，遍历吧，先判断这个子view LinearLayout是否获取到了焦点（这里它肯定获取了焦点），调用dispatchTransformedTouchEvent方法，cancel为false，child不为null，最终调用了child.dispatchTouchEvent(transformedEvent)，把事件分发给了唯一子view LinearLayout。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">if</span> <span class="token punctuation">(</span>child <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            handled <span class="token operator">=</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">dispatchTouchEvent</span><span class="token punctuation">(</span>transformedEvent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">final</span> <span class="token keyword">float</span> offsetX <span class="token operator">=</span> mScrollX <span class="token operator">-</span> child<span class="token punctuation">.</span>mLeft<span class="token punctuation">;</span>
+            <span class="token keyword">final</span> <span class="token keyword">float</span> offsetY <span class="token operator">=</span> mScrollY <span class="token operator">-</span> child<span class="token punctuation">.</span>mTop<span class="token punctuation">;</span>
+            transformedEvent<span class="token punctuation">.</span><span class="token function">offsetLocation</span><span class="token punctuation">(</span>offsetX<span class="token punctuation">,</span> offsetY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span> child<span class="token punctuation">.</span><span class="token function">hasIdentityMatrix</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                transformedEvent<span class="token punctuation">.</span><span class="token function">transform</span><span class="token punctuation">(</span>child<span class="token punctuation">.</span><span class="token function">getInverseMatrix</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            handled <span class="token operator">=</span> child<span class="token punctuation">.</span><span class="token function">dispatchTouchEvent</span><span class="token punctuation">(</span>transformedEvent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接着，又走了ViewGroup的dispatchTouchEvent的方法，又走到这里的反序for循环，一个标题栏，一个盛放我们内容的FrameLayout，肯定是该FrameLayout获取到焦点，又会调用一次dispatchTransformedTouchEvent方法，cancel为false，child不为null，最终又调用了child.dispatchTouchEvent(transformedEvent)，把事件分发给了id为content的FrameLayout，就这么一直分发下去，直到找到我们点击的子view。</p>
+<p>如果最终view消费了事件，他的dispatchTouchEvent返回true，其父容器的dispatchTransformedTouchEvent就是为true，走进该代码块，会给mFirstTouchTarget赋值，同时把该view做为target.child加入链表中，alreadyDispatchedToNewTouchTarget=true，跳出循环。</p>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">dispatchTransformedTouchEvent</span><span class="token punctuation">(</span>ev<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> child<span class="token punctuation">,</span> idBitsToAssign<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token comment" spellcheck="true">// Child wants to receive touch within its bounds.</span>
+                                mLastTouchDownTime <span class="token operator">=</span> ev<span class="token punctuation">.</span><span class="token function">getDownTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                <span class="token keyword">if</span> <span class="token punctuation">(</span>preorderedList <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                    <span class="token comment" spellcheck="true">// childIndex points into presorted list, find original index</span>
+                                    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> childrenCount<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                        <span class="token keyword">if</span> <span class="token punctuation">(</span>children<span class="token punctuation">[</span>childIndex<span class="token punctuation">]</span> <span class="token operator">==</span> mChildren<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                            mLastTouchDownIndex <span class="token operator">=</span> j<span class="token punctuation">;</span>
+                                            <span class="token keyword">break</span><span class="token punctuation">;</span>
+                                        <span class="token punctuation">}</span>
+                                    <span class="token punctuation">}</span>
+                                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                                    mLastTouchDownIndex <span class="token operator">=</span> childIndex<span class="token punctuation">;</span>
+                                <span class="token punctuation">}</span>
+                                mLastTouchDownX <span class="token operator">=</span> ev<span class="token punctuation">.</span><span class="token function">getX</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                mLastTouchDownY <span class="token operator">=</span> ev<span class="token punctuation">.</span><span class="token function">getY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                newTouchTarget <span class="token operator">=</span> <span class="token function">addTouchTarget</span><span class="token punctuation">(</span>child<span class="token punctuation">,</span> idBitsToAssign<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                alreadyDispatchedToNewTouchTarget <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                                <span class="token keyword">break</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>mFirstTouchTarget不为null，alreadyDispatchedToNewTouchTarget=true，最后其父容器也返回true，一直这样往回走。</p>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">if</span> <span class="token punctuation">(</span>alreadyDispatchedToNewTouchTarget <span class="token operator">&amp;&amp;</span> target <span class="token operator">==</span> newTouchTarget<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        handled <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果view没消费事件，那就不会走dispatchTransformedTouchEvent这个代码中，mFirstTouchTarget=null</p>
+<pre><code>  handled = dispatchTransformedTouchEvent(ev, canceled, null,
+                        TouchTarget.ALL_POINTER_IDS);
+
+     if (child == null) {
+            handled = super.dispatchTouchEvent(transformedEvent);
+        }
+</code></pre><p>一直调用父类的dispatchTouchEvent，也就是View的dispatchTouchEvent，最终会调用ViewGroup的onTouchEvent方法，依此类推，如果所有的View都不处理该事件，则会将该事件又传递给Activity，即传递给Activity的onTouchEvent方法。</p>
 <p>我们看下dispatchTransformedTouchEvent这个方法，通过这个方法，把Touch事件往下传递给子view，如果没有子控件，会调用super.dispatchTouchEvent(event)，也就是View的dispatchTouchEvent方法，接着会调用onTouchEvent方法，这也是为什么在拦截子控件为true，会调用VIewGoup方法。</p>
 <p>如果子view不为null，会调用child.dispatchTouchEvent(event)，如果该方法返回true，则代表了子view消费了该事件。</p>
 <p>此时，给newTouchTarget赋值，alreadyDispatchedToNewTouchTarget=true</p>
