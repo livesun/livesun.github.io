@@ -145,6 +145,497 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-viewdraw1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/11/viewdraw1/">View的绘制流程（一）在home启动之前</a>
+    </h1>
+  
+
+        
+        <a href="/2018/01/11/viewdraw1/" class="archive-article-date">
+  	<time datetime="2018-01-11T09:50:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Android 基于Linux，而所有的进程都基于init进程。 。</p>
+<p>当系统开机时，就会由init进程fork出Zygote进程，它时Android系统中第一个Dalvik虚拟机上的第一个进程，同时负责卵化其他apk的进程。</p>
+<p>SystemServer进程，Android系统的第二大进程，也是一个非常重要的进程，它本身也是由Zygote进程卵化出来的。</p>
+<p>在ZygoteInit的main方法</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+            <span class="token keyword">boolean</span> startSystemServer <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+            String socketName <span class="token operator">=</span> <span class="token string">"zygote"</span><span class="token punctuation">;</span>
+            String abiList <span class="token operator">=</span> null<span class="token punctuation">;</span>
+            <span class="token keyword">boolean</span> enableLazyPreload <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//第一次fork出Zygote时，会让startSystemServer为 true，来开启SystemServer进程</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> argv<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"start-system-server"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    startSystemServer <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"--enable-lazy-preload"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    enableLazyPreload <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span>ABI_LIST_ARG<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    abiList <span class="token operator">=</span> argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span>ABI_LIST_ARG<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span>SOCKET_NAME_ARG<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    socketName <span class="token operator">=</span> argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span>SOCKET_NAME_ARG<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"Unknown command line argument: "</span> <span class="token operator">+</span> argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+            <span class="token comment" spellcheck="true">//开启SystemServer进程</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>startSystemServer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">startSystemServer</span><span class="token punctuation">(</span>abiList<span class="token punctuation">,</span> socketName<span class="token punctuation">,</span> zygoteServer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            zygoteServer<span class="token punctuation">.</span><span class="token function">runSelectLoop</span><span class="token punctuation">(</span>abiList<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            zygoteServer<span class="token punctuation">.</span><span class="token function">closeServerSocket</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Zygote<span class="token punctuation">.</span>MethodAndArgsCaller</span> caller<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            caller<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Log<span class="token punctuation">.</span><span class="token function">e</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"System zygote died with exception"</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            zygoteServer<span class="token punctuation">.</span><span class="token function">closeServerSocket</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">boolean</span> <span class="token function">startSystemServer</span><span class="token punctuation">(</span>String abiList<span class="token punctuation">,</span> String socketName<span class="token punctuation">,</span> ZygoteServer zygoteServer<span class="token punctuation">)</span>
+            <span class="token keyword">throws</span> Zygote<span class="token punctuation">.</span>MethodAndArgsCaller<span class="token punctuation">,</span> RuntimeException <span class="token punctuation">{</span>
+
+     <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token keyword">int</span> pid<span class="token punctuation">;</span>
+
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+
+            <span class="token comment" spellcheck="true">/* Request to fork the system server process */</span>
+            <span class="token comment" spellcheck="true">//请求发送system serve进程。</span>
+            pid <span class="token operator">=</span> Zygote<span class="token punctuation">.</span><span class="token function">forkSystemServer</span><span class="token punctuation">(</span>
+                    parsedArgs<span class="token punctuation">.</span>uid<span class="token punctuation">,</span> parsedArgs<span class="token punctuation">.</span>gid<span class="token punctuation">,</span>
+                    parsedArgs<span class="token punctuation">.</span>gids<span class="token punctuation">,</span>
+                    parsedArgs<span class="token punctuation">.</span>debugFlags<span class="token punctuation">,</span>
+                    null<span class="token punctuation">,</span>
+                    parsedArgs<span class="token punctuation">.</span>permittedCapabilities<span class="token punctuation">,</span>
+                    parsedArgs<span class="token punctuation">.</span>effectiveCapabilities<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IllegalArgumentException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过Zygote.forkSystemServer，fork出SystemServer进程，就会走SystemServer的main方法</p>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">new</span> <span class="token class-name">SystemServer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+            <span class="token comment" spellcheck="true">//准备looper</span>
+            Looper<span class="token punctuation">.</span><span class="token function">prepareMainLooper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// Initialize native services.</span>
+            <span class="token comment" spellcheck="true">//加载本地服务</span>
+            System<span class="token punctuation">.</span><span class="token function">loadLibrary</span><span class="token punctuation">(</span><span class="token string">"android_servers"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// Check whether we failed to shut down last time we tried.</span>
+            <span class="token comment" spellcheck="true">// This call may not return.</span>
+            <span class="token function">performPendingShutdown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// Initialize the system context.</span>
+            <span class="token comment" spellcheck="true">//创建系统上下文</span>
+            <span class="token function">createSystemContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// Create the system service manager.</span>
+<span class="token comment" spellcheck="true">//            初始化SystemServiceManager对象。用来开启一些基础的系统服务</span>
+            mSystemServiceManager <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SystemServiceManager</span><span class="token punctuation">(</span>mSystemContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mSystemServiceManager<span class="token punctuation">.</span><span class="token function">setRuntimeRestarted</span><span class="token punctuation">(</span>mRuntimeRestart<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            LocalServices<span class="token punctuation">.</span><span class="token function">addService</span><span class="token punctuation">(</span>SystemServiceManager<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> mSystemServiceManager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// Prepare the thread pool for init tasks that can be parallelized</span>
+            SystemServerInitThreadPool<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            <span class="token function">traceEnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// InitBeforeStartServices</span>
+        <span class="token punctuation">}</span>
+
+
+<span class="token comment" spellcheck="true">//开启必要的系统服务</span>
+
+ <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token function">traceBeginAndSlog</span><span class="token punctuation">(</span><span class="token string">"StartServices"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">startBootstrapServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">startCoreServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">startOtherServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            SystemServerInitThreadPool<span class="token punctuation">.</span><span class="token function">shutdown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Slog<span class="token punctuation">.</span><span class="token function">e</span><span class="token punctuation">(</span><span class="token string">"System"</span><span class="token punctuation">,</span> <span class="token string">"******************************************"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            Slog<span class="token punctuation">.</span><span class="token function">e</span><span class="token punctuation">(</span><span class="token string">"System"</span><span class="token punctuation">,</span> <span class="token string">"************ Failure starting system services"</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            <span class="token function">traceEnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">//开启循环</span>
+        Looper<span class="token punctuation">.</span><span class="token function">loop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"Main thread loop unexpectedly exited"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建系统上下文</p>
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">createSystemContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        ActivityThread activityThread <span class="token operator">=</span> ActivityThread<span class="token punctuation">.</span><span class="token function">systemMain</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mSystemContext <span class="token operator">=</span> activityThread<span class="token punctuation">.</span><span class="token function">getSystemContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mSystemContext<span class="token punctuation">.</span><span class="token function">setTheme</span><span class="token punctuation">(</span>DEFAULT_SYSTEM_THEME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">final</span> Context systemUiContext <span class="token operator">=</span> activityThread<span class="token punctuation">.</span><span class="token function">getSystemUiContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        systemUiContext<span class="token punctuation">.</span><span class="token function">setTheme</span><span class="token punctuation">(</span>DEFAULT_SYSTEM_THEME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+调用的是ActivityThread<span class="token punctuation">.</span><span class="token function">systemMain</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>然后设置系统主题
+
+<span class="token keyword">public</span> <span class="token keyword">static</span> ActivityThread <span class="token function">systemMain</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+     <span class="token comment" spellcheck="true">//为什么这里需要ActivityThread，它代表的是一个应用的进程</span>
+     <span class="token comment" spellcheck="true">//因为SystemServer进程中，比如关机对话框，本身也是activity，运行在SystemServer进程中，因此也可认为SystemServer是一个特殊的应用进程。</span>
+        ActivityThread thread <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ActivityThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        thread<span class="token punctuation">.</span><span class="token function">attach</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> thread<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//初始化系统的Context，系统的Instrumentation 以及系统的Application，并执行onCreate方法。</span>
+ <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">attach</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> system<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+ <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+       android<span class="token punctuation">.</span>ddm<span class="token punctuation">.</span>DdmHandleAppName<span class="token punctuation">.</span><span class="token function">setAppName</span><span class="token punctuation">(</span><span class="token string">"system_process"</span><span class="token punctuation">,</span>
+                    UserHandle<span class="token punctuation">.</span><span class="token function">myUserId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                mInstrumentation <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Instrumentation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                ContextImpl context <span class="token operator">=</span> ContextImpl<span class="token punctuation">.</span><span class="token function">createAppContext</span><span class="token punctuation">(</span>
+                        <span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token function">getSystemContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>mPackageInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                mInitialApplication <span class="token operator">=</span> context<span class="token punctuation">.</span>mPackageInfo<span class="token punctuation">.</span><span class="token function">makeApplication</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                mInitialApplication<span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>
+                        <span class="token string">"Unable to instantiate Application():"</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">//当系统配置发生变化（如语言切换等）时，需要调用该回调</span>
+           ViewRootImpl<span class="token punctuation">.</span>ConfigChangedCallback configChangedCallback
+                <span class="token operator">=</span> <span class="token punctuation">(</span>Configuration globalConfig<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
+            <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>mResourcesManager<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// We need to apply this change to the resources immediately, because upon returning</span>
+                <span class="token comment" spellcheck="true">// the view hierarchy will be informed about it.</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>mResourcesManager<span class="token punctuation">.</span><span class="token function">applyConfigurationToResourcesLocked</span><span class="token punctuation">(</span>globalConfig<span class="token punctuation">,</span>
+                        null <span class="token comment" spellcheck="true">/* compat */</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token function">updateLocaleListFromAppContext</span><span class="token punctuation">(</span>mInitialApplication<span class="token punctuation">.</span><span class="token function">getApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                            mResourcesManager<span class="token punctuation">.</span><span class="token function">getConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getLocales</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                    <span class="token comment" spellcheck="true">// This actually changed the resources! Tell everyone about it.</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>mPendingConfiguration <span class="token operator">==</span> null
+                            <span class="token operator">||</span> mPendingConfiguration<span class="token punctuation">.</span><span class="token function">isOtherSeqNewer</span><span class="token punctuation">(</span>globalConfig<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        mPendingConfiguration <span class="token operator">=</span> globalConfig<span class="token punctuation">;</span>
+                        <span class="token function">sendMessage</span><span class="token punctuation">(</span>H<span class="token punctuation">.</span>CONFIGURATION_CHANGED<span class="token punctuation">,</span> globalConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//注册Configuration变化的回调通知</span>
+        ViewRootImpl<span class="token punctuation">.</span><span class="token function">addConfigCallback</span><span class="token punctuation">(</span>configChangedCallback<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+ <span class="token punctuation">}</span>
+
+
+<span class="token comment" spellcheck="true">//获取系统的Context</span>
+    <span class="token keyword">static</span> ContextImpl <span class="token function">createSystemContext</span><span class="token punctuation">(</span>ActivityThread mainThread<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//Loaded代表的是加载到系统中的APK，保存如资源文件位置等</span>
+        <span class="token comment" spellcheck="true">//默认的LoadedApk的packagename 是 android 其实就是framework-res.apk,仅供SystemServer使用</span>
+        LoadedApk packageInfo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LoadedApk</span><span class="token punctuation">(</span>mainThread<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//初始化ContextImpl对象</span>
+        ContextImpl context <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ContextImpl</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> mainThread<span class="token punctuation">,</span> packageInfo<span class="token punctuation">,</span> null<span class="token punctuation">,</span> null<span class="token punctuation">,</span> null<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span>
+                null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//设置资源信息</span>
+        context<span class="token punctuation">.</span><span class="token function">setResources</span><span class="token punctuation">(</span>packageInfo<span class="token punctuation">.</span><span class="token function">getResources</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//初始化资源信息</span>
+        context<span class="token punctuation">.</span>mResources<span class="token punctuation">.</span><span class="token function">updateConfiguration</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span>mResourcesManager<span class="token punctuation">.</span><span class="token function">getConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                context<span class="token punctuation">.</span>mResourcesManager<span class="token punctuation">.</span><span class="token function">getDisplayMetrics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> context<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>createSystemContext方法，第一个得了一个ActivityThread对象，第二得了一个Context对象，一个专给SystemServer用的packageName 为“android”的apk。</p>
+<p>createSystemContext函数将为SystemServer进程搭建一个和应用进程一样的Android运行环境。</p>
+<p>开启必要的核心服务</p>
+<pre class="line-numbers language-java"><code class="language-java">            <span class="token punctuation">.</span><span class="token punctuation">.</span>
+            <span class="token function">startBootstrapServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">startCoreServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">startOtherServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 一些相互需要互相使用的核心服务</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">startBootstrapServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token function">traceBeginAndSlog</span><span class="token punctuation">(</span><span class="token string">"StartInstaller"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//第一个先是安装服务</span>
+        Installer installer <span class="token operator">=</span> mSystemServiceManager<span class="token punctuation">.</span><span class="token function">startService</span><span class="token punctuation">(</span>Installer<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">traceEnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//第二个设备管理服务</span>
+        <span class="token function">traceBeginAndSlog</span><span class="token punctuation">(</span><span class="token string">"DeviceIdentifiersPolicyService"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mSystemServiceManager<span class="token punctuation">.</span><span class="token function">startService</span><span class="token punctuation">(</span>DeviceIdentifiersPolicyService<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">traceEnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 第三个这个比较重要的AMS 用来管理四大组件的核心服务</span>
+        <span class="token function">traceBeginAndSlog</span><span class="token punctuation">(</span><span class="token string">"StartActivityManager"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mActivityManagerService <span class="token operator">=</span> mSystemServiceManager<span class="token punctuation">.</span><span class="token function">startService</span><span class="token punctuation">(</span>
+                ActivityManagerService<span class="token punctuation">.</span>Lifecycle<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//2.将SystemServer进程可加到AMS中调度管理</span>
+        mActivityManagerService<span class="token punctuation">.</span><span class="token function">setSystemServiceManager</span><span class="token punctuation">(</span>mSystemServiceManager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mActivityManagerService<span class="token punctuation">.</span><span class="token function">setInstaller</span><span class="token punctuation">(</span>installer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">traceEnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+        <span class="token function">traceBeginAndSlog</span><span class="token punctuation">(</span><span class="token string">"StartPowerManager"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 电源管理服务</span>
+        mPowerManagerService <span class="token operator">=</span> mSystemServiceManager<span class="token punctuation">.</span><span class="token function">startService</span><span class="token punctuation">(</span>PowerManagerService<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">traceEnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>等等
+
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//一些不需要相互引用的基础服务</span>
+      <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">startCoreServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//错误日志追踪的服务</span>
+        <span class="token function">traceBeginAndSlog</span><span class="token punctuation">(</span><span class="token string">"StartDropBoxManager"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mSystemServiceManager<span class="token punctuation">.</span><span class="token function">startService</span><span class="token punctuation">(</span>DropBoxManagerService<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">traceEnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">traceBeginAndSlog</span><span class="token punctuation">(</span><span class="token string">"StartBatteryService"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 电池服务</span>
+        mSystemServiceManager<span class="token punctuation">.</span><span class="token function">startService</span><span class="token punctuation">(</span>BatteryService<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">traceEnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// Tracks application usage stats.</span>
+        <span class="token function">traceBeginAndSlog</span><span class="token punctuation">(</span><span class="token string">"StartUsageService"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mSystemServiceManager<span class="token punctuation">.</span><span class="token function">startService</span><span class="token punctuation">(</span>UsageStatsService<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mActivityManagerService<span class="token punctuation">.</span><span class="token function">setUsageStatsManager</span><span class="token punctuation">(</span>
+                LocalServices<span class="token punctuation">.</span><span class="token function">getService</span><span class="token punctuation">(</span>UsageStatsManagerInternal<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">traceEnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// Tracks whether the updatable WebView is in a ready state and watches for update installs.</span>
+        <span class="token function">traceBeginAndSlog</span><span class="token punctuation">(</span><span class="token string">"StartWebViewUpdateService"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mWebViewUpdateService <span class="token operator">=</span> mSystemServiceManager<span class="token punctuation">.</span><span class="token function">startService</span><span class="token punctuation">(</span>WebViewUpdateService<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">traceEnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 一些别的被重构和组织的东西，如相机服务，闹钟服务，蓝牙服务，同时在ActivityManagerService中开启SystemUi 启动Launcher程序都在这里</span>
+    <span class="token comment" spellcheck="true">//方法非常非常长。。。</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">startOtherServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token comment" spellcheck="true">//设置windowManager，内部保存WindowManagerService</span>
+     mActivityManagerService<span class="token punctuation">.</span><span class="token function">setWindowManager</span><span class="token punctuation">(</span>wm<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token comment" spellcheck="true">//AMS是系统核心，只有它准备好了，才能调用别的服务的systemReady</span>
+           mActivityManagerService<span class="token punctuation">.</span><span class="token function">systemReady</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
+
+           <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+            <span class="token function">traceBeginAndSlog</span><span class="token punctuation">(</span><span class="token string">"StartSystemUI"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//开启SysytemUi 状态栏 底部导航栏等</span>
+                <span class="token function">startSystemUi</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> windowManagerF<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">reportWtf</span><span class="token punctuation">(</span><span class="token string">"starting System UI"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+           <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span> BOOT_TIMINGS_TRACE_LOG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">startSystemUi</span><span class="token punctuation">(</span>Context context<span class="token punctuation">,</span> WindowManagerService windowManager<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Intent intent <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Intent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        intent<span class="token punctuation">.</span><span class="token function">setComponent</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ComponentName</span><span class="token punctuation">(</span><span class="token string">"com.android.systemui"</span><span class="token punctuation">,</span>
+                    <span class="token string">"com.android.systemui.SystemUIService"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        intent<span class="token punctuation">.</span><span class="token function">addFlags</span><span class="token punctuation">(</span>Intent<span class="token punctuation">.</span>FLAG_DEBUG_TRIAGED_MISSING<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//Slog.d(TAG, "Starting service: " + intent);</span>
+        context<span class="token punctuation">.</span><span class="token function">startServiceAsUser</span><span class="token punctuation">(</span>intent<span class="token punctuation">,</span> UserHandle<span class="token punctuation">.</span>SYSTEM<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        windowManager<span class="token punctuation">.</span><span class="token function">onSystemUiStarted</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    启动SystemUIService SystemUIService由SystemUi<span class="token punctuation">.</span>apk提供，它实现了系统的状态栏<span class="token punctuation">,</span>底部导航条。
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>AMS的systemReady方法</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">systemReady</span><span class="token punctuation">(</span><span class="token keyword">final</span> Runnable goingCallback<span class="token punctuation">,</span> BootTimingsTraceLog traceLog<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        traceLog<span class="token punctuation">.</span><span class="token function">traceBegin</span><span class="token punctuation">(</span><span class="token string">"PhaseActivityManagerReady"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">synchronized</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>mSystemReady<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// If we're done calling all the receivers, run the next "boot phase" passed in</span>
+                <span class="token comment" spellcheck="true">// by the SystemServer</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>goingCallback <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    goingCallback<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            mLocalDeviceIdleController
+                    <span class="token operator">=</span> LocalServices<span class="token punctuation">.</span><span class="token function">getService</span><span class="token punctuation">(</span>DeviceIdleController<span class="token punctuation">.</span>LocalService<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mAssistUtils <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AssistUtils</span><span class="token punctuation">(</span>mContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mVrController<span class="token punctuation">.</span><span class="token function">onSystemReady</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// Make sure we have the current profile info, since it is needed for security checks.</span>
+            mUserController<span class="token punctuation">.</span><span class="token function">onSystemReady</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mRecentTasks<span class="token punctuation">.</span><span class="token function">onSystemReadyLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mAppOpsService<span class="token punctuation">.</span><span class="token function">systemReady</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mSystemReady <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>goingCallback这个参数就是run方法。mSystemReady初始值为false，所以 goingCallback.run();不会执行，接着在下面给 mSystemReady = true;</p>
+<p>还是systemReady方法</p>
+<pre class="line-numbers language-java"><code class="language-java">
+ ArrayList<span class="token operator">&lt;</span>ProcessRecord<span class="token operator">></span> procsToKill <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        <span class="token keyword">synchronized</span><span class="token punctuation">(</span>mPidsSelfLocked<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//找到先于AMS启动的进程</span>
+            <span class="token comment" spellcheck="true">//这些应用进程一定是APK所在的Java进程，因为只有应用进程才会向AMS注册</span>
+            <span class="token comment" spellcheck="true">//那些声明了persistent为true的进程可能会先于AMS启动。所以一定要先关闭</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span>mPidsSelfLocked<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">>=</span><span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">--</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                ProcessRecord proc <span class="token operator">=</span> mPidsSelfLocked<span class="token punctuation">.</span><span class="token function">valueAt</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isAllowedWhileBooting</span><span class="token punctuation">(</span>proc<span class="token punctuation">.</span>info<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>procsToKill <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        procsToKill <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span>ProcessRecord<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    procsToKill<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>proc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">synchronized</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>procsToKill <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span>procsToKill<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">>=</span><span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">--</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    ProcessRecord proc <span class="token operator">=</span> procsToKill<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    Slog<span class="token punctuation">.</span><span class="token function">i</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"Removing system update proc: "</span> <span class="token operator">+</span> proc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">//关闭这些先于AMS启动的进程</span>
+                    <span class="token function">removeProcessLocked</span><span class="token punctuation">(</span>proc<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token string">"system update done"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">//这里 系统准备完毕</span>
+            mProcessesReady <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token comment" spellcheck="true">//调用里面的run方法，启动诸如SystemUi等，以及调用其他服务的systemReady函数</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>goingCallback <span class="token operator">!=</span> null<span class="token punctuation">)</span> goingCallback<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+          <span class="token comment" spellcheck="true">//开启第一个Avtivity</span>
+             <span class="token function">startHomeActivityLocked</span><span class="token punctuation">(</span>currentUserId<span class="token punctuation">,</span> <span class="token string">"systemReady"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>启动桌面程序</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">boolean</span> <span class="token function">startHomeActivityLocked</span><span class="token punctuation">(</span><span class="token keyword">int</span> userId<span class="token punctuation">,</span> String reason<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token comment" spellcheck="true">//设置intent</span>
+        Intent intent <span class="token operator">=</span> <span class="token function">getHomeIntent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//向PKMS查询满足条件的ActivityInfo</span>
+        ActivityInfo aInfo <span class="token operator">=</span> <span class="token function">resolveActivityInfo</span><span class="token punctuation">(</span>intent<span class="token punctuation">,</span> STOCK_PM_FLAGS<span class="token punctuation">,</span> userId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>aInfo <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            intent<span class="token punctuation">.</span><span class="token function">setComponent</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ComponentName</span><span class="token punctuation">(</span>aInfo<span class="token punctuation">.</span>applicationInfo<span class="token punctuation">.</span>packageName<span class="token punctuation">,</span> aInfo<span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// Don't do this if the home app is currently being</span>
+            <span class="token comment" spellcheck="true">// instrumented.</span>
+            aInfo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ActivityInfo</span><span class="token punctuation">(</span>aInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            aInfo<span class="token punctuation">.</span>applicationInfo <span class="token operator">=</span> <span class="token function">getAppInfoForUser</span><span class="token punctuation">(</span>aInfo<span class="token punctuation">.</span>applicationInfo<span class="token punctuation">,</span> userId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//判断进程存在不 因为刚开机一般是不存在的 所以需要启动</span>
+            ProcessRecord app <span class="token operator">=</span> <span class="token function">getProcessRecordLocked</span><span class="token punctuation">(</span>aInfo<span class="token punctuation">.</span>processName<span class="token punctuation">,</span>
+                    aInfo<span class="token punctuation">.</span>applicationInfo<span class="token punctuation">.</span>uid<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>app <span class="token operator">==</span> null <span class="token operator">||</span> app<span class="token punctuation">.</span>instr <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                intent<span class="token punctuation">.</span><span class="token function">setFlags</span><span class="token punctuation">(</span>intent<span class="token punctuation">.</span><span class="token function">getFlags</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">|</span> Intent<span class="token punctuation">.</span>FLAG_ACTIVITY_NEW_TASK<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">final</span> <span class="token keyword">int</span> resolvedUserId <span class="token operator">=</span> UserHandle<span class="token punctuation">.</span><span class="token function">getUserId</span><span class="token punctuation">(</span>aInfo<span class="token punctuation">.</span>applicationInfo<span class="token punctuation">.</span>uid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// For ANR debugging to verify if the user activity is the one that actually</span>
+                <span class="token comment" spellcheck="true">// launched.</span>
+                <span class="token keyword">final</span> String myReason <span class="token operator">=</span> reason <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> userId <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> resolvedUserId<span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">//启动Activity--这里最终调用的就是startActivity方法。</span>
+                mActivityStarter<span class="token punctuation">.</span><span class="token function">startHomeActivityLocked</span><span class="token punctuation">(</span>intent<span class="token punctuation">,</span> aInfo<span class="token punctuation">,</span> myReason<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            Slog<span class="token punctuation">.</span><span class="token function">wtf</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"No home screen found for "</span> <span class="token operator">+</span> intent<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Throwable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+Intent <span class="token function">getHomeIntent</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Intent intent <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Intent</span><span class="token punctuation">(</span>mTopAction<span class="token punctuation">,</span> mTopData <span class="token operator">!=</span> null <span class="token operator">?</span> Uri<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>mTopData<span class="token punctuation">)</span> <span class="token operator">:</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        intent<span class="token punctuation">.</span><span class="token function">setComponent</span><span class="token punctuation">(</span>mTopComponent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        intent<span class="token punctuation">.</span><span class="token function">addFlags</span><span class="token punctuation">(</span>Intent<span class="token punctuation">.</span>FLAG_DEBUG_TRIAGED_MISSING<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mFactoryTest <span class="token operator">!=</span> FactoryTest<span class="token punctuation">.</span>FACTORY_TEST_LOW_LEVEL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+            <span class="token comment" spellcheck="true">//添加Category为HOME类别</span>
+            intent<span class="token punctuation">.</span><span class="token function">addCategory</span><span class="token punctuation">(</span>Intent<span class="token punctuation">.</span>CATEGORY_HOME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> intent<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>到这里，系统已经准备完毕，桌面也启动完成。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/01/11/viewdraw1/">阅读全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-IntentService" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -606,93 +1097,6 @@ handler_thread
 
 
   
-    <article id="post-Looper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/05/Looper/">Android消息机制（三）--- Looper分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/05/Looper/" class="archive-article-date">
-  	<time datetime="2017-11-05T07:50:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Looper的代码非常少</p>
-<h4 id="成员变量"><a href="#成员变量" class="headerlink" title="成员变量"></a>成员变量</h4><pre><code class="java">
-    // 静态的ThreadLocal对象，
-    static final ThreadLocal&lt;Looper&gt; sThreadLocal = new ThreadLocal&lt;Looper&gt;();
-
-    private static Looper sMainLooper;  //Ui 线程的Looper对象
-
-    //消息队列
-    final MessageQueue mQueue;
-    //线程
-    final Thread mThread;
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/11/05/Looper/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/消息机制/" class="article-tag-list-link color5">消息机制</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/05/Looper/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -707,7 +1111,7 @@ handler_thread
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017 孙俊卿
+    		&copy; 2018 孙俊卿
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
