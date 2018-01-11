@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://livesun.github.io/2018/01/11/viewdraw1/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
 <meta property="og:description" content="Android 基于Linux，而所有的进程都基于init进程。 。 当系统开机时，就会由init进程fork出Zygote进程，它时Android系统中第一个Dalvik虚拟机上的第一个进程，同时负责卵化其他apk的进程。 SystemServer进程，Android系统的第二大进程，也是一个非常重要的进程，它本身也是由Zygote进程卵化出来的。 在ZygoteInit的main方法 publ">
-<meta property="og:updated_time" content="2018-01-11T09:48:58.091Z">
+<meta property="og:updated_time" content="2018-01-11T10:05:06.457Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="View的绘制流程（一）在home启动之前">
 <meta name="twitter:description" content="Android 基于Linux，而所有的进程都基于init进程。 。 当系统开机时，就会由init进程fork出Zygote进程，它时Android系统中第一个Dalvik虚拟机上的第一个进程，同时负责卵化其他apk的进程。 SystemServer进程，Android系统的第二大进程，也是一个非常重要的进程，它本身也是由Zygote进程卵化出来的。 在ZygoteInit的main方法 publ">
@@ -582,6 +582,7 @@ Intent <span class="token function">getHomeIntent</span><span class="token punct
     <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>到这里，系统已经准备完毕，桌面也启动完成。</p>
+<h4 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h4><p>这里主要分析Zygoteinit SystemServer ActivityManagerService这三个主要的类，Zygote进程是由init进程fork出来，是第一个运行在Diavlk虚拟机上的进程，可以说是Android所有进程中的上帝进程，它的职责负责卵化别的应用进程，SystemServer是Android第二大关键进程，它也是由Zygote卵化出来的，它的主要作用是初始化一些核心服务，如AMS WMS 各种熟知的服务等，值得注意的是，在启动这些关键服务之前，它createSystemContext()，之所以需要Context对象，是因为如SystemUi 关机页面这些activity其实就是运行在改进程内，而不是别的进程。最后，由SystemServer进程中ActivityManagerService来完成系统的剩余扫尾工作，同时启动桌面程序。</p>
 
       
 
@@ -694,7 +695,7 @@ Intent <span class="token function">getHomeIntent</span><span class="token punct
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    目录，不存在的…
+                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#总结："><span class="toc-number">1.</span> <span class="toc-text">总结：</span></a></li></ol>
                     </div>
                 </span>
             </div>
