@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://livesun.github.io/2018/01/11/viewdraw1/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
 <meta property="og:description" content="Android 基于Linux，而所有的进程都基于init进程。 。 当系统开机时，就会由init进程fork出Zygote进程，它时Android系统中第一个Dalvik虚拟机上的第一个进程，同时负责卵化其他apk的进程。 SystemServer进程，Android系统的第二大进程，也是一个非常重要的进程，它本身也是由Zygote进程卵化出来的。 在ZygoteInit的main方法 publ">
-<meta property="og:updated_time" content="2018-01-11T10:05:06.457Z">
+<meta property="og:updated_time" content="2018-02-01T08:11:33.237Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="View的绘制流程（一）在home启动之前">
 <meta name="twitter:description" content="Android 基于Linux，而所有的进程都基于init进程。 。 当系统开机时，就会由init进程fork出Zygote进程，它时Android系统中第一个Dalvik虚拟机上的第一个进程，同时负责卵化其他apk的进程。 SystemServer进程，Android系统的第二大进程，也是一个非常重要的进程，它本身也是由Zygote进程卵化出来的。 在ZygoteInit的main方法 publ">
@@ -208,6 +208,7 @@
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<a id="more"></a>
 <pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">boolean</span> <span class="token function">startSystemServer</span><span class="token punctuation">(</span>String abiList<span class="token punctuation">,</span> String socketName<span class="token punctuation">,</span> ZygoteServer zygoteServer<span class="token punctuation">)</span>
             <span class="token keyword">throws</span> Zygote<span class="token punctuation">.</span>MethodAndArgsCaller<span class="token punctuation">,</span> RuntimeException <span class="token punctuation">{</span>
 
@@ -665,6 +666,15 @@ Intent <span class="token function">getHomeIntent</span><span class="token punct
 
   
 <nav id="article-nav">
+  
+    <a href="/2018/02/01/genericity/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          通过反射动态创建泛型实例
+        
+      </div>
+    </a>
   
   
     <a href="/2017/11/09/IntentService/" id="article-nav-older" class="article-nav-link-wrap">

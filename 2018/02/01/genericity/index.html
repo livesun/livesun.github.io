@@ -6,17 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://livesun.github.io">
-  <title>孙俊卿的博客</title>
+  <title>通过反射动态创建泛型实例 | 孙俊卿的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="孙俊卿的博客">
-<meta property="og:url" content="http://livesun.github.io/index.html">
+  <meta name="description" content="当作笔记记忆一下  public class BasePresenter&amp;lt;V extends BaseView,M extends BaseModel&amp;gt;{      private M mModel;      public void attach(){            //1、返回表示此 Class 所表示的实体（类、接口、基本类型或 void）的直接超类的 Type">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过反射动态创建泛型实例">
+<meta property="og:url" content="http://livesun.github.io/2018/02/01/genericity/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="当作笔记记忆一下  public class BasePresenter&amp;lt;V extends BaseView,M extends BaseModel&amp;gt;{      private M mModel;      public void attach(){            //1、返回表示此 Class 所表示的实体（类、接口、基本类型或 void）的直接超类的 Type">
+<meta property="og:updated_time" content="2018-02-01T08:14:35.071Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="孙俊卿的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="通过反射动态创建泛型实例">
+<meta name="twitter:description" content="当作笔记记忆一下  public class BasePresenter&amp;lt;V extends BaseView,M extends BaseModel&amp;gt;{      private M mModel;      public void attach(){            //1、返回表示此 Class 所表示的实体（类、接口、基本类型或 void）的直接超类的 Type">
   
     <link rel="alternative" href="/atom.xml" title="孙俊卿的博客" type="application/atom+xml">
   
@@ -143,16 +144,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-genericity" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-genericity" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/02/01/genericity/">通过反射动态创建泛型实例</a>
+    <h1 class="article-title" itemprop="name">
+      通过反射动态创建泛型实例
     </h1>
   
 
@@ -166,40 +165,137 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>当作笔记记忆一下</p>
-<pre><code class="java">
-public class BasePresenter&lt;V extends BaseView,M extends BaseModel&gt;{
+<pre class="line-numbers language-java"><code class="language-java">
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BasePresenter</span><span class="token operator">&lt;</span>V <span class="token keyword">extends</span> <span class="token class-name">BaseView</span><span class="token punctuation">,</span>M <span class="token keyword">extends</span> <span class="token class-name">BaseModel</span><span class="token operator">></span><span class="token punctuation">{</span>
 
-    private M mModel;
+    <span class="token keyword">private</span> M mModel<span class="token punctuation">;</span>
 
-    public void attach(){
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">attach</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
 
-          //1、返回表示此 Class 所表示的实体（类、接口、基本类型或 void）的直接超类的 Type
-        Type genType = getClass().getGenericSuperclass();
-        //2、泛型参数
-        Type[] types = ((ParameterizedType) genType).getActualTypeArguments();
-        //3、因为BasePresenter 有两个泛型 数组有两个
-        try {
-            //
-            mModel= (M) ((Class)types[1]).newInstance();
-            //这里需要强转得到的是实体类类路径
-//            如果types[1].getClass().newInstance();并不行，得到的是泛型类型
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+          <span class="token comment" spellcheck="true">//1、返回表示此 Class 所表示的实体（类、接口、基本类型或 void）的直接超类的 Type</span>
+        Type genType <span class="token operator">=</span> <span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getGenericSuperclass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//2、泛型参数</span>
+        Type<span class="token punctuation">[</span><span class="token punctuation">]</span> types <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>ParameterizedType<span class="token punctuation">)</span> genType<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getActualTypeArguments</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//3、因为BasePresenter 有两个泛型 数组有两个</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//</span>
+            mModel<span class="token operator">=</span> <span class="token punctuation">(</span>M<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>Class<span class="token punctuation">)</span>types<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//这里需要强转得到的是实体类类路径</span>
+<span class="token comment" spellcheck="true">//            如果types[1].getClass().newInstance();并不行，得到的是泛型类型</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InstantiationException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IllegalAccessException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> M <span class="token function">getModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+        <span class="token keyword">return</span> mModel<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<a id="more"></a>
+<h4 id="getSuperclass-和-getGenericSuperclass-的区别"><a href="#getSuperclass-和-getGenericSuperclass-的区别" class="headerlink" title="getSuperclass 和 getGenericSuperclass 的区别"></a>getSuperclass 和 getGenericSuperclass 的区别</h4><ul>
+<li>getSuperclass返回直接继承的父类不包括泛型参数</li>
+<li>getGenericSuperclass返回直接继承的父类包含泛型参数</li>
+</ul>
+<h4 id="getInterfaces-和-getGenericInterface-的区别"><a href="#getInterfaces-和-getGenericInterface-的区别" class="headerlink" title="getInterfaces  和 getGenericInterface 的区别"></a>getInterfaces  和 getGenericInterface 的区别</h4><ul>
+<li>getInterfaces 返回直接实现的接口（不显示泛型参数）</li>
+<li>getGenericInterface 返回直接实现的接口（显示泛型参数）</li>
+</ul>
+<h4 id="共享一个工具类。获取泛型的对象类型等"><a href="#共享一个工具类。获取泛型的对象类型等" class="headerlink" title="共享一个工具类。获取泛型的对象类型等"></a>共享一个工具类。获取泛型的对象类型等</h4><pre><code>public class ReflectionUtil {
+
+    /**
+     * 通过type获取className
+     */
+
+    public static String getClassName(Type type){
+        if(type==null){
+
+            return &quot;&quot;;
         }
+        String className = type.toString();
+
+        if (className.startsWith(&quot;class&quot;)){
+            className=className.substring(&quot;class&quot;.length());
+        }
+        return className;
     }
 
-    public M getModel(){
-
-        return mModel;
+    /**
+     * 获取子类在父类传入的泛型Class类型
+     * 获取泛型对象的泛型化参数
+     * @param o
+     * @return
+     */
+    public static Type getParameterizedTypes(Object o){
+        Type superclass = o.getClass().getGenericSuperclass();
+        if(!ParameterizedType.class.isAssignableFrom(superclass.getClass())) {
+            return null;
+        }
+        Type[] types = ((ParameterizedType) superclass).getActualTypeArguments();
+        return types[0];
     }
+
+    /**
+     * 获取实现类的泛型参数
+     * @param o
+     * @return
+     */
+
+    public static Type getInterfaceTypes(Object o){
+        Type[] genericInterfaces = o.getClass().getGenericInterfaces();
+
+        return genericInterfaces[0];
+    }
+
+    /**
+     *检查对象是否存在默认构造函数
+     */
+
+    public static boolean hasDefaultConstructor(Class&lt;?&gt; clazz) throws SecurityException {
+        Class&lt;?&gt;[] empty = {};
+        try {
+            clazz.getConstructor(empty);
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * 通过Type创建对象
+     */
+    public static Object newInstance(Type type)
+            throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Class&lt;?&gt; clazz = getClass(type);
+        if (clazz==null) {
+            return null;
+        }
+        return clazz.newInstance();
+    }
+
+
+    /**
+     * 通过Type获取对象class
+     * @param type
+     * @return
+     * @throws ClassNotFoundException
+     */
+
+    public static Class&lt;?&gt; getClass(Type type)
+            throws ClassNotFoundException {
+        String className = getClassName(type);
+        if (className==null || className.isEmpty()) {
+            return null;
+        }
+        return Class.forName(className);
+    }
+
 
 }
 </code></pre>
-        
-          <a class="article-more-a" href="/2018/02/01/genericity/#more">more >></a>
-        
       
 
       
@@ -221,16 +317,75 @@ public class BasePresenter&lt;V extends BaseView,M extends BaseModel&gt;{
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/02/01/genericity/">阅读全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://livesun.github.io/2018/02/01/genericity/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2018/01/11/viewdraw1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">View的绘制流程（一）在home启动之前</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -245,516 +400,46 @@ public class BasePresenter&lt;V extends BaseView,M extends BaseModel&gt;{
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-viewdraw1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/11/viewdraw1/">View的绘制流程（一）在home启动之前</a>
-    </h1>
-  
-
-        
-        <a href="/2018/01/11/viewdraw1/" class="archive-article-date">
-  	<time datetime="2018-01-11T09:50:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Android 基于Linux，而所有的进程都基于init进程。 。</p>
-<p>当系统开机时，就会由init进程fork出Zygote进程，它时Android系统中第一个Dalvik虚拟机上的第一个进程，同时负责卵化其他apk的进程。</p>
-<p>SystemServer进程，Android系统的第二大进程，也是一个非常重要的进程，它本身也是由Zygote进程卵化出来的。</p>
-<p>在ZygoteInit的main方法</p>
-<pre><code class="java">public static void main(String argv[]) {
-       ....
-        try {
-        ....
-            boolean startSystemServer = false;
-            String socketName = &quot;zygote&quot;;
-            String abiList = null;
-            boolean enableLazyPreload = false;
-            //第一次fork出Zygote时，会让startSystemServer为 true，来开启SystemServer进程
-            for (int i = 1; i &lt; argv.length; i++) {
-                if (&quot;start-system-server&quot;.equals(argv[i])) {
-                    startSystemServer = true;
-                } else if (&quot;--enable-lazy-preload&quot;.equals(argv[i])) {
-                    enableLazyPreload = true;
-                } else if (argv[i].startsWith(ABI_LIST_ARG)) {
-                    abiList = argv[i].substring(ABI_LIST_ARG.length());
-                } else if (argv[i].startsWith(SOCKET_NAME_ARG)) {
-                    socketName = argv[i].substring(SOCKET_NAME_ARG.length());
-                } else {
-                    throw new RuntimeException(&quot;Unknown command line argument: &quot; + argv[i]);
-                }
-            }
-          ....
-            //开启SystemServer进程
-            if (startSystemServer) {
-                startSystemServer(abiList, socketName, zygoteServer);
-            }
-
-            zygoteServer.runSelectLoop(abiList);
-
-            zygoteServer.closeServerSocket();
-        } catch (Zygote.MethodAndArgsCaller caller) {
-            caller.run();
-        } catch (Throwable ex) {
-            Log.e(TAG, &quot;System zygote died with exception&quot;, ex);
-            zygoteServer.closeServerSocket();
-            throw ex;
-        }
-    }
-</code></pre>
-        
-          <a class="article-more-a" href="/2018/01/11/viewdraw1/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/源码分析/" class="article-tag-list-link color5">源码分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/11/viewdraw1/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#getSuperclass-和-getGenericSuperclass-的区别"><span class="toc-number">1.</span> <span class="toc-text">getSuperclass 和 getGenericSuperclass 的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#getInterfaces-和-getGenericInterface-的区别"><span class="toc-number">2.</span> <span class="toc-text">getInterfaces  和 getGenericInterface 的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#共享一个工具类。获取泛型的对象类型等"><span class="toc-number">3.</span> <span class="toc-text">共享一个工具类。获取泛型的对象类型等</span></a></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
-  
-    <article id="post-IntentService" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/09/IntentService/">Android多线程（三）-- IntentService 分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/09/IntentService/" class="archive-article-date">
-  	<time datetime="2017-11-09T07:23:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>IntentService是继承Service的抽象类，一般用于执行后台耗时任务，当任务执行完毕之后，会自动停止。</p>
-<p>源码依然比较简单</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">IntentService</span> <span class="token keyword">extends</span> <span class="token class-name">Service</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">volatile</span> Looper mServiceLooper<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">volatile</span> ServiceHandler mServiceHandler<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> String mName<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">boolean</span> mRedelivery<span class="token punctuation">;</span>
-
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">ServiceHandler</span> <span class="token keyword">extends</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
-        <span class="token keyword">public</span> <span class="token function">ServiceHandler</span><span class="token punctuation">(</span>Looper looper<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">super</span><span class="token punctuation">(</span>looper<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">onHandleIntent</span><span class="token punctuation">(</span><span class="token punctuation">(</span>Intent<span class="token punctuation">)</span>msg<span class="token punctuation">.</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">stopSelf</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>arg1<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-
-
-    <span class="token keyword">public</span> <span class="token function">IntentService</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        mName <span class="token operator">=</span> name<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setIntentRedelivery</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> enabled<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        mRedelivery <span class="token operator">=</span> enabled<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-
-        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        HandlerThread thread <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HandlerThread</span><span class="token punctuation">(</span><span class="token string">"IntentService["</span> <span class="token operator">+</span> mName <span class="token operator">+</span> <span class="token string">"]"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        thread<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        mServiceLooper <span class="token operator">=</span> thread<span class="token punctuation">.</span><span class="token function">getLooper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        mServiceHandler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServiceHandler</span><span class="token punctuation">(</span>mServiceLooper<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onStart</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Nullable</span> Intent intent<span class="token punctuation">,</span> <span class="token keyword">int</span> startId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Message msg <span class="token operator">=</span> mServiceHandler<span class="token punctuation">.</span><span class="token function">obtainMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        msg<span class="token punctuation">.</span>arg1 <span class="token operator">=</span> startId<span class="token punctuation">;</span>
-        msg<span class="token punctuation">.</span>obj <span class="token operator">=</span> intent<span class="token punctuation">;</span>
-        mServiceHandler<span class="token punctuation">.</span><span class="token function">sendMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">onStartCommand</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Nullable</span> Intent intent<span class="token punctuation">,</span> <span class="token keyword">int</span> flags<span class="token punctuation">,</span> <span class="token keyword">int</span> startId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">onStart</span><span class="token punctuation">(</span>intent<span class="token punctuation">,</span> startId<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> mRedelivery <span class="token operator">?</span> START_REDELIVER_INTENT <span class="token operator">:</span> START_NOT_STICKY<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onDestroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">//出队</span>
-        mServiceLooper<span class="token punctuation">.</span><span class="token function">quit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token annotation punctuation">@Nullable</span>
-    <span class="token keyword">public</span> IBinder <span class="token function">onBind</span><span class="token punctuation">(</span>Intent intent<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-
-    <span class="token annotation punctuation">@WorkerThread</span>
-    <span class="token keyword">protected</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">onHandleIntent</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Nullable</span> Intent intent<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>IntentService第一次启动，会调用OnCreate方法，会先创建一个HandlerThread，接着将它的Looper对象传入给Handler对象，构造出一个mServiceHandler。</p>
-<p>每次startService，都会调用onStartCommand方法，代码中，会调用onStart(intent, startId)，通过这个方法，把intent和startId 传递给mServiceHandler来执行。</p>
-<p>这里是通过一个抽象方法把intent传递给子类来自定义实现。执行完毕，会调用stopSelf(int startId),这里有必要注意一下，之所以调用stopSelf(int startId)，而不是stopSelf()，因为stopSelf()会立刻停止服务，而这个时候，还有可能别的消息未处理，而stopSelf(int startId)则会等待所有消息执行结束之后才终止服务。</p>
-<p>同时，因为采用的Handler方式，而且没执行一个后台任务，都要启动一次IntentService，这也就意味着IntentService是顺序执行后台请求的。</p>
-<p>最后，在OnDestroy中，调用quit方法，清空MessageQueue队列。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/线程线程池/" class="article-tag-list-link color1">线程线程池</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/09/IntentService/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-HandlerThread" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/09/HandlerThread/">Android多线程（二）-- HandlerThread 分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/09/HandlerThread/" class="archive-article-date">
-  	<time datetime="2017-11-09T05:12:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>HandlerThread 其实就是一个普通的Thread，唯一不同的是可以使用Handler的Thread。</p>
-<p>举个例子</p>
-<pre class="line-numbers language-java"><code class="language-java">  mHandlerThread <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HandlerThread</span><span class="token punctuation">(</span><span class="token string">"handler_thread"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        mHandlerThread<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        mHandler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Handler</span><span class="token punctuation">(</span>mHandlerThread<span class="token punctuation">.</span><span class="token function">getLooper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token annotation punctuation">@Override</span>
-            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment" spellcheck="true">//这里是子线程 线程名称handler_thread</span>
-                Log<span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span><span class="token string">"AAA"</span><span class="token punctuation">,</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span><span class="token punctuation">;</span>
-
-        Log<span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span><span class="token string">"AAA"</span><span class="token punctuation">,</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-
-    <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Runnable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            mHandler<span class="token punctuation">.</span><span class="token function">sendEmptyMessageDelayed</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">3000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span>View v<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-
-        mHandler<span class="token punctuation">.</span><span class="token function">sendMessage</span><span class="token punctuation">(</span>Message<span class="token punctuation">.</span><span class="token function">obtain</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-     <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onDestroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onDestroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        mHandlerThread<span class="token punctuation">.</span><span class="token function">quit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>打印的结果</p>
-<pre class="line-numbers language-java"><code class="language-java">
-main
-handler_thread
-handler_thread
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>无论是主线程还是子线程，都可以把消息发送给mHandler的handleMessage处理，值得注意的是，mHandler虽然实在主线程创建了实例，但是handleMessage方法却是运行在子线程。</p>
-<p>实现原理很简单，跟之前 <a href="https://livesun.github.io/2017/11/06/handler/">Android消息机制（四）—Handler分析</a>中的原理一样，根据一个Thread对应一个Looper来实现。</p>
-<p>看run方法</p>
-<pre class="line-numbers language-java"><code class="language-java">
- <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        mTid <span class="token operator">=</span> Process<span class="token punctuation">.</span><span class="token function">myTid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Looper<span class="token punctuation">.</span><span class="token function">prepare</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            mLooper <span class="token operator">=</span> Looper<span class="token punctuation">.</span><span class="token function">myLooper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">notifyAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        Process<span class="token punctuation">.</span><span class="token function">setThreadPriority</span><span class="token punctuation">(</span>mPriority<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">onLooperPrepared</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Looper<span class="token punctuation">.</span><span class="token function">loop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        mTid <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在run方法发中创建了Looper，开启了loop，无限循环，所以只需要将该looper设置给handler，就会将消息添加到当前Looper对应Thread的MessageQueue中。</p>
-<pre class="line-numbers language-java"><code class="language-java">
-  <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span>Looper looper<span class="token punctuation">,</span> Callback callback<span class="token punctuation">,</span> <span class="token keyword">boolean</span> async<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        mLooper <span class="token operator">=</span> looper<span class="token punctuation">;</span>
-        mQueue <span class="token operator">=</span> looper<span class="token punctuation">.</span>mQueue<span class="token punctuation">;</span>
-        mCallback <span class="token operator">=</span> callback<span class="token punctuation">;</span>
-        mAsynchronous <span class="token operator">=</span> async<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/线程线程池/" class="article-tag-list-link color1">线程线程池</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/09/HandlerThread/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-AsyncTask" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/08/AsyncTask/">Android多线程（一）-- AsyncTask 分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/08/AsyncTask/" class="archive-article-date">
-  	<time datetime="2017-11-08T04:08:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="AsyncTask的使用"><a href="#AsyncTask的使用" class="headerlink" title="AsyncTask的使用"></a>AsyncTask的使用</h4><ul>
-<li>AsyncTask是对Thread和Handler的封装，它在线程池中执行后台任务，然后把任务的进度和最终结果传递给UI线程处理。</li>
-<li>AsyncTask并不适合非常耗时的任务（也就几分钟），如果是非常耗时的操作，还是使用Executor等线程池。</li>
-<li>AsyncTask 是一个抽象的类，有三个泛型，Params、Progress、Result。Params表示传入参数的类型，Progress表示后台任务执行的进度类型，Rsult表示后台任务的返回结果的类型，如果不需要传递具体类型，可以传递Void。<h5 id="四个核心的方法。"><a href="#四个核心的方法。" class="headerlink" title="四个核心的方法。"></a>四个核心的方法。</h5></li>
-<li>onPreExecute()，在UI线程中执行，在异步任务执行之前调用。</li>
-<li>doInBackground(Params…params)，在线程池中执行，用于执行异步任务。调用publishProgress方法，会调用onProgressUpdate方法。</li>
-<li>onProgressUpdate(Progress…values)方法在UI线程调用，一般用做更新进度条。</li>
-<li>onPostExecute(Result result)，result是doInBackground的返回值，在Ui线程执行。</li>
-</ul>
-        
-          <a class="article-more-a" href="/2017/11/08/AsyncTask/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/线程线程池/" class="article-tag-list-link color1">线程线程池</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/08/AsyncTask/">阅读全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
+  
+    <section id="comments">
+      <div id="disqus_thread"></div>
+        <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'true'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </section>
   
 
 
@@ -777,8 +462,8 @@ handler_thread
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
