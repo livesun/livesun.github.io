@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://livesun.github.io/2018/02/01/genericity/index.html">
 <meta property="og:site_name" content="孙俊卿的博客">
 <meta property="og:description" content="当作笔记记忆一下  public class BasePresenter&amp;lt;V extends BaseView,M extends BaseModel&amp;gt;{      private M mModel;      public void attach(){            //1、返回表示此 Class 所表示的实体（类、接口、基本类型或 void）的直接超类的 Type">
-<meta property="og:updated_time" content="2018-02-01T08:14:35.071Z">
+<meta property="og:updated_time" content="2018-02-01T08:16:31.107Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通过反射动态创建泛型实例">
 <meta name="twitter:description" content="当作笔记记忆一下  public class BasePresenter&amp;lt;V extends BaseView,M extends BaseModel&amp;gt;{      private M mModel;      public void attach(){            //1、返回表示此 Class 所表示的实体（类、接口、基本类型或 void）的直接超类的 Type">
@@ -205,97 +205,98 @@
 <li>getInterfaces 返回直接实现的接口（不显示泛型参数）</li>
 <li>getGenericInterface 返回直接实现的接口（显示泛型参数）</li>
 </ul>
-<h4 id="共享一个工具类。获取泛型的对象类型等"><a href="#共享一个工具类。获取泛型的对象类型等" class="headerlink" title="共享一个工具类。获取泛型的对象类型等"></a>共享一个工具类。获取泛型的对象类型等</h4><pre><code>public class ReflectionUtil {
+<h4 id="共享一个工具类。获取泛型的对象类型等"><a href="#共享一个工具类。获取泛型的对象类型等" class="headerlink" title="共享一个工具类。获取泛型的对象类型等"></a>共享一个工具类。获取泛型的对象类型等</h4><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ReflectionUtil</span> <span class="token punctuation">{</span>
 
-    /**
+    <span class="token comment" spellcheck="true">/**
      * 通过type获取className
-     */
+     */</span>
 
-    public static String getClassName(Type type){
-        if(type==null){
+    <span class="token keyword">public</span> <span class="token keyword">static</span> String <span class="token function">getClassName</span><span class="token punctuation">(</span>Type type<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>type<span class="token operator">==</span>null<span class="token punctuation">)</span><span class="token punctuation">{</span>
 
-            return &quot;&quot;;
-        }
-        String className = type.toString();
+            <span class="token keyword">return</span> <span class="token string">""</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        String className <span class="token operator">=</span> type<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-        if (className.startsWith(&quot;class&quot;)){
-            className=className.substring(&quot;class&quot;.length());
-        }
-        return className;
-    }
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>className<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span><span class="token string">"class"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            className<span class="token operator">=</span>className<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token string">"class"</span><span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> className<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    /**
+    <span class="token comment" spellcheck="true">/**
      * 获取子类在父类传入的泛型Class类型
      * 获取泛型对象的泛型化参数
      * @param o
      * @return
-     */
-    public static Type getParameterizedTypes(Object o){
-        Type superclass = o.getClass().getGenericSuperclass();
-        if(!ParameterizedType.class.isAssignableFrom(superclass.getClass())) {
-            return null;
-        }
-        Type[] types = ((ParameterizedType) superclass).getActualTypeArguments();
-        return types[0];
-    }
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> Type <span class="token function">getParameterizedTypes</span><span class="token punctuation">(</span>Object o<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        Type superclass <span class="token operator">=</span> o<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getGenericSuperclass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>ParameterizedType<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>superclass<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        Type<span class="token punctuation">[</span><span class="token punctuation">]</span> types <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>ParameterizedType<span class="token punctuation">)</span> superclass<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getActualTypeArguments</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> types<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    /**
+    <span class="token comment" spellcheck="true">/**
      * 获取实现类的泛型参数
      * @param o
      * @return
-     */
+     */</span>
 
-    public static Type getInterfaceTypes(Object o){
-        Type[] genericInterfaces = o.getClass().getGenericInterfaces();
+    <span class="token keyword">public</span> <span class="token keyword">static</span> Type <span class="token function">getInterfaceTypes</span><span class="token punctuation">(</span>Object o<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        Type<span class="token punctuation">[</span><span class="token punctuation">]</span> genericInterfaces <span class="token operator">=</span> o<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getGenericInterfaces</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-        return genericInterfaces[0];
-    }
+        <span class="token keyword">return</span> genericInterfaces<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    /**
+    <span class="token comment" spellcheck="true">/**
      *检查对象是否存在默认构造函数
-     */
+     */</span>
 
-    public static boolean hasDefaultConstructor(Class&lt;?&gt; clazz) throws SecurityException {
-        Class&lt;?&gt;[] empty = {};
-        try {
-            clazz.getConstructor(empty);
-        } catch (NoSuchMethodException e) {
-            return false;
-        }
-        return true;
-    }
-    /**
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">boolean</span> <span class="token function">hasDefaultConstructor</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> clazz<span class="token punctuation">)</span> <span class="token keyword">throws</span> SecurityException <span class="token punctuation">{</span>
+        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> empty <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            clazz<span class="token punctuation">.</span><span class="token function">getConstructor</span><span class="token punctuation">(</span>empty<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">NoSuchMethodException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">/**
      * 通过Type创建对象
-     */
-    public static Object newInstance(Type type)
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Class&lt;?&gt; clazz = getClass(type);
-        if (clazz==null) {
-            return null;
-        }
-        return clazz.newInstance();
-    }
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> Object <span class="token function">newInstance</span><span class="token punctuation">(</span>Type type<span class="token punctuation">)</span>
+            <span class="token keyword">throws</span> ClassNotFoundException<span class="token punctuation">,</span> InstantiationException<span class="token punctuation">,</span> IllegalAccessException <span class="token punctuation">{</span>
+        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> clazz <span class="token operator">=</span> <span class="token function">getClass</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>clazz<span class="token operator">==</span>null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> clazz<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
 
-    /**
+    <span class="token comment" spellcheck="true">/**
      * 通过Type获取对象class
      * @param type
      * @return
      * @throws ClassNotFoundException
-     */
+     */</span>
 
-    public static Class&lt;?&gt; getClass(Type type)
-            throws ClassNotFoundException {
-        String className = getClassName(type);
-        if (className==null || className.isEmpty()) {
-            return null;
-        }
-        return Class.forName(className);
-    }
+    <span class="token keyword">public</span> <span class="token keyword">static</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> <span class="token function">getClass</span><span class="token punctuation">(</span>Type type<span class="token punctuation">)</span>
+            <span class="token keyword">throws</span> ClassNotFoundException <span class="token punctuation">{</span>
+        String className <span class="token operator">=</span> <span class="token function">getClassName</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>className<span class="token operator">==</span>null <span class="token operator">||</span> className<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> Class<span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span>className<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
 
-}
-</code></pre>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
       
 
       
